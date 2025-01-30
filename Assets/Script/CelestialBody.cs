@@ -28,11 +28,4 @@ public class CelestialBody : MonoBehaviour
         velocity = initialVelocity;
 
     }
-
-    private void OnDrawGizmos()
-    {
-        if (Application.isPlaying) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, initialVelocity);
-    }
 }

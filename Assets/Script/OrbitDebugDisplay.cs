@@ -134,7 +134,15 @@ public class OrbitDebugDisplay : MonoBehaviour
             timeStep = Time.fixedDeltaTime;
         }
     }
-
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying) return;
+        foreach (CelestialBody celestialBody in FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID))
+        {
+            Gizmos.color = celestialBody.gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
+            Gizmos.DrawRay(celestialBody.transform.position, celestialBody.initialVelocity);
+        }
+    }
     class VirtualBody
     {
 

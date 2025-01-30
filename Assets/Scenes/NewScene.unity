@@ -1084,7 +1084,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravConstant: 1
   physicsTimeStep: 0.01
-  planetGravity: 1
+  planetGravity: 0
   isRelativeToBody: 0
   relativeBody: {fileID: 0}
 --- !u!4 &764633641
@@ -1114,7 +1114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71730bf499114ea47b6cf8295e2454cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSteps: 9758
+  numSteps: 2015
   timeStep: 0.009999993
   usePhysicsTimeStep: 1
   width: 103.1
@@ -1535,7 +1535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7280199595277570531, guid: 337d0cff3d727f541902832a31f1909f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.899
+      value: -10.86
       objectReference: {fileID: 0}
     - target: {fileID: 7280199595277570531, guid: 337d0cff3d727f541902832a31f1909f, type: 3}
       propertyPath: m_LocalRotation.w
