@@ -1,4 +1,0 @@
-repository "NbodySimulation@ricardoarb007@cloud"
-  path "/"
-    br "/main"
-    co "/main"
