@@ -28,8 +28,6 @@ public class NBodySimulation : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //if (!Application.isPlaying) return;
-
         celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
         Time.fixedDeltaTime = physicsTimeStep;
     }
@@ -49,7 +47,9 @@ public class NBodySimulation : MonoBehaviour
     private void FixedUpdate()
     {
         if (!Application.isPlaying) return;
+
         Vector3 offsetPosition = Vector3.zero;
+
         if (isRelativeToBody && relativeBody != null)
         {
             offsetPosition = -relativeBody.transform.position;
@@ -66,10 +66,12 @@ public class NBodySimulation : MonoBehaviour
                 }
             }
         }
+
         foreach (CelestialBody body in celestialBodies)
         {
             UpdateVelocity(body);
         }
+
         foreach (CelestialBody body in celestialBodies)
         {
             if (isRelativeToBody && relativeBody == body)
@@ -81,7 +83,6 @@ public class NBodySimulation : MonoBehaviour
     }
     public void UpdateVelocity(CelestialBody body)
     {
-        Vector3 totalAcceleration = Vector3.zero;
         body.velocity += CalculateTotalAcceleration(body) * physicsTimeStep;
     }
 
@@ -89,6 +90,7 @@ public class NBodySimulation : MonoBehaviour
     {
         if (body.isAnchored) return;
         Vector3 newPos = body.rb.position + body.velocity * physicsTimeStep;
+
         if (isRelativeToBody && relativeBody != null)
         {
             newPos -= relativeBody.velocity * physicsTimeStep;
@@ -103,10 +105,11 @@ public class NBodySimulation : MonoBehaviour
         {
             if (mainBody == body) continue;
             if (!body.hasGravity) continue;
-            if (NBodySimulation.Instance.planetGravity == false && body.isPlanet) continue;
+            if (planetGravity == false && body.isPlanet) continue;
+
             Vector3 deltaPosition = body.transform.position - mainBody.transform.position;
             float sqrDistance = deltaPosition.sqrMagnitude;
-            float acceleration = (NBodySimulation.Instance.gravConstant * body.mass) / sqrDistance;
+            float acceleration = gravConstant * body.mass / sqrDistance;
 
             totalAcceleration += Vector3.ClampMagnitude(deltaPosition.normalized * acceleration, float.MaxValue);
         }

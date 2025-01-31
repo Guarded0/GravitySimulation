@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class CelestialBody : MonoBehaviour
 {
-    public float radius;
     public float mass;
     public bool isAnchored = false;
     public bool isPlanet = false;
@@ -25,6 +24,5 @@ public class CelestialBody : MonoBehaviour
     void Start()
     {
         velocity = initialVelocity;
-
     }
 }
