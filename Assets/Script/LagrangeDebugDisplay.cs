@@ -16,7 +16,7 @@ public class LagrangeDebugDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
     float calculateHillSphere(float mass1, float mass2, float distance)
     {
