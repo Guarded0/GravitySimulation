@@ -1,12 +1,13 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-[ExecuteAlways]
 public class NBodySimulation : MonoBehaviour
 {
-    static public CelestialBody[] celestialBodies = null;
+    // array of celestial bodies
+    public static CelestialBody[] celestialBodies { get; private set; } = null;
     public float gravConstant = 1.0f;
-    public float physicsTimeStep = 0.01f;
+    public static float physicsTimeStep { get; private set; } = 0.01f;
+    //
     public bool planetGravity = false;
     public bool isRelativeToBody = false;
     public CelestialBody relativeBody = null;
@@ -23,15 +24,14 @@ public class NBodySimulation : MonoBehaviour
         {
             Instance = this;
         }
+
+        celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+        Time.fixedDeltaTime = physicsTimeStep;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //if (!Application.isPlaying) return;
-
-        celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
-        Time.fixedDeltaTime = physicsTimeStep;
     }
     private void OnValidate()
     {
@@ -44,6 +44,11 @@ public class NBodySimulation : MonoBehaviour
         else
         {
             Instance = this;
+        }
+
+        if (celestialBodies == null)
+        {
+            celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
         }
     }
     private void FixedUpdate()
@@ -103,10 +108,10 @@ public class NBodySimulation : MonoBehaviour
         {
             if (mainBody == body) continue;
             if (!body.hasGravity) continue;
-            if (NBodySimulation.Instance.planetGravity == false && body.isPlanet) continue;
+            if (planetGravity == false && body.isPlanet) continue;
             Vector3 deltaPosition = body.transform.position - mainBody.transform.position;
             float sqrDistance = deltaPosition.sqrMagnitude;
-            float acceleration = (NBodySimulation.Instance.gravConstant * body.mass) / sqrDistance;
+            float acceleration = gravConstant * body.mass / sqrDistance;
 
             totalAcceleration += Vector3.ClampMagnitude(deltaPosition.normalized * acceleration, float.MaxValue);
         }
