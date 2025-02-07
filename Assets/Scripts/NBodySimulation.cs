@@ -1,12 +1,13 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-[ExecuteAlways]
 public class NBodySimulation : MonoBehaviour
 {
-    static public CelestialBody[] celestialBodies = null;
+    // array of celestial bodies
+    public static CelestialBody[] celestialBodies { get; private set; } = null;
     public float gravConstant = 1.0f;
-    public float physicsTimeStep = 0.01f;
+    public static float physicsTimeStep { get; private set; } = 0.01f;
+    //
     public bool planetGravity = false;
     public bool isRelativeToBody = false;
     public CelestialBody relativeBody = null;
@@ -23,13 +24,14 @@ public class NBodySimulation : MonoBehaviour
         {
             Instance = this;
         }
+
+        celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+        Time.fixedDeltaTime = physicsTimeStep;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
-        Time.fixedDeltaTime = physicsTimeStep;
     }
     private void OnValidate()
     {
@@ -43,13 +45,16 @@ public class NBodySimulation : MonoBehaviour
         {
             Instance = this;
         }
+
+        if (celestialBodies == null)
+        {
+            celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+        }
     }
     private void FixedUpdate()
     {
         if (!Application.isPlaying) return;
-
         Vector3 offsetPosition = Vector3.zero;
-
         if (isRelativeToBody && relativeBody != null)
         {
             offsetPosition = -relativeBody.transform.position;
@@ -66,12 +71,10 @@ public class NBodySimulation : MonoBehaviour
                 }
             }
         }
-
         foreach (CelestialBody body in celestialBodies)
         {
             UpdateVelocity(body);
         }
-
         foreach (CelestialBody body in celestialBodies)
         {
             if (isRelativeToBody && relativeBody == body)
@@ -83,6 +86,7 @@ public class NBodySimulation : MonoBehaviour
     }
     public void UpdateVelocity(CelestialBody body)
     {
+        Vector3 totalAcceleration = Vector3.zero;
         body.velocity += CalculateTotalAcceleration(body) * physicsTimeStep;
     }
 
@@ -90,7 +94,6 @@ public class NBodySimulation : MonoBehaviour
     {
         if (body.isAnchored) return;
         Vector3 newPos = body.rb.position + body.velocity * physicsTimeStep;
-
         if (isRelativeToBody && relativeBody != null)
         {
             newPos -= relativeBody.velocity * physicsTimeStep;
@@ -106,7 +109,6 @@ public class NBodySimulation : MonoBehaviour
             if (mainBody == body) continue;
             if (!body.hasGravity) continue;
             if (planetGravity == false && body.isPlanet) continue;
-
             Vector3 deltaPosition = body.transform.position - mainBody.transform.position;
             float sqrDistance = deltaPosition.sqrMagnitude;
             float acceleration = gravConstant * body.mass / sqrDistance;

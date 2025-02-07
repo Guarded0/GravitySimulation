@@ -1,43 +1,52 @@
 using UnityEngine;
 
+// THIS FUNCTION BASICALLY DOES THE SAME THING AS THE SIMULATION JUST AT A FASTER RATE AND TRACKS THE POINT ON EACH STEP
+// STEP
+// CALCULATE VELOCITY
+// CALCULATE POSITION
+// STORE POSITION IN ARRAY
+// DO IT AGAIN
+
+
 [ExecuteInEditMode]
 public class OrbitDebugDisplay : MonoBehaviour
 {
-
+    // amount of steps itll run the sim for
     public int numSteps = 1000;
+    // time in between each step
     public float timeStep = 0.1f;
+    // if it should simply use the physics step (recommended)
     public bool usePhysicsTimeStep;
 
-    public float width = 100;
-    public bool useThickLines;
+    // relative to somethin...
     public bool isRelativeToBody = false;
     public CelestialBody relativeBody = null;
 
+    // well... if u want to draw the damn orbits
     public bool drawOrbits = false;
+
+
     void Start()
     {
-        if (Application.isPlaying)
-        {
-            HideOrbits();
-        }
     }
 
     void Update()
     {
-        if (!drawOrbits) { 
-            HideOrbits();
-            return;
-        }
-        DrawOrbits();
+        if (drawOrbits) DrawOrbits();
     }
 
     void DrawOrbits()
     {
-        CelestialBody[] bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+        // gets all the bodies
+        CelestialBody[] bodies = NBodySimulation.celestialBodies;
+        // creates virtual body array
         var virtualBodies = new VirtualBody[bodies.Length];
+        // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
         var drawPoints = new Vector3[bodies.Length][];
+        // index of the body thats relative (have to find it first)
         int relativeIndex = 0;
         Vector3 relativeBodyInitialPosition = Vector3.zero;
+
         // Initialize virtual bodies (don't want to move the actual bodies)
         for (int i = 0; i < virtualBodies.Length; i++)
         {
@@ -45,7 +54,8 @@ public class OrbitDebugDisplay : MonoBehaviour
 
             drawPoints[i] = new Vector3[numSteps];
 
-            if (bodies[i] == relativeBody && isRelativeToBody)
+            // when the relative body is found
+            if (isRelativeToBody && bodies[i] == relativeBody)
             {
                 relativeIndex = i;
                 relativeBodyInitialPosition = virtualBodies[i].position;
@@ -59,26 +69,33 @@ public class OrbitDebugDisplay : MonoBehaviour
             // Update velocities
             for (int i = 0; i < virtualBodies.Length; i++)
             {
-              if (virtualBodies[i].isAnchored) { continue; }
+                if (virtualBodies[i].isAnchored) { continue; }
                 virtualBodies[i].velocity += CalculateAcceleration(i, virtualBodies) * timeStep;
             }
             // Update positions
             for (int i = 0; i < virtualBodies.Length; i++)
             {
                 if (virtualBodies[i].isAnchored) { continue; }
+                // calculate new position
                 Vector3 newPos = virtualBodies[i].position + virtualBodies[i].velocity * timeStep;
                 virtualBodies[i].position = newPos;
                 // account for relative body
                 if (isRelativeToBody)
                 {
-                    var relativeOffset = relativeBodyPosition - relativeBodyInitialPosition;
-                    newPos -= relativeOffset;
-                }
-                if (isRelativeToBody && i == relativeIndex)
-                {
-                    newPos = relativeBodyInitialPosition;
+                    // if its the relative body
+                    if (i == relativeIndex)
+                    {
+                        newPos = relativeBodyInitialPosition;
+                    }
+                    else // if its not...
+                    {
+                        // apply offset
+                        var relativeOffset = relativeBodyPosition - relativeBodyInitialPosition;
+                        newPos -= relativeOffset;
+                    }
                 }
 
+                // Store position
                 drawPoints[i][step] = newPos;
             }
         }
@@ -87,9 +104,11 @@ public class OrbitDebugDisplay : MonoBehaviour
         for (int bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++)
         {
             if (virtualBodies[bodyIndex].isAnchored) { continue; }
-            var pathColour = bodies[bodyIndex].gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
+            // gets color of the material (has to have the name as color)
+            var pathColour = bodies[bodyIndex].gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color; 
             for (int i = 0; i < drawPoints[bodyIndex].Length - 1; i++)
             {
+                // draw this
                 Debug.DrawLine(drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColour);
             }
         }
@@ -105,7 +124,7 @@ public class OrbitDebugDisplay : MonoBehaviour
             if (NBodySimulation.Instance.planetGravity == false && body.isPlanet) continue;
             Vector3 deltaPosition = body.position - virtualBodies[i].position;
             float sqrDistance = deltaPosition.sqrMagnitude;
-            float acceleration = (NBodySimulation.Instance.gravConstant * body.mass) / sqrDistance;
+            float acceleration = NBodySimulation.Instance.gravConstant * body.mass / sqrDistance;
 
             totalAcceleration += Vector3.ClampMagnitude(deltaPosition.normalized * acceleration, float.MaxValue);
         }
@@ -114,35 +133,28 @@ public class OrbitDebugDisplay : MonoBehaviour
 
     void HideOrbits()
     {
-        CelestialBody[] bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
-
-        // Draw paths
-        for (int bodyIndex = 0; bodyIndex < bodies.Length; bodyIndex++)
-        {
-            var lineRenderer = bodies[bodyIndex].gameObject.GetComponentInChildren<LineRenderer>();
-            if ( lineRenderer)
-            {
-                lineRenderer.positionCount = 0;
-            }
-        }
+        // for when we use line renderers instead of Debug.DrawLine()
     }
 
     void OnValidate()
     {
         if (usePhysicsTimeStep)
         {
-            timeStep = Time.fixedDeltaTime;
+            timeStep = NBodySimulation.physicsTimeStep;
         }
     }
     private void OnDrawGizmos()
     {
         if (Application.isPlaying) return;
+        // draw initial velocity ray
         foreach (CelestialBody celestialBody in FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID))
         {
             Gizmos.color = celestialBody.gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
             Gizmos.DrawRay(celestialBody.transform.position, celestialBody.initialVelocity);
         }
     }
+
+    // basically a copy of CelestialBody for the orbit sim 
     class VirtualBody
     {
 
