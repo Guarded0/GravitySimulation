@@ -180,8 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 2
-  mass: 1367
+  mass: 1
   isAnchored: 0
   isPlanet: 1
   hasGravity: 1
@@ -384,6 +383,40 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!1 &208176842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 208176843}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &208176843
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208176842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -63.81251, y: 54.13386, z: -4.9402723}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1902911571}
+  - {fileID: 764633641}
+  - {fileID: 832575519}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,7 +570,7 @@ GameObject:
   - component: {fileID: 347030907}
   - component: {fileID: 347030913}
   m_Layer: 0
-  m_Name: RedPlanet (1)
+  m_Name: RedPlanet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -582,12 +615,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 2
-  mass: 2376
+  mass: 1
   isAnchored: 0
   isPlanet: 1
   hasGravity: 1
-  initialVelocity: {x: 0, y: 0, z: 32.3}
+  initialVelocity: {x: 0, y: 0, z: 24.4}
   velocity: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
 --- !u!135 &347030909
@@ -802,7 +834,7 @@ GameObject:
   - component: {fileID: 546505215}
   - component: {fileID: 546505222}
   m_Layer: 0
-  m_Name: RedPlanet
+  m_Name: PurplePlanet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -847,8 +879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 2
-  mass: 2376
+  mass: 1
   isAnchored: 0
   isPlanet: 1
   hasGravity: 1
@@ -1083,10 +1114,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravConstant: 1
-  physicsTimeStep: 0.01
   planetGravity: 1
   isRelativeToBody: 0
-  centralBody: {fileID: 546505217}
+  relativeBody: {fileID: 0}
 --- !u!4 &764633641
 Transform:
   m_ObjectHideFlags: 0
@@ -1095,12 +1125,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764633639}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.190248, y: 13.0980015, z: 9.077105}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 77.00276, y: -41.03586, z: 14.017377}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 208176843}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &764633642
 MonoBehaviour:
@@ -1115,10 +1145,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numSteps: 9758
-  timeStep: 0.009999993
+  timeStep: 0.01
   usePhysicsTimeStep: 1
-  width: 103.1
-  useThickLines: 0
   isRelativeToBody: 0
   relativeBody: {fileID: 1460890112}
   drawOrbits: 1
@@ -1137,7 +1165,7 @@ MonoBehaviour:
   body1: {fileID: 1460890112}
   body2: {fileID: 546505217}
   displayPoints: 1
-  radius: 8.53297
+  radius: 0.63946694
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1180,12 +1208,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832575517}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 63.81251, y: -54.13386, z: 4.9402723}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 208176843}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1460890109
 GameObject:
@@ -1222,7 +1250,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 2
   mass: 22926
   isAnchored: 0
   isPlanet: 0
@@ -1506,12 +1533,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1902911568}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 63.81251, y: -54.13386, z: 4.9402723}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 208176843}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8367117494254320293
 PrefabInstance:
@@ -1575,11 +1602,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 330585546}
-  - {fileID: 832575519}
   - {fileID: 546505221}
   - {fileID: 347030912}
   - {fileID: 69370789}
   - {fileID: 1460890116}
-  - {fileID: 764633641}
   - {fileID: 8367117494254320293}
-  - {fileID: 1902911571}
+  - {fileID: 208176843}
