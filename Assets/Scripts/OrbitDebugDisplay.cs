@@ -8,7 +8,7 @@ using UnityEngine;
 // DO IT AGAIN
 
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class OrbitDebugDisplay : MonoBehaviour
 {
     // amount of steps itll run the sim for
@@ -25,9 +25,16 @@ public class OrbitDebugDisplay : MonoBehaviour
     // well... if u want to draw the damn orbits
     public bool drawOrbits = false;
 
+    public Material trajectoryMaterial;
 
     void Start()
     {
+        if (!Application.isPlaying) return;
+        foreach(CelestialBody body in NBodySimulation.celestialBodies)
+        {
+            body.trailRenderer.material = trajectoryMaterial; // this shouldnt be here but for now
+            body.trajectoryRenderer.material = trajectoryMaterial;
+        }
     }
 
     void Update()
@@ -39,6 +46,10 @@ public class OrbitDebugDisplay : MonoBehaviour
     {
         // gets all the bodies
         CelestialBody[] bodies = NBodySimulation.celestialBodies;
+        if (!Application.isPlaying && (bodies[0] == null))
+        {
+            bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+        }
         // creates virtual body array
         var virtualBodies = new VirtualBody[bodies.Length];
         // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
@@ -103,13 +114,20 @@ public class OrbitDebugDisplay : MonoBehaviour
         // Draw paths
         for (int bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++)
         {
+            //if (bodies[bodyIndex] == null) { continue; }
             if (virtualBodies[bodyIndex].isAnchored) { continue; }
             // gets color of the material (has to have the name as color)
-            var pathColour = bodies[bodyIndex].gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color; 
-            for (int i = 0; i < drawPoints[bodyIndex].Length - 1; i++)
+            var pathColour = bodies[bodyIndex].gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
+            if (Application.isPlaying)
             {
-                // draw this
-                Debug.DrawLine(drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColour);
+                bodies[bodyIndex].trajectoryRenderer.positionCount = drawPoints[bodyIndex].Length;
+                bodies[bodyIndex].trajectoryRenderer.SetPositions(drawPoints[bodyIndex]);
+            }else
+            {
+                for (int i = 0; i < drawPoints[bodyIndex].Length - 1; i++)
+                {
+                    Debug.DrawLine(drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColour);
+                }
             }
         }
     }
@@ -167,6 +185,7 @@ public class OrbitDebugDisplay : MonoBehaviour
 
         public VirtualBody(CelestialBody body)
         {
+            if (body == null) return;
             position = body.transform.position;
             if (Application.isPlaying)
             {

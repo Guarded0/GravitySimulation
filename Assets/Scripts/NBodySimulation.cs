@@ -1,16 +1,16 @@
 using Unity.VisualScripting;
 using UnityEngine;
-
+[ExecuteInEditMode]
 public class NBodySimulation : MonoBehaviour
 {
     // array of celestial bodies
     public static CelestialBody[] celestialBodies { get; private set; } = null;
     public float gravConstant = 1.0f;
     public static float physicsTimeStep { get; private set; } = 0.01f;
-    //
     public bool planetGravity = false;
     public bool isRelativeToBody = false;
     public CelestialBody relativeBody = null;
+    public float simulationSpeed = 1.0f;
     public static NBodySimulation Instance { get; private set; }
     private void Awake()
     {
@@ -87,19 +87,19 @@ public class NBodySimulation : MonoBehaviour
     public void UpdateVelocity(CelestialBody body)
     {
         Vector3 totalAcceleration = Vector3.zero;
-        body.velocity += CalculateTotalAcceleration(body) * physicsTimeStep;
+        body.velocity += CalculateTotalAcceleration(body) * physicsTimeStep *   simulationSpeed;
     }
 
     public void UpdatePosition(CelestialBody body)
     {
         if (body.isAnchored) return;
-        Vector3 newPos = body.rb.position + body.velocity * physicsTimeStep;
+        Vector3 newPos = body.rb.position + body.velocity * physicsTimeStep * simulationSpeed;
         if (isRelativeToBody && relativeBody != null)
         {
-            newPos -= relativeBody.velocity * physicsTimeStep;
+            newPos -= relativeBody.velocity * physicsTimeStep * simulationSpeed;
         }
 
-        body.rb.MovePosition(newPos);
+        body.rb.MovePosition(newPos );
     }
     Vector3 CalculateTotalAcceleration(CelestialBody mainBody)
     {
