@@ -70,7 +70,7 @@ public class MeshGenerator : MonoBehaviour
         Mesh mesh;
         if (gameObject.GetComponent<MeshFilter>() != null)
         {
-            mesh = gameObject.GetComponent<MeshFilter>().mesh;
+            mesh = gameObject.GetComponent<MeshFilter>().sharedMesh;
         }
         else
         {

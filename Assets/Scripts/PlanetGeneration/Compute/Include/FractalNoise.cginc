@@ -1,5 +1,5 @@
 #include "./SimplexNoise.cginc"
-
+// MANY NOISE FUNCTIONS TAKEN FROM VARIOUS PLACES
 float simpleNoise(float3 pos, int numLayers, float scale, float persistence, float lacunarity, float multiplier) {
 	float noiseSum = 0;
 	float amplitude = 1;
