@@ -10,6 +10,7 @@ public class MeshGenerator : MonoBehaviour
     public ComputeShader detailsShader;
 
     public SimpleNoiseSettings baseNoiseSettings;
+    public SimpleNoiseSettings detailsNoiseSettings;
 
     [Header("Details noise")]
     public int detailOctaves = 0;
@@ -32,14 +33,19 @@ public class MeshGenerator : MonoBehaviour
        
         // create base sphere
         SphereMesh sphere = new SphereMesh(initialSphereResolution);
-
         // prepare compute shader buffers
         ComputeBuffer verticesBuffer = new ComputeBuffer(sphere.Vertices.Length, sizeof(float) * 3);
         ComputeBuffer heightsBuffer = new ComputeBuffer(sphere.Vertices.Length, sizeof(float));
+        // create height map 
+        float[] initialHeights = new float[sphere.Vertices.Length];
+        for (int i = 0; i < initialHeights.Length; i++)
+        {
+            initialHeights[i] = 1.0f;
+        }
         verticesBuffer.SetData(sphere.Vertices);
-
+        heightsBuffer.SetData(initialHeights);
         // apply compute shader effects
-        // random noise Shader
+        // general shape
         shapeNoiseShader.SetBuffer(0, "vertices", verticesBuffer);
         shapeNoiseShader.SetBuffer(0, "heights", heightsBuffer);
         shapeNoiseShader.SetInt("octaves", baseNoiseSettings.numLayers);
@@ -48,7 +54,25 @@ public class MeshGenerator : MonoBehaviour
         shapeNoiseShader.SetFloat("noiseScale", baseNoiseSettings.scale);
         shapeNoiseShader.SetFloat("elevation", baseNoiseSettings.elevation);
         shapeNoiseShader.SetFloats("offset",new float[3] {baseNoiseSettings.offset.x, baseNoiseSettings.offset.y, baseNoiseSettings.offset.z});
+        shapeNoiseShader.SetFloat("weight", 1.0f);
         shapeNoiseShader.Dispatch(0, 512, 1,1);
+
+        // fine details
+
+        
+        detailsShader.SetBuffer(0, "vertices", verticesBuffer);
+        detailsShader.SetBuffer(0, "heights", heightsBuffer);
+        detailsShader.SetInt("octaves", detailsNoiseSettings.numLayers);
+        detailsShader.SetFloat("lacunarity", detailsNoiseSettings.lacunarity);
+        detailsShader.SetFloat("persistence", detailsNoiseSettings.persistence);
+        detailsShader.SetFloat("noiseScale", detailsNoiseSettings.scale);
+        detailsShader.SetFloat("elevation", detailsNoiseSettings.elevation);
+        detailsShader.SetFloats("offset", new float[3] { detailsNoiseSettings.offset.x, detailsNoiseSettings.offset.y, detailsNoiseSettings.offset.z });
+        detailsShader.SetFloat("weight", 0.05f);
+        detailsShader.Dispatch(0, 512, 1, 1);
+        
+
+
 
         float[] heights = new float[sphere.Vertices.Length];
         heightsBuffer.GetData(heights,0,0, sphere.Vertices.Length);

@@ -11,11 +11,11 @@ float persistence;
 float noiseScale;
 float elevation;
 float3 offset;
+float weight;
 [numthreads(512, 1, 1)]
 void CSMain (uint id : SV_DispatchThreadID)
 {
     // TODO: insert actual code here!
     float noise = fractalNoiseGrad(vertices[id] + offset, octaves, noiseScale, persistence, lacunarity);
-    heights[id] = (noise * noiseScale) + elevation;
-    
+    heights[id] = heights[id] + (((noise * noiseScale) + elevation) * weight);
 }
