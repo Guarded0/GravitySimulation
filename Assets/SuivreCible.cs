@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.ComponentModel.Design.Serialization;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class MouvementCamera : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class MouvementCamera : MonoBehaviour
     private Boolean gauche = false;
     private Boolean haut = false;
     private Boolean bas = false;
+    private Boolean repositionerCamera = false;
     public float vitesseMax = 50f;
     public float vitesseZ = 0f;
     public float vitesseX = 0f;
@@ -34,31 +37,39 @@ public class MouvementCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        choisirCible();           
+        choisirCible();    
+        if(repositionerCamera == false){   
         verifierMouvement();
         updateVitesse();
         updateMouvement();
-        transform.position = cible.position + offset;
         transform.LookAt(cible);
     }
+    }
+
+    
     
 
     void choisirCible(){
+        //Si tu click sur un objet ta cameras va le regarder
         if(Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out hit)){
+                offset = transform.position - cible.position;
                 cible = hit.transform;
+                transform.position = cible.transform.position + offset;
             } 
         }
+        //si tu click sur escape tu retour au centre du system
         if(Input.GetKey(KeyCode.Escape)){
             cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
 
         }
     }
     void updateVitesse(){
+        //Si les booléan sont vrais augmenter la vitesse sinon la diminuer 
         if(avant||arriere){
             vitesseZ += acceleration*Time.deltaTime;
             vitesseZ = Math.Min(vitesseZ, vitesseMax);
@@ -66,14 +77,14 @@ public class MouvementCamera : MonoBehaviour
             vitesseZ -= 2*acceleration*Time.deltaTime;
             vitesseZ = Math.Max(vitesseZ,0);
         }
-           if(haut||bas){
+        if(haut||bas){
             vitesseY += acceleration*Time.deltaTime;
             vitesseY = Math.Min(vitesseY, vitesseMax);
         }else{
             vitesseY -= 2*acceleration*Time.deltaTime;
             vitesseY = Math.Max(vitesseZ,0);
         }
-             if(droite||gauche){
+        if(droite||gauche){
             vitesseX += acceleration*Time.deltaTime;
             vitesseX = Math.Min(vitesseX, vitesseMax);
         }else{
@@ -83,14 +94,26 @@ public class MouvementCamera : MonoBehaviour
     }
     
     void updateMouvement(){
+        //Change la vitesse si les boolean sont true 
         if(avant){
-            offset += cam.transform.forward*vitesseZ*Time.deltaTime;
+            transform.position += cam.transform.forward*vitesseZ*Time.deltaTime;
         } else if(arriere){
-            offset -= cam.transform.forward*vitesseZ*Time.deltaTime;
+            transform.position -= cam.transform.forward*vitesseZ*Time.deltaTime;
+        }
+        if(droite){
+            transform.RotateAround(cible.transform.position, Vector3.down, vitesseX * Time.deltaTime);
+        } else if(gauche){
+            transform.RotateAround(cible.transform.position, Vector3.up, vitesseX * Time.deltaTime);
+        }
+      if(haut){
+            transform.RotateAround(cible.transform.position, Vector3.left, vitesseY * Time.deltaTime);
+        } else if(bas){
+            transform.RotateAround(cible.transform.position, Vector3.right, vitesseY * Time.deltaTime);
         }
         
     }
     void verifierMouvement(){
+        //Update les boolean
         if(Input.GetKey("q")){
             avant = true;
         }else{
@@ -116,14 +139,11 @@ public class MouvementCamera : MonoBehaviour
         } else{
             gauche = false;
         }
-            if(Input.GetKey("d")){
+        if(Input.GetKey("d")){
             droite = true;
         } else{
             droite = false;
         }
     }
-
-
-
-    
 }
+
