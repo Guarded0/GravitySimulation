@@ -167,18 +167,8 @@ float simpleNoiseMusgrave(float3 pos, float4 params[3], float o) {
     return result * multiplier;
 }
 
-float ridgidNoise(float3 pos, float4 params[3]) {
-	// Extract parameters for readability
-	float3 offset = params[0].xyz;
-	int numLayers = int(params[0].w);
-	float persistence = params[1].x;
-	float lacunarity = params[1].y;
-	float scale = params[1].z;
-	float multiplier = params[1].w;
-	float power = params[2].x;
-    float gain = params[2].y;
-    float verticalShift = params[2].z;
-
+float ridgidNoise(float3 pos, float3 offset, int numLayers, float persistence, float lacunarity, float scale, float multiplier, float power, float gain, float verticalShift)
+{
 	// Sum up noise layers
 	float noiseSum = 0;
     float amplitude = 1;
@@ -198,7 +188,7 @@ float ridgidNoise(float3 pos, float4 params[3]) {
 	return noiseSum * multiplier + verticalShift;
 }
 
-// Sample the noise several times at small offsets from the centre and average the result
+/* // Sample the noise several times at small offsets from the centre and average the result
 // This reduces some of the harsh jaggedness that can occur
 float smoothedRidgidNoise(float3 pos, float4 params[3]) {
     float3 sphereNormal = normalize(pos);
@@ -243,7 +233,7 @@ float ridgidNoise2(float3 pos, float4 params[3]) {
     noiseSum = 1 - abs(noiseSum*2-1);
     noiseSum = pow(abs(noiseSum), power);
 	return noiseSum * multiplier;
-}
+}*/
 
 float4 fractalNoiseGrad(float3 pos, int numLayers, float scale, float persistence, float lacunarity) {
     float4 noise = 0;

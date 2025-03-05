@@ -8,15 +8,14 @@ public class MeshGenerator : MonoBehaviour
     public int initialSphereResolution = 10;
     public ComputeShader shapeNoiseShader;
     public ComputeShader detailsShader;
+    public ComputeShader ridgesShader;
 
+    
     public SimpleNoiseSettings baseNoiseSettings;
     public SimpleNoiseSettings detailsNoiseSettings;
+    public RidgesNoiseSettings ridgesNoiseSettings;
 
-    [Header("Details noise")]
-    public int detailOctaves = 0;
-
-    public bool update = false;
-    public Mesh currentMesh;
+    public ColorTextureGenerator colorTextureGenerator;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -70,23 +69,42 @@ public class MeshGenerator : MonoBehaviour
         detailsShader.SetFloats("offset", new float[3] { detailsNoiseSettings.offset.x, detailsNoiseSettings.offset.y, detailsNoiseSettings.offset.z });
         detailsShader.SetFloat("weight", 0.05f);
         detailsShader.Dispatch(0, 512, 1, 1);
-        
 
+        ridgesShader.SetBuffer(0, "vertices", verticesBuffer);
+        ridgesShader.SetBuffer(0, "heights", heightsBuffer);
+        ridgesShader.SetInt("numLayers", ridgesNoiseSettings.numLayers);
+        ridgesShader.SetFloat("persistence", ridgesNoiseSettings.persistence);
+        ridgesShader.SetFloat("lacunarity", ridgesNoiseSettings.lacunarity);
+        ridgesShader.SetFloat("noiseScale", ridgesNoiseSettings.noiseScale);
+        ridgesShader.SetFloat("weight", ridgesNoiseSettings.weight);
+        ridgesShader.SetFloat("power", ridgesNoiseSettings.power);
+        ridgesShader.SetFloat("gain", ridgesNoiseSettings.gain);
+        ridgesShader.SetFloat("elevation", ridgesNoiseSettings.elevation);
+        ridgesShader.Dispatch(0, 512, 1, 1);
 
 
         float[] heights = new float[sphere.Vertices.Length];
         heightsBuffer.GetData(heights,0,0, sphere.Vertices.Length);
-
+        // could maybe do this on shader...?
         Vector3[] vertices = sphere.Vertices;
+        Vector2 sphereBounds = new Vector2(Mathf.Infinity,0f);
         for (int i = 0;  i < sphere.Vertices.Length; i++)
         {
-            vertices[i] += vertices[i] * heights[i];
+            vertices[i] = vertices[i] * heights[i];
+            if (heights[i] < sphereBounds.x) sphereBounds.x = heights[i];
+            if (heights[i] > sphereBounds.y) sphereBounds.y = heights[i];
         }
         // generate mesh
         SetMesh(vertices, sphere.Triangles);
 
         verticesBuffer.Release();
         heightsBuffer.Release();
+
+        // colors
+        
+        colorTextureGenerator.UpdateTexture();
+        gameObject.GetComponent<MeshRenderer>().material.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
+        gameObject.GetComponent<MeshRenderer>().material.SetTexture("_texture", colorTextureGenerator.texture);
     }
 
     void SetMesh(Vector3[] vertices, int[] triangles)

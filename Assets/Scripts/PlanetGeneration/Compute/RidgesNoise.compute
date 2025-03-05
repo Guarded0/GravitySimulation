@@ -5,17 +5,20 @@
 // with cs.SetTexture
 StructuredBuffer<float3> vertices;
 RWStructuredBuffer<float> heights;
-int octaves;
-float lacunarity;
-float persistence;
-float noiseScale;
-float elevation;
+
 float3 offset;
+int numLayers;
+float persistence;
+float lacunarity;
+float noiseScale;
 float weight;
+float power;
+float gain;
+float elevation;
 [numthreads(512, 1, 1)]
 void CSMain (uint id : SV_DispatchThreadID)
 {
     // TODO: insert actual code here!
-    float noise = fractalNoiseGrad((vertices[id] * heights[id]) + offset, octaves, noiseScale, persistence, lacunarity);
-    heights[id] = heights[id] + (((noise * noiseScale) + elevation) * weight);
+    float noise = ridgidNoise(vertices[id] * heights[id], offset, numLayers, persistence, lacunarity, noiseScale, weight, power, gain, elevation);
+    heights[id] = heights[id] + noise;
 }
