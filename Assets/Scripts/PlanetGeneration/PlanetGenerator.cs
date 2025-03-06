@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class MeshGenerator : MonoBehaviour
+public class PlanetGenerator : MonoBehaviour
 {
 
     public int initialSphereResolution = 10;
@@ -16,6 +16,8 @@ public class MeshGenerator : MonoBehaviour
     public RidgesNoiseSettings ridgesNoiseSettings;
 
     public ColorTextureGenerator colorTextureGenerator;
+    public OceanSettings oceanSettings;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,7 +26,7 @@ public class MeshGenerator : MonoBehaviour
 
     private void OnValidate()
     {
-        GenerateMesh();
+        GeneratePlanet();
     }
 
     public void GenerateMesh()
@@ -103,10 +105,19 @@ public class MeshGenerator : MonoBehaviour
         // colors
         
         colorTextureGenerator.UpdateTexture();
-        gameObject.GetComponent<MeshRenderer>().material.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
-        gameObject.GetComponent<MeshRenderer>().material.SetTexture("_texture", colorTextureGenerator.texture);
+        gameObject.GetComponent<MeshRenderer>().sharedMaterial.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
+        gameObject.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_texture", colorTextureGenerator.texture);
     }
-
+    void GenerateOcean()
+    {
+        // create base sphere
+        SphereMesh sphere = new SphereMesh(initialSphereResolution);
+        
+    }
+    void GeneratePlanet()
+    {
+        GenerateMesh();
+    }
     void SetMesh(Vector3[] vertices, int[] triangles)
     {
         Mesh mesh;
@@ -133,14 +144,14 @@ public class MeshGenerator : MonoBehaviour
 }
 
 
-[CustomEditor(typeof(MeshGenerator))]
+[CustomEditor(typeof(PlanetGenerator))]
 public class MyScriptEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI(); // Draw default inspector
 
-        MeshGenerator myScript = (MeshGenerator)target;
+        PlanetGenerator myScript = (PlanetGenerator)target;
 
         if (GUILayout.Button("Generate mesh"))
         {
