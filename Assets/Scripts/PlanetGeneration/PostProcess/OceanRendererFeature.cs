@@ -153,8 +153,11 @@ public class OceanRenderPass : ScriptableRenderPass
         var planets = NBodySimulation.celestialBodies;
         List<Transform> transforms = new List<Transform>();
         List<OceanSettings> newSettings = new List<OceanSettings>();
+        
         for (int i = 0; i < planets.Count; i++)
         {
+            PlanetGenerator gen;
+            if (!planets[i].TryGetComponent<PlanetGenerator>(out gen)) continue;
             transforms.Add(planets[i].transform);
             newSettings.Add(planets[i].GetComponent<PlanetGenerator>().oceanSettings);
             // TODO: GET PLANETS THAT ARE CURRENTLY ON THIS BITCH

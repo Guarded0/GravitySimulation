@@ -70,6 +70,6 @@ public class CelestialBody : MonoBehaviour
     }
     private void OnDestroy()
     {
-        NBodySimulation.planetRemoved.Invoke(gameObject);
+        NBodySimulation.planetRemoved.Invoke(gameObject);//
     }
 }
