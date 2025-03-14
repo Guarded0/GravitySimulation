@@ -26,7 +26,7 @@ public class MouvementCamera : MonoBehaviour
     void Start()
     {
      cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
-
+     transform.LookAt(cible);
     }
     void Awake()
     {
@@ -42,7 +42,7 @@ public class MouvementCamera : MonoBehaviour
         verifierMouvement();
         updateVitesse();
         updateMouvement();
-        transform.LookAt(cible);
+        
     }
     }
 
@@ -60,11 +60,13 @@ public class MouvementCamera : MonoBehaviour
                 offset = transform.position - cible.position;
                 cible = hit.transform;
                 transform.position = cible.transform.position + offset;
+                transform.LookAt(cible);
             } 
         }
         //si tu click sur escape tu retour au centre du system
         if(Input.GetKey(KeyCode.Escape)){
             cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
+            transform.LookAt(cible);
 
         }
     }
@@ -90,6 +92,7 @@ public class MouvementCamera : MonoBehaviour
         }else{
             vitesseX -= 2*acceleration*Time.deltaTime;
             vitesseX = Math.Max(vitesseZ,0);
+            
         }
     }
     
@@ -101,17 +104,24 @@ public class MouvementCamera : MonoBehaviour
             transform.position -= cam.transform.forward*vitesseZ*Time.deltaTime;
         }
         if(droite){
-            transform.RotateAround(cible.transform.position, Vector3.down, vitesseX * Time.deltaTime);
+            transform.RotateAround(cible.transform.position, Vector3.down , vitesseX * Time.deltaTime);
         } else if(gauche){
-            transform.RotateAround(cible.transform.position, Vector3.up, vitesseX * Time.deltaTime);
+            transform.RotateAround(cible.transform.position, Vector3.up , vitesseX * Time.deltaTime);
         }
-      if(haut){
-            transform.RotateAround(cible.transform.position, Vector3.left, vitesseY * Time.deltaTime);
-        } else if(bas){
-            transform.RotateAround(cible.transform.position, Vector3.right, vitesseY * Time.deltaTime);
+        if(haut && transform.eulerAngles.x < 85 ){
+            offset = transform.position - cible.position;
+            Vector3 horizontal = new Vector3(-offset.z, 0, offset.x);
+            transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
         }
-        
+        if(bas && transform.eulerAngles.x > -85){
+            offset = transform.position - cible.position;
+            Vector3 horizontal = new Vector3(offset.z, 0, -offset.x);
+            transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
+            
+        }
+          
     }
+    
     void verifierMouvement(){
         //Update les boolean
         if(Input.GetKey("q")){
