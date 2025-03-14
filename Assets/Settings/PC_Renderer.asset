@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: OceanRendererFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  settings:
-    colorA: {r: 1, g: 0.9575472, b: 0.9575472, a: 0}
-    colorB: {r: 1, g: 1, b: 1, a: 0}
+  defaultSettings:
+    colorA: {r: 0, g: 0, b: 0, a: 0}
+    colorB: {r: 0, g: 0, b: 0, a: 0}
     depthMultiplier: 10
     alphaMultiplier: 70
+    oceanRadius: 5
   shader: {fileID: 4800000, guid: 35355bba92cb6c148b6dd3e43b30969c, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:

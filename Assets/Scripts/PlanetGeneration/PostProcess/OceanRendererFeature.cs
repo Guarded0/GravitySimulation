@@ -10,7 +10,7 @@ public class OceanRendererFeature : ScriptableRendererFeature
 {
     [SerializeField] private OceanSettings defaultSettings;
     [SerializeField] private Shader shader;
-    private Material material;
+    //private Material material;
     private OceanRenderPass oceanRenderPass;
     public override void Create()
     {
@@ -19,8 +19,7 @@ public class OceanRendererFeature : ScriptableRendererFeature
             Debug.LogWarning("Shader is null");
             return;
         }
-        
-        material = new Material(shader);
+        //material = new Material(shader);
         PlanetGenerator[] planetGenerators = FindObjectsByType<PlanetGenerator>(FindObjectsSortMode.InstanceID);
 
         OceanSettings[] oceanSettings = new OceanSettings[planetGenerators.Length];
@@ -28,10 +27,10 @@ public class OceanRendererFeature : ScriptableRendererFeature
         for (int i = 0; i < planetGenerators.Length; i++)
         {
             oceanSettings[i] = planetGenerators[i].oceanSettings;
-            planetTransforms[i] = planetGenerators[i].transform;
+            planetTransforms[i] = planetGenerators[i].transform;//
         }
             
-        oceanRenderPass = new OceanRenderPass(material, oceanSettings, planetTransforms);
+        oceanRenderPass = new OceanRenderPass(shader, oceanSettings, planetTransforms);
         oceanRenderPass.renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
         oceanRenderPass.ConfigureInput(ScriptableRenderPassInput.None);
     }
@@ -48,24 +47,16 @@ public class OceanRendererFeature : ScriptableRendererFeature
     }
     protected override void Dispose(bool disposing)
     {
-        if (Application.isPlaying)
-        {
-            Destroy(material);
-        }
-        else
-        {
-            DestroyImmediate(material);
-        }
+
 
     }
 }
-
 
 public class OceanRenderPass : ScriptableRenderPass
 {
     private OceanSettings defaultOceanSettings;
     private List<OceanSettings> oceanSettingsList;
-    private Material material;
+    private Shader shader;
     private List<Transform> planetTransforms;
     private RenderTextureDescriptor oceanTextureDescriptor;
 
@@ -78,9 +69,9 @@ public class OceanRenderPass : ScriptableRenderPass
     private const string k_OceanTextureName = "_OceanTexture";
     private const string k_OceanPassName = "OceanPass";
 
-    public OceanRenderPass(Material material, OceanSettings[] oceanSettings, Transform[] planetTransforms)
+    public OceanRenderPass(Shader shader, OceanSettings[] oceanSettings, Transform[] planetTransforms)
     {
-        this.material = material;
+        this.shader = shader;
         this.oceanSettingsList = new List<OceanSettings>(oceanSettings);
         this.planetTransforms = new List<Transform>(planetTransforms);
         oceanTextureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
@@ -112,7 +103,7 @@ public class OceanRenderPass : ScriptableRenderPass
         for (int i = 0; i < planetTransforms.Count; i++)
         { 
             
-            Material mat = new Material(material);
+            Material mat = new Material(shader);
             UpdateOceanSettings(mat, oceanSettingsList[i], planetTransforms[i]);
             RenderGraphUtils.BlitMaterialParameters paraOcean;
             if (i == 0)
@@ -158,7 +149,7 @@ public class OceanRenderPass : ScriptableRenderPass
         {
             PlanetGenerator gen;
             if (!planets[i].TryGetComponent<PlanetGenerator>(out gen)) continue;
-            transforms.Add(planets[i].transform);
+            transforms.Add(planets[i].transform);//
             newSettings.Add(planets[i].GetComponent<PlanetGenerator>().oceanSettings);
             // TODO: GET PLANETS THAT ARE CURRENTLY ON THIS BITCH
             
