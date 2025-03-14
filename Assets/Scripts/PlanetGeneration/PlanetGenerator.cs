@@ -2,10 +2,12 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
+[ExecuteInEditMode]
 public class PlanetGenerator : MonoBehaviour
 {
 
     public int initialSphereResolution = 10;
+    public Shader planetShader;
     public ComputeShader shapeNoiseShader;
     public ComputeShader detailsShader;
     public ComputeShader ridgesShader;
@@ -18,6 +20,9 @@ public class PlanetGenerator : MonoBehaviour
     public ColorTextureGenerator colorTextureGenerator;
     public OceanSettings oceanSettings;
 
+    private bool needsMeshUpdate = false;
+
+    private Vector2 sphereBounds = Vector2.zero;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,9 +31,17 @@ public class PlanetGenerator : MonoBehaviour
 
     private void OnValidate()
     {
-        GeneratePlanet();
+        needsMeshUpdate = true;
+        //GeneratePlanet();
     }
-
+    private void Update()
+    {
+        if (needsMeshUpdate)
+        {
+            needsMeshUpdate=false;
+            GenerateMesh();
+        }
+    }
     public void GenerateMesh()
     {
        
@@ -89,7 +102,7 @@ public class PlanetGenerator : MonoBehaviour
         heightsBuffer.GetData(heights,0,0, sphere.Vertices.Length);
         // could maybe do this on shader...?
         Vector3[] vertices = sphere.Vertices;
-        Vector2 sphereBounds = new Vector2(Mathf.Infinity,0f);
+        sphereBounds = new Vector2(Mathf.Infinity,0f);
         for (int i = 0;  i < sphere.Vertices.Length; i++)
         {
             vertices[i] = vertices[i] * heights[i];
@@ -105,14 +118,7 @@ public class PlanetGenerator : MonoBehaviour
         // colors
         
         colorTextureGenerator.UpdateTexture();
-        gameObject.GetComponent<MeshRenderer>().sharedMaterial.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
-        gameObject.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_texture", colorTextureGenerator.texture);
-    }
-    void GenerateOcean()
-    {
-        // create base sphere
-        SphereMesh sphere = new SphereMesh(initialSphereResolution);
-        
+        UpdateMaterial();
     }
     void GeneratePlanet()
     {
@@ -120,15 +126,9 @@ public class PlanetGenerator : MonoBehaviour
     }
     void SetMesh(Vector3[] vertices, int[] triangles)
     {
-        Mesh mesh;
-        if (gameObject.GetComponent<MeshFilter>() != null)
-        {
-            mesh = gameObject.GetComponent<MeshFilter>().sharedMesh;
-        }
-        else
-        {
-            mesh = new Mesh();
-        }
+        Mesh mesh = new Mesh();
+
+
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mesh.vertices = vertices;
         mesh.triangles = triangles;
@@ -136,26 +136,38 @@ public class PlanetGenerator : MonoBehaviour
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
-        if (gameObject.GetComponent<MeshFilter>() == null)
+        if (gameObject.GetComponent<MeshFilter>() != null)
         {
             gameObject.GetComponent<MeshFilter>().mesh = mesh;
         }
     }
-}
-
-
-[CustomEditor(typeof(PlanetGenerator))]
-public class MyScriptEditor : Editor
-{
-    public override void OnInspectorGUI()
+    void UpdateMaterial()
     {
-        base.OnInspectorGUI(); // Draw default inspector
+        Material material = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+        material.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
+        material.SetTexture("_texture", colorTextureGenerator.texture);
+    }
+    void recreateMaterial()
+    {
+        Material material = new Material(planetShader);
+        gameObject.GetComponent<MeshRenderer>().sharedMaterial = material;
+        UpdateMaterial();
+    }
 
-        PlanetGenerator myScript = (PlanetGenerator)target;
 
-        if (GUILayout.Button("Generate mesh"))
+    [CustomEditor(typeof(PlanetGenerator))]
+    public class MyScriptEditor : Editor
+    {
+        public override void OnInspectorGUI()
         {
-            myScript.GenerateMesh();
+            base.OnInspectorGUI(); // Draw default inspector
+
+            PlanetGenerator myScript = (PlanetGenerator)target;
+
+            if (GUILayout.Button("Make unique material"))
+            {
+                myScript.recreateMaterial();
+            }
         }
     }
 }

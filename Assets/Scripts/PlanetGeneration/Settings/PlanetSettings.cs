@@ -8,9 +8,4 @@ public class PlanetSettings
 {
     
 }
-[System.Serializable]
-public class OceanSettings
-{
-    public float radius = 1.0f;
-    public Color oceanMaterial;
-}
+

@@ -10,10 +10,7 @@ public class ColorTextureGenerator
 
     public void UpdateTexture()
     {
-        if (texture == null || texture.width != textureResolution)
-        {
-            texture = new Texture2D(textureResolution, 1);
-        }
+        texture = new Texture2D(textureResolution, 1);
         Color[] colors = new Color[textureResolution];
         for (int i = 0; i < textureResolution; i++)
         {
