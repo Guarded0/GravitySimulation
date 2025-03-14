@@ -51,19 +51,25 @@ public class CelestialBody : MonoBehaviour
 
         // setup trail
         trailRenderer.time = 15f;
-        trailRenderer.startColor = gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
-        trailRenderer.endColor = gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
+        trailRenderer.startColor = Color.white;
+        trailRenderer.endColor = Color.white;
         trailRenderer.startWidth = 0.2f;
         // setup trajectory
-        trajectoryRenderer.startColor = gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
-        trajectoryRenderer.endColor = gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
+        trajectoryRenderer.startColor = Color.white;
+        trajectoryRenderer.endColor = Color.white;
         trajectoryRenderer.startWidth = 0.1f;
+
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // set velocity to starting one
         velocity = initialVelocity;
+        NBodySimulation.planetAdded.Invoke(gameObject);
 
+    }
+    private void OnDestroy()
+    {
+        NBodySimulation.planetRemoved.Invoke(gameObject);
     }
 }

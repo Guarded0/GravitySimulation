@@ -1,18 +1,33 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+using System.Collections;
+using System.Collections.Generic;
 [ExecuteInEditMode]
 public class NBodySimulation : MonoBehaviour
 {
     // array of celestial bodies
-    public static CelestialBody[] celestialBodies { get; private set; } = null;
+    public static UnityEvent<GameObject> planetAdded;
+    public static UnityEvent<GameObject> planetRemoved;
+    public static List<CelestialBody> celestialBodies { get; private set; } = null;
     public float gravConstant = 1.0f;
     public static float physicsTimeStep { get; private set; } = 0.01f;
     public bool planetGravity = false;
     public bool isRelativeToBody = false;
     public CelestialBody relativeBody = null;
     public float simulationSpeed = 1.0f;
+    public bool simulate = true;
     public static NBodySimulation Instance { get; private set; }
-    private void Awake()
+    void CreateEvent()
+    {
+        if (planetAdded == null)
+            planetAdded = new UnityEvent<GameObject>();
+        planetAdded.AddListener(OnPlanetAdded);
+        if (planetRemoved == null)
+            planetRemoved= new UnityEvent<GameObject>();
+        planetRemoved.AddListener(OnPlanetRemoved);
+    }
+    void Init()
     {
         // If there is an instance, and it's not me, delete myself.
 
@@ -25,7 +40,13 @@ public class NBodySimulation : MonoBehaviour
             Instance = this;
         }
 
-        celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+        celestialBodies = new List<CelestialBody>(FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID));
+
+        CreateEvent();
+    }
+    private void Awake()
+    {
+        Init();
         Time.fixedDeltaTime = physicsTimeStep;
     }
 
@@ -35,25 +56,12 @@ public class NBodySimulation : MonoBehaviour
     }
     private void OnValidate()
     {
-        // If there is an instance, and it's not me, delete myself.
-
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-
-        if (celestialBodies == null)
-        {
-            celestialBodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
-        }
+        Init();
     }
     private void FixedUpdate()
     {
         if (!Application.isPlaying) return;
+        if (!simulate) return;
         Vector3 offsetPosition = Vector3.zero;
         if (isRelativeToBody && relativeBody != null)
         {
@@ -118,6 +126,17 @@ public class NBodySimulation : MonoBehaviour
         return totalAcceleration;
     }
 
+    void OnPlanetAdded(GameObject gameObject)
+    {
+        foreach (var celestialBody in celestialBodies)
+        {
+            if (celestialBody.gameObject == gameObject) return;
+        }
+        celestialBodies.Add(gameObject.GetComponent<CelestialBody>());
+    }
+    void OnPlanetRemoved(GameObject gameObject)
+    {
+        celestialBodies.Remove(gameObject.GetComponent<CelestialBody>());
 
-
+    }
 }

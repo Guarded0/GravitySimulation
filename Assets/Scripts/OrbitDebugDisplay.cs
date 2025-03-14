@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 // THIS FUNCTION BASICALLY DOES THE SAME THING AS THE SIMULATION JUST AT A FASTER RATE AND TRACKS THE POINT ON EACH STEP
 // STEP
 // CALCULATE VELOCITY
@@ -45,15 +45,15 @@ public class OrbitDebugDisplay : MonoBehaviour
     void DrawOrbits()
     {
         // gets all the bodies
-        CelestialBody[] bodies = NBodySimulation.celestialBodies;
+        List<CelestialBody> bodies = NBodySimulation.celestialBodies;
         if (!Application.isPlaying && (bodies[0] == null))
         {
-            bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+            bodies = new List<CelestialBody>(FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID));
         }
         // creates virtual body array
-        var virtualBodies = new VirtualBody[bodies.Length];
+        var virtualBodies = new VirtualBody[bodies.Count];
         // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
-        var drawPoints = new Vector3[bodies.Length][];
+        var drawPoints = new Vector3[bodies.Count][];
         // index of the body thats relative (have to find it first)
         int relativeIndex = 0;
         Vector3 relativeBodyInitialPosition = Vector3.zero;

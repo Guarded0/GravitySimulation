@@ -19,7 +19,7 @@ public class OceanRendererFeature : ScriptableRendererFeature
             Debug.LogWarning("Shader is null");
             return;
         }
-
+        
         material = new Material(shader);
         PlanetGenerator[] planetGenerators = FindObjectsByType<PlanetGenerator>(FindObjectsSortMode.InstanceID);
 
@@ -110,7 +110,7 @@ public class OceanRenderPass : ScriptableRenderPass
 
         UpdatePlanets();
         for (int i = 0; i < planetTransforms.Count; i++)
-        {
+        { 
             
             Material mat = new Material(material);
             UpdateOceanSettings(mat, oceanSettingsList[i], planetTransforms[i]);
@@ -118,7 +118,7 @@ public class OceanRenderPass : ScriptableRenderPass
             if (i == 0)
             {
                 paraOcean = new(srcCamColor, intermediate1, mat, 0);
-            }//
+            }
             else if(i == planetTransforms.Count-1 && i != 0) 
             {
                 if (i % 2 == 0)
@@ -129,8 +129,6 @@ public class OceanRenderPass : ScriptableRenderPass
                 {
                     paraOcean = new(intermediate1, srcCamColor, mat, 0);
                 }
-                
-
             }
             else
             {
@@ -143,25 +141,27 @@ public class OceanRenderPass : ScriptableRenderPass
                     paraOcean = new(intermediate1, intermediate2, mat, 0);
                 }
             }
-            
             renderGraph.AddBlitPass(paraOcean, k_OceanPassName);
-        }//
+        }
+        
         
         if(planetTransforms.Count == 1)
             resourceData.cameraColor = intermediate1;
     }
     private void UpdatePlanets()
     {
-        for (int i = 0; i < planetTransforms.Count; i++)
+        var planets = NBodySimulation.celestialBodies;
+        List<Transform> transforms = new List<Transform>();
+        List<OceanSettings> newSettings = new List<OceanSettings>();
+        for (int i = 0; i < planets.Count; i++)
         {
-            if (planetTransforms[i] == null)
-            {
-                planetTransforms.RemoveAt(i);
-                oceanSettingsList.RemoveAt(i);
-            }
+            transforms.Add(planets[i].transform);
+            newSettings.Add(planets[i].GetComponent<PlanetGenerator>().oceanSettings);
             // TODO: GET PLANETS THAT ARE CURRENTLY ON THIS BITCH
             
         }
+        planetTransforms = transforms;
+        oceanSettingsList = newSettings;
     }
     private void UpdateOceanSettings(Material material, OceanSettings oceanSettings, Transform planetTransform)
     {
