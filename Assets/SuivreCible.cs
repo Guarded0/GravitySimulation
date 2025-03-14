@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.ComponentModel.Design.Serialization;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
 public class MouvementCamera : MonoBehaviour
 {
     private Camera cam;
-    private Transform cible;  
+    public Transform cible;  
     public Vector3 offset;
     private Boolean avant = false;
     private Boolean arriere = false;
@@ -21,12 +22,17 @@ public class MouvementCamera : MonoBehaviour
     public float vitesseX = 0f;
     public float vitesseY = 0f;
     public float acceleration = 50f;
+    public float hauterMax = 5f;
+    public float distanceMin = 1f;
+    public float distanceMax = 50f;
+    private Vector3 lastPosition = Vector3.zero;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
      cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
      transform.LookAt(cible);
+     lastPosition = cible.transform.position;
     }
     void Awake()
     {
@@ -38,14 +44,16 @@ public class MouvementCamera : MonoBehaviour
     void Update()
     {
         choisirCible();    
-        if(repositionerCamera == false){   
+        // cible?
+        if (cible){
+        var deltaPos = cible.transform.position-lastPosition;
+        transform.position += deltaPos;
+        }
         verifierMouvement();
         updateVitesse();
         updateMouvement();
-        
+        lastPosition = cible.transform.position;
     }
-    }
-
     
     
 
@@ -61,6 +69,7 @@ public class MouvementCamera : MonoBehaviour
                 cible = hit.transform;
                 transform.position = cible.transform.position + offset;
                 transform.LookAt(cible);
+                lastPosition = cible.transform.position;
             } 
         }
         //si tu click sur escape tu retour au centre du system
@@ -98,9 +107,10 @@ public class MouvementCamera : MonoBehaviour
     
     void updateMouvement(){
         //Change la vitesse si les boolean sont true 
-        if(avant){
+        float distance = (transform.position-cible.position).magnitude;
+        if(avant && Math.Abs(distance) >= distanceMin ){
             transform.position += cam.transform.forward*vitesseZ*Time.deltaTime;
-        } else if(arriere){
+        } else if(arriere && Math.Abs(distance) <= distanceMax){
             transform.position -= cam.transform.forward*vitesseZ*Time.deltaTime;
         }
         if(droite){
@@ -108,18 +118,19 @@ public class MouvementCamera : MonoBehaviour
         } else if(gauche){
             transform.RotateAround(cible.transform.position, Vector3.up , vitesseX * Time.deltaTime);
         }
-        if(haut && transform.eulerAngles.x < 85 ){
+        
+        if(haut && transform.position.y < distance * hauterMax ){
             offset = transform.position - cible.position;
             Vector3 horizontal = new Vector3(-offset.z, 0, offset.x);
             transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
         }
-        if(bas && transform.eulerAngles.x > -85){
+        if(bas && transform.position.y > -distance * hauterMax){
             offset = transform.position - cible.position;
             Vector3 horizontal = new Vector3(offset.z, 0, -offset.x);
             transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
-            
         }
-          
+        
+       
     }
     
     void verifierMouvement(){
