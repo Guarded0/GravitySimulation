@@ -16,7 +16,6 @@ public class MouvementCamera : MonoBehaviour
     private Boolean gauche = false;
     private Boolean haut = false;
     private Boolean bas = false;
-    private Boolean repositionerCamera = false;
     public float vitesseMax = 50f;
     public float vitesseZ = 0f;
     public float vitesseX = 0f;
@@ -25,14 +24,15 @@ public class MouvementCamera : MonoBehaviour
     public float hauterMax = 5f;
     public float distanceMin = 1f;
     public float distanceMax = 50f;
-    private Vector3 lastPosition = Vector3.zero;
+    //La derniere position de la cible
+    private Vector3 dernierePosition = Vector3.zero;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
      cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
      transform.LookAt(cible);
-     lastPosition = cible.transform.position;
+     dernierePosition = cible.transform.position;
     }
     void Awake()
     {
@@ -44,15 +44,14 @@ public class MouvementCamera : MonoBehaviour
     void Update()
     {
         choisirCible();    
-        // cible?
         if (cible){
-        var deltaPos = cible.transform.position-lastPosition;
+        var deltaPos = cible.transform.position-dernierePosition;
         transform.position += deltaPos;
         }
         verifierMouvement();
         updateVitesse();
         updateMouvement();
-        lastPosition = cible.transform.position;
+        dernierePosition = cible.transform.position;
     }
     
     
@@ -65,22 +64,21 @@ public class MouvementCamera : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out hit)){
-                offset = transform.position - cible.position;
+                updateOffset();
                 cible = hit.transform;
                 transform.position = cible.transform.position + offset;
                 transform.LookAt(cible);
-                lastPosition = cible.transform.position;
+                dernierePosition = cible.transform.position;
             } 
         }
-        //si tu click sur escape tu retour au centre du system
+        //si tu click sur escape tu retourne au centre du system
         if(Input.GetKey(KeyCode.Escape)){
             cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
             transform.LookAt(cible);
-
         }
     }
     void updateVitesse(){
-        //Si les booléan sont vrais augmenter la vitesse sinon la diminuer 
+        //Si les booléan sont vrais, augmente la vitesse sinon la diminuer 
         if(avant||arriere){
             vitesseZ += acceleration*Time.deltaTime;
             vitesseZ = Math.Min(vitesseZ, vitesseMax);
@@ -113,28 +111,31 @@ public class MouvementCamera : MonoBehaviour
         } else if(arriere && Math.Abs(distance) <= distanceMax){
             transform.position -= cam.transform.forward*vitesseZ*Time.deltaTime;
         }
+
         if(droite){
             transform.RotateAround(cible.transform.position, Vector3.down , vitesseX * Time.deltaTime);
         } else if(gauche){
             transform.RotateAround(cible.transform.position, Vector3.up , vitesseX * Time.deltaTime);
         }
-        
+
+        //Vecteur horizontal parraport a l'orientation de la planète. 
+        Vector3 horizontal = Vector3.zero;
         if(haut && transform.position.y < distance * hauterMax ){
-            offset = transform.position - cible.position;
-            Vector3 horizontal = new Vector3(-offset.z, 0, offset.x);
+            updateOffset();
+            horizontal = new Vector3(-offset.z, 0, offset.x);
             transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
         }
         if(bas && transform.position.y > -distance * hauterMax){
-            offset = transform.position - cible.position;
-            Vector3 horizontal = new Vector3(offset.z, 0, -offset.x);
+            updateOffset();
+            horizontal = new Vector3(offset.z, 0, -offset.x);
             transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
         }
         
        
     }
     
+    //Verfie les inpute du joueur 
     void verifierMouvement(){
-        //Update les boolean
         if(Input.GetKey("q")){
             avant = true;
         }else{
@@ -165,6 +166,9 @@ public class MouvementCamera : MonoBehaviour
         } else{
             droite = false;
         }
+    }
+    void updateOffset(){
+        offset = transform.position - cible.position;
     }
 }
 
