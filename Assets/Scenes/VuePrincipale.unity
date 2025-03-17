@@ -461,13 +461,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e050077387ef94fa7e2f5743289c37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cible: {fileID: 0}
   offset: {x: 0, y: 12.9, z: -20.4}
   vitesseMax: 50
   vitesseZ: 50
   vitesseX: 0
   vitesseY: 0
   acceleration: 50
-  testClamp: 0.5
+  hauterMax: 0.5
+  distanceMin: 5
+  distanceMax: 50
 --- !u!1 &347030906
 GameObject:
   m_ObjectHideFlags: 0
