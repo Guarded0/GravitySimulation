@@ -19,6 +19,12 @@ MonoBehaviour:
     depthMultiplier: 10
     alphaMultiplier: 70
     oceanRadius: 5
+    smoothness: 1
+    waveNormalA: {fileID: 0}
+    waveNormalB: {fileID: 0}
+    waveStrength: 1
+    waveNormalScale: 1
+    waveSpeed: 1
   shader: {fileID: 4800000, guid: 35355bba92cb6c148b6dd3e43b30969c, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -46,10 +52,11 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: -6517785121857619162}
-  m_RendererFeatureMap: 26bb59e1f62c8ca5
+  - {fileID: 4258611805563600685}
+  m_RendererFeatureMap: 26bb59e1f62c8ca52d3fe7c2dfa0193b
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
-  postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
+  postProcessData: {fileID: 0}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
@@ -72,3 +79,26 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &4258611805563600685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb6262bc66ded746a74bb5779961af4, type: 3}
+  m_Name: AtmosphereRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  defaultSettings:
+    planetRadius: 1
+    atmosphereRadius: 1
+    inScatteringPoints: 2
+    opticalDepthPoints: 2
+    densityFalloff: 1
+    intensity: 1
+    scatteringStrength: 1
+    wavelengths: {x: 700, y: 530, z: 440}
+  shader: {fileID: 4800000, guid: 090b35cb3951bd248a85bef58386304a, type: 3}

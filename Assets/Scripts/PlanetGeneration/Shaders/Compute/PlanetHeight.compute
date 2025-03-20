@@ -1,0 +1,26 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#include "../Includes/FractalNoise.cginc"
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+StructuredBuffer<float3> vertices;
+RWStructuredBuffer<float> heights;
+float blend;
+float4 baseNoiseParams[3];
+float4 ridgidNoiseParams[3];
+float4 ridgidMaskNoiseParams[3];
+float Blend(float startHeight, float blendDst, float height)
+{
+    return smoothstep(startHeight - blendDst / 2, startHeight + blendDst / 2, height);
+}
+
+[numthreads(512, 1, 1)]
+void CSMain(uint id : SV_DispatchThreadID)
+{
+    float startingHeight = 1;
+    float baseNoiseVal = simpleNoise(vertices[id], baseNoiseParams);
+    float ridgidNoiseVal = smoothedRidgidNoise(vertices[id], ridgidNoiseParams);
+    float mask = Blend(0, blend, simpleNoise(vertices[id], ridgidMaskNoiseParams));
+    //heights[id] = 4+ mask;
+    heights[id] = startingHeight + baseNoiseVal * 0.01 + ridgidNoiseVal * 0.01 * mask;
+}

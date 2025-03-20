@@ -8,21 +8,21 @@ public class PlanetGenerator : MonoBehaviour
 
     public int initialSphereResolution = 10;
     public Shader planetShader;
-    public ComputeShader shapeNoiseShader;
-    public ComputeShader detailsShader;
-    public ComputeShader ridgesShader;
+    public ComputeShader PlanetHeightShader;
 
     
     public SimpleNoiseSettings baseNoiseSettings;
-    public SimpleNoiseSettings detailsNoiseSettings;
-    public RidgesNoiseSettings ridgesNoiseSettings;
+    public RidgidNoiseSettings ridgidNoiseSettings;
+    public SimpleNoiseSettings ridgidMaskNoiseSettings;
 
     public ColorTextureGenerator colorTextureGenerator;
     public OceanSettings oceanSettings;
+    public AtmosphereSettings atmosphereSettings;
 
     private bool needsMeshUpdate = false;
 
     private Vector2 sphereBounds = Vector2.zero;
+    public float blendStrength = 1.0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -60,43 +60,14 @@ public class PlanetGenerator : MonoBehaviour
         heightsBuffer.SetData(initialHeights);
         // apply compute shader effects
         // general shape
-        shapeNoiseShader.SetBuffer(0, "vertices", verticesBuffer);
-        shapeNoiseShader.SetBuffer(0, "heights", heightsBuffer);
-        shapeNoiseShader.SetInt("octaves", baseNoiseSettings.numLayers);
-        shapeNoiseShader.SetFloat("lacunarity", baseNoiseSettings.lacunarity);
-        shapeNoiseShader.SetFloat("persistence", baseNoiseSettings.persistence);
-        shapeNoiseShader.SetFloat("noiseScale", baseNoiseSettings.scale);
-        shapeNoiseShader.SetFloat("elevation", baseNoiseSettings.elevation);
-        shapeNoiseShader.SetFloats("offset",new float[3] {baseNoiseSettings.offset.x, baseNoiseSettings.offset.y, baseNoiseSettings.offset.z});
-        shapeNoiseShader.SetFloat("weight", 1.0f);
-        shapeNoiseShader.Dispatch(0, 512, 1,1);
+        PlanetHeightShader.SetBuffer(0, "vertices", verticesBuffer);
+        PlanetHeightShader.SetBuffer(0, "heights", heightsBuffer);
 
-        // fine details
-
-        
-        detailsShader.SetBuffer(0, "vertices", verticesBuffer);
-        detailsShader.SetBuffer(0, "heights", heightsBuffer);
-        detailsShader.SetInt("octaves", detailsNoiseSettings.numLayers);
-        detailsShader.SetFloat("lacunarity", detailsNoiseSettings.lacunarity);
-        detailsShader.SetFloat("persistence", detailsNoiseSettings.persistence);
-        detailsShader.SetFloat("noiseScale", detailsNoiseSettings.scale);
-        detailsShader.SetFloat("elevation", detailsNoiseSettings.elevation);
-        detailsShader.SetFloats("offset", new float[3] { detailsNoiseSettings.offset.x, detailsNoiseSettings.offset.y, detailsNoiseSettings.offset.z });
-        detailsShader.SetFloat("weight", 0.05f);
-        detailsShader.Dispatch(0, 512, 1, 1);
-
-        ridgesShader.SetBuffer(0, "vertices", verticesBuffer);
-        ridgesShader.SetBuffer(0, "heights", heightsBuffer);
-        ridgesShader.SetInt("numLayers", ridgesNoiseSettings.numLayers);
-        ridgesShader.SetFloat("persistence", ridgesNoiseSettings.persistence);
-        ridgesShader.SetFloat("lacunarity", ridgesNoiseSettings.lacunarity);
-        ridgesShader.SetFloat("noiseScale", ridgesNoiseSettings.noiseScale);
-        ridgesShader.SetFloat("weight", ridgesNoiseSettings.weight);
-        ridgesShader.SetFloat("power", ridgesNoiseSettings.power);
-        ridgesShader.SetFloat("gain", ridgesNoiseSettings.gain);
-        ridgesShader.SetFloat("elevation", ridgesNoiseSettings.elevation);
-        ridgesShader.Dispatch(0, 512, 1, 1);
-
+        PlanetHeightShader.SetFloats("baseNoiseParams", baseNoiseSettings.GetValues());
+        PlanetHeightShader.SetFloats("ridgidNoiseParams", ridgidNoiseSettings.GetValues());
+        PlanetHeightShader.SetFloats("ridgidMaskNoiseParams", ridgidMaskNoiseSettings.GetValues());
+        PlanetHeightShader.SetFloat("blend", blendStrength);
+        PlanetHeightShader.Dispatch(0, 512, 1,1);
 
         float[] heights = new float[sphere.Vertices.Length];
         heightsBuffer.GetData(heights,0,0, sphere.Vertices.Length);
@@ -109,6 +80,7 @@ public class PlanetGenerator : MonoBehaviour
             if (heights[i] < sphereBounds.x) sphereBounds.x = heights[i];
             if (heights[i] > sphereBounds.y) sphereBounds.y = heights[i];
         }
+        atmosphereSettings.planetRadius = (sphereBounds.x + sphereBounds.y)/2;
         // generate mesh
         SetMesh(vertices, sphere.Triangles);
 

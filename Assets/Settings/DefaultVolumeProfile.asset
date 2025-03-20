@@ -483,7 +483,26 @@ MonoBehaviour:
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
   - {fileID: 7746327436783898067}
-  - {fileID: 5900318618878065133}
+  - {fileID: 17281444324620045}
+--- !u!114 &17281444324620045
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6961937bda8d764f898c32700c23566, type: 3}
+  m_Name: AtmosphereVolumeComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  sunDirection:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0, z: 0}
+  specularColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &394063696303621796
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -986,21 +1005,12 @@ MonoBehaviour:
   m_Name: OceanVolumeComponent
   m_EditorClassIdentifier: 
   active: 1
-  intensity:
+  sunDirection:
     m_OverrideState: 1
-    m_Value: 1
-  colorA:
-    m_OverrideState: 1
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
-  colorB:
+    m_Value: {x: 1, y: 0, z: 0}
+  specularColor:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
-  depthMultiplier:
-    m_OverrideState: 1
-    m_Value: 1
-  alphaMultiplier:
-    m_OverrideState: 1
-    m_Value: 1
 --- !u!114 &9001657382290151224
 MonoBehaviour:
   m_ObjectHideFlags: 3

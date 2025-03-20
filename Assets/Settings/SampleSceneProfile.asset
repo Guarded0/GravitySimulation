@@ -66,6 +66,25 @@ MonoBehaviour:
   verticalBlur:
     m_OverrideState: 0
     m_Value: 0.05
+--- !u!114 &-6154362824642043081
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6961937bda8d764f898c32700c23566, type: 3}
+  m_Name: AtmosphereVolumeComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  sunDirection:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0, z: 0}
+  specularColor:
+    m_OverrideState: 0
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &-3856791388001131611
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -79,21 +98,12 @@ MonoBehaviour:
   m_Name: OceanVolumeComponent
   m_EditorClassIdentifier: 
   active: 1
-  intensity:
+  sunDirection:
     m_OverrideState: 1
-    m_Value: 1
-  colorA:
+    m_Value: {x: -10, y: 0, z: 0}
+  specularColor:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0, b: 0, a: 1}
-  colorB:
-    m_OverrideState: 1
-    m_Value: {r: 1, g: 0.3915094, b: 0.3915094, a: 1}
-  depthMultiplier:
-    m_OverrideState: 1
-    m_Value: 1
-  alphaMultiplier:
-    m_OverrideState: 1
-    m_Value: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &-3357603926938260329
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -106,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
   m_Name: Vignette
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   color:
     m_OverrideState: 0
     m_Value: {r: 0, g: 0, b: 0, a: 1}
@@ -140,6 +150,7 @@ MonoBehaviour:
   - {fileID: 7391319092446245454}
   - {fileID: -3357603926938260329}
   - {fileID: -3856791388001131611}
+  - {fileID: -6154362824642043081}
 --- !u!114 &849379129802519247
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -152,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
   m_Name: Tonemapping
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 1
