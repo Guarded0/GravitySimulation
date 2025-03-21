@@ -66,6 +66,7 @@ public class MouvementCamera : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out hit)){
+                //ajouter vérification que le hit ces un celestial body. 
                 updateOffset();
                 cible = hit.transform;
                 transform.position = cible.transform.position + offset;
