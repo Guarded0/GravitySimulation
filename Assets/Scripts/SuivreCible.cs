@@ -27,6 +27,8 @@ public class MouvementCamera : MonoBehaviour
     //La derniere position de la cible
     private Vector3 dernierePosition = Vector3.zero;
 
+    public Boolean etatsRayCast = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -58,7 +60,7 @@ public class MouvementCamera : MonoBehaviour
 
     void choisirCible(){
         //Si tu click sur un objet ta cameras va le regarder
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && etatsRayCast)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -120,12 +122,12 @@ public class MouvementCamera : MonoBehaviour
 
         //Vecteur horizontal parraport a l'orientation de la planète. 
         Vector3 horizontal = Vector3.zero;
-        if(haut && transform.position.y < distance * hauterMax ){
+        if(haut && transform.position.y < (distance * hauterMax) + cible.transform.position.y ){
             updateOffset();
             horizontal = new Vector3(-offset.z, 0, offset.x);
             transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
         }
-        if(bas && transform.position.y > -distance * hauterMax){
+        if(bas && transform.position.y > (-distance * hauterMax) + cible.transform.position.y){
             updateOffset();
             horizontal = new Vector3(offset.z, 0, -offset.x);
             transform.RotateAround(cible.transform.position, horizontal, vitesseY * Time.deltaTime);
@@ -169,6 +171,9 @@ public class MouvementCamera : MonoBehaviour
     }
     void updateOffset(){
         offset = transform.position - cible.position;
+    }
+    public void updateEtatRaycast(Boolean boolean){
+        etatsRayCast = boolean;
     }
 }
 
