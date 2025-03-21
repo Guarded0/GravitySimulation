@@ -5,7 +5,7 @@ using static UnityEngine.GraphicsBuffer;
 [ExecuteInEditMode]
 public class PlanetGenerator : MonoBehaviour
 {
-
+    public int seed;
     public int initialSphereResolution = 10;
     public Shader planetShader;
     public ComputeShader PlanetHeightShader;
@@ -62,13 +62,12 @@ public class PlanetGenerator : MonoBehaviour
         // general shape
         PlanetHeightShader.SetBuffer(0, "vertices", verticesBuffer);
         PlanetHeightShader.SetBuffer(0, "heights", heightsBuffer);
-
+        PlanetHeightShader.SetFloat("seed", seed);
         PlanetHeightShader.SetFloats("baseNoiseParams", baseNoiseSettings.GetValues());
         PlanetHeightShader.SetFloats("ridgidNoiseParams", ridgidNoiseSettings.GetValues());
         PlanetHeightShader.SetFloats("ridgidMaskNoiseParams", ridgidMaskNoiseSettings.GetValues());
         PlanetHeightShader.SetFloat("blend", blendStrength);
         PlanetHeightShader.Dispatch(0, 512, 1,1);
-
         float[] heights = new float[sphere.Vertices.Length];
         heightsBuffer.GetData(heights,0,0, sphere.Vertices.Length);
         // could maybe do this on shader...?

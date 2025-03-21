@@ -1,8 +1,13 @@
 using UnityEngine;
-
+public enum bodyType
+{
+    Planet,
+    Star
+}
 
 public class CelestialBody : MonoBehaviour
 {
+    public bodyType bodyType;
     // mass of object
     public float mass;
 
