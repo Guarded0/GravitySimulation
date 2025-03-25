@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class MoveTool : MonoBehaviour
 {
-    public GameObject axisGizmoPrefab; // Assign in Unity Inspector
+    public GameObject axisGizmoPrefab;
     private GameObject axisGizmoInstance;
     
     private Transform selectedObject;
     private Camera mainCamera;
-    private bool isDragging = false;
-    private bool axisSelected = false; // Ensures gizmo stays visible after object selection
+    private bool isBeingDragged = false;
 
     private enum Axis { None, X, Y, Z }
     private Axis currentAxis = Axis.None;
@@ -24,7 +23,7 @@ public class MoveTool : MonoBehaviour
     {
         HandleSelection();
 
-        if (isDragging && selectedObject != null)
+        if (isBeingDragged && selectedObject != null)
         {
             Vector3 newMousePosition = GetMouseWorldPosition();
             selectedObject.position = ConstrainToAxis(newMousePosition);
@@ -32,7 +31,7 @@ public class MoveTool : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0)) // Release object or axis
         {
-            isDragging = false;
+            isBeingDragged = false;
         }
     }
 
@@ -47,7 +46,8 @@ public class MoveTool : MonoBehaviour
             {
                 if (hit.transform.CompareTag("Celestial Body"))
                 {
-                    SelectObject(hit.transform);
+                    selectedObject = hit.transform;
+                    SpawnGizmo();
                 }
                 else if (hit.transform.CompareTag("Axis")) 
                 {
@@ -65,57 +65,38 @@ public class MoveTool : MonoBehaviour
         }
     }
 
-    private void SelectObject(Transform obj)
+    private void SpawnGizmo()
     {
-        selectedObject = obj;
-        SpawnGizmo();
+        // Destroy old gizmo if it exists
+        if (axisGizmoInstance != null)
+            Destroy(axisGizmoInstance);
+
+        if (selectedObject == null)
+            return;
+
+        // Instantiate the gizmo at the selected object's exact world position
+        axisGizmoInstance = Instantiate(axisGizmoPrefab, selectedObject.position, Quaternion.identity);
+
+        axisGizmoInstance.transform.SetParent(selectedObject, true);
     }
 
-    private void SelectAxis(Transform axisTransform)
-    {
-        axisSelected = true; // Prevent gizmo from disappearing
-        isDragging = true; // Start moving object
+    private void SelectAxis(Transform axisTransform) {
+        isBeingDragged = true; // Start moving object
 
         // Determine which axis was selected
-        if (axisTransform.name.Contains("X")) currentAxis = Axis.X;
-        else if (axisTransform.name.Contains("Y")) currentAxis = Axis.Y;
-        else if (axisTransform.name.Contains("Z")) currentAxis = Axis.Z;
+        if (axisTransform.name.Equals("Arrow_X")) currentAxis = Axis.X;
+        else if (axisTransform.name.Equals("Arrow_Y")) currentAxis = Axis.Y;
+        else if (axisTransform.name.Equals("Arrow_Z")) currentAxis = Axis.Z;
 
         SetMovementPlane();
+        DestroyGizmo();
     }
 
     private void SetMovementPlane()
     {
-        if (selectedObject == null) return;
-
         // Plane perpendicular to the camera's view, passing through the selected object
         movementPlane = new Plane(mainCamera.transform.forward, selectedObject.position);
     }
-
-    private void SpawnGizmo()
-{
-    // Destroy old gizmo if it exists
-    if (axisGizmoInstance != null) 
-        Destroy(axisGizmoInstance);
-
-    if (selectedObject == null) 
-        return;
-
-    // Instantiate the gizmo at the selected object's exact world position
-    axisGizmoInstance = Instantiate(axisGizmoPrefab, selectedObject.position, Quaternion.identity);
-
-    // Ensure it's not parented initially to avoid local position issues
-    axisGizmoInstance.transform.position = selectedObject.position;
-
-    // Assign "Axis" tag to each arrow in the gizmo
-    foreach (Transform child in axisGizmoInstance.transform)
-    {
-        child.gameObject.tag = "Axis";
-    }
-
-    // (Optional) Parent the gizmo to the object so it moves with it
-    axisGizmoInstance.transform.SetParent(selectedObject, true);
-}
 
     private void DeselectObject()
     {
@@ -163,3 +144,4 @@ public class MoveTool : MonoBehaviour
         }
     }
 }
+
