@@ -84,18 +84,16 @@ public class MoveTool : MonoBehaviour
         isBeingDragged = true; // Start moving object
 
         // Determine which axis was selected
-        if (axisTransform.name.Equals("Arrow_X")) currentAxis = Axis.X;
-        else if (axisTransform.name.Equals("Arrow_Y")) currentAxis = Axis.Y;
-        else if (axisTransform.name.Equals("Arrow_Z")) currentAxis = Axis.Z;
-
-        SetMovementPlane();
-        DestroyGizmo();
-    }
-
-    private void SetMovementPlane()
-    {
-        // Plane perpendicular to the camera's view, passing through the selected object
-        movementPlane = new Plane(mainCamera.transform.forward, selectedObject.position);
+        if (axisTransform.name.Equals("Arrow_X")) { 
+            currentAxis = Axis.X;
+            movementPlane = new Plane(Vector3.up, axisTransform.position);
+        } else if (axisTransform.name.Equals("Arrow_Y")) {
+            currentAxis = Axis.Y;
+            movementPlane = new Plane(Vector3.forward, axisTransform.position);
+        } else if (axisTransform.name.Equals("Arrow_Z")) {
+            currentAxis = Axis.Z;
+            movementPlane = new Plane(Vector3.up, axisTransform.position);
+        }
     }
 
     private void DeselectObject()
