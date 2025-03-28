@@ -27,8 +27,7 @@ public class MouvementCamera : MonoBehaviour
     public float distanceMax = 50f;
     //La derniere position de la cible
     private Vector3 dernierePosition = Vector3.zero;
-
-    public Boolean etatsRayCast = true;
+    public LayerMask layerMask;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -68,9 +67,10 @@ public class MouvementCamera : MonoBehaviour
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if(Physics.Raycast(ray, out hit)){
+            if(Physics.Raycast(ray, out hit, float.MaxValue, layerMask)){
                 //ajouter vérification que le hit ces un celestial body. 
                 updateOffset();
+                Debug.Log(hit);
                 cible = hit.transform;
                 transform.position = cible.transform.position + offset;
                 transform.LookAt(cible);
