@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bodyType: 0
   mass: 1
   isAnchored: 0
   isPlanet: 1
@@ -188,8 +189,32 @@ MonoBehaviour:
   initialVelocity: {x: 0, y: 0, z: 50.8}
   velocity: {x: 0, y: 0, z: 50.8}
   rb: {fileID: 69370784}
+  planetGenerator: {fileID: 0}
   trailRenderer: {fileID: 69370791}
   trajectoryRenderer: {fileID: 69370790}
+  planetSettings:
+    mass: 10
+    radius: 5
+    temperature: 0
+    planetComposition:
+      iron: 0
+      silicate: 0
+      water: 0
+    atmosphereComposition:
+      oxygen: 0
+      hydrogen: 0
+      carbonDioxide: 0
+      methane: 0
+    surfaceSettings:
+      seed: 0
+      complexity: 0
+      mountainScale: 0
+      mountainFrequency: 0
+      mountainSharpness: 0
+      planetScale: 0
+      Roughness: 0
+      hasOcean: 0
+      oceanRadius: 1
 --- !u!135 &69370786
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -493,6 +518,52 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!1 &105421824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 105421825}
+  - component: {fileID: 105421826}
+  m_Layer: 0
+  m_Name: Mouvement Gizmo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &105421825
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105421824}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 208176843}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &105421826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105421824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf82c3f142d04492872346518b1daca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scaleMultiplier: 0.05
+  axisGizmoPrefab: {fileID: 1017982492360155916, guid: 30a3b87718c9a473091df1b41997a7fa, type: 3}
 --- !u!1 &130057315
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,6 +730,7 @@ Transform:
   - {fileID: 764633641}
   - {fileID: 832575519}
   - {fileID: 1965716318}
+  - {fileID: 105421825}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
@@ -752,7 +824,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 676103049}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330585547
@@ -771,7 +844,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 676103051}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -808,22 +882,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 330585543}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50e050077387ef94fa7e2f5743289c37, type: 3}
+  m_Script: {fileID: 11500000, guid: d2f56b89cdefc445eb00baab2bf82083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cible: {fileID: 0}
-  offset: {x: 0, y: 12.9, z: -20.4}
+  offset: {x: 0, y: 0, z: 0}
   vitesseMax: 50
-  vitesseZ: 50
+  vitesseZ: 0
   vitesseX: 0
   vitesseY: 0
   acceleration: 50
-  hauterMax: 0.5
-  distanceMin: 5
+  hauterMax: 5
+  distanceMin: 1
   distanceMax: 50
   layerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
 --- !u!1 &347030906
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,6 +960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bodyType: 0
   mass: 1
   isAnchored: 0
   isPlanet: 1
@@ -893,8 +968,32 @@ MonoBehaviour:
   initialVelocity: {x: 0, y: 0, z: 24.4}
   velocity: {x: 0, y: 0, z: 24.4}
   rb: {fileID: 347030907}
+  planetGenerator: {fileID: 0}
   trailRenderer: {fileID: 347030914}
   trajectoryRenderer: {fileID: 347030913}
+  planetSettings:
+    mass: 10
+    radius: 5
+    temperature: 0
+    planetComposition:
+      iron: 0
+      silicate: 0
+      water: 0
+    atmosphereComposition:
+      oxygen: 0
+      hydrogen: 0
+      carbonDioxide: 0
+      methane: 0
+    surfaceSettings:
+      seed: 0
+      complexity: 0
+      mountainScale: 0
+      mountainFrequency: 0
+      mountainSharpness: 0
+      planetScale: 0
+      Roughness: 0
+      hasOcean: 0
+      oceanRadius: 1
 --- !u!135 &347030909
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1396,6 +1495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bodyType: 0
   mass: 1
   isAnchored: 0
   isPlanet: 1
@@ -1403,8 +1503,32 @@ MonoBehaviour:
   initialVelocity: {x: 0, y: 0, z: 34.7}
   velocity: {x: 0, y: 0, z: 34.7}
   rb: {fileID: 546505215}
+  planetGenerator: {fileID: 0}
   trailRenderer: {fileID: 546505223}
   trajectoryRenderer: {fileID: 546505222}
+  planetSettings:
+    mass: 10
+    radius: 5
+    temperature: 0
+    planetComposition:
+      iron: 0
+      silicate: 0
+      water: 0
+    atmosphereComposition:
+      oxygen: 0
+      hydrogen: 0
+      carbonDioxide: 0
+      methane: 0
+    surfaceSettings:
+      seed: 0
+      complexity: 0
+      mountainScale: 0
+      mountainFrequency: 0
+      mountainSharpness: 0
+      planetScale: 0
+      Roughness: 0
+      hasOcean: 0
+      oceanRadius: 1
 --- !u!135 &546505218
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1816,6 +1940,134 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &676103048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 676103049}
+  - component: {fileID: 676103051}
+  - component: {fileID: 676103050}
+  m_Layer: 0
+  m_Name: LayerCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &676103049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676103048}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 330585546}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &676103050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676103048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 1
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!20 &676103051
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676103048}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 4
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 64
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &764633639
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,6 +2104,7 @@ MonoBehaviour:
   isRelativeToBody: 0
   relativeBody: {fileID: 1460890112}
   simulationSpeed: 0.005
+  simulate: 1
 --- !u!4 &764633641
 Transform:
   m_ObjectHideFlags: 0
@@ -2389,6 +2642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bodyType: 0
   mass: 22926
   isAnchored: 0
   isPlanet: 0
@@ -2396,8 +2650,32 @@ MonoBehaviour:
   initialVelocity: {x: 0, y: 0, z: 0.02}
   velocity: {x: 0, y: 0, z: 0.02}
   rb: {fileID: 1460890117}
+  planetGenerator: {fileID: 0}
   trailRenderer: {fileID: 1460890121}
   trajectoryRenderer: {fileID: 1460890120}
+  planetSettings:
+    mass: 10
+    radius: 5
+    temperature: 0
+    planetComposition:
+      iron: 0
+      silicate: 0
+      water: 0
+    atmosphereComposition:
+      oxygen: 0
+      hydrogen: 0
+      carbonDioxide: 0
+      methane: 0
+    surfaceSettings:
+      seed: 0
+      complexity: 0
+      mountainScale: 0
+      mountainFrequency: 0
+      mountainSharpness: 0
+      planetScale: 0
+      Roughness: 0
+      hasOcean: 0
+      oceanRadius: 1
 --- !u!135 &1460890113
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 1058184556}
   - component: {fileID: 1058184555}
   - component: {fileID: 1058184554}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Celestial Body
   m_Icon: {fileID: 0}
@@ -421,7 +421,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 183
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -644,6 +644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf82c3f142d04492872346518b1daca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scaleMultiplier: 0.05
   axisGizmoPrefab: {fileID: 1017982492360155916, guid: 30a3b87718c9a473091df1b41997a7fa, type: 3}
 --- !u!4 &2052702008
 Transform:
