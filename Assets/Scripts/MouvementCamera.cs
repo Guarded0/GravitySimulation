@@ -16,6 +16,7 @@ public class MouvementCamera : MonoBehaviour
     private Boolean gauche = false;
     private Boolean haut = false;
     private Boolean bas = false;
+    private Boolean selectionCible = true;
     public float vitesseMax = 50f;
     public float vitesseZ = 0f;
     public float vitesseX = 0f;
@@ -45,7 +46,9 @@ public class MouvementCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        choisirCible();    
+        if(selectionCible){
+            choisirCible(); 
+        }   
         if (cible){
         var deltaPos = cible.transform.position-dernierePosition;
         transform.position += deltaPos;
@@ -60,7 +63,7 @@ public class MouvementCamera : MonoBehaviour
 
     void choisirCible(){
         //Si tu click sur un objet ta cameras va le regarder
-        if(Input.GetMouseButtonDown(0) && etatsRayCast)
+        if(Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -74,7 +77,7 @@ public class MouvementCamera : MonoBehaviour
                 dernierePosition = cible.transform.position;
             } 
         }
-        //si tu click sur escape tu retourne au centre du system
+        //si tu appuie sur escape tu retourne au centre du system
         if(Input.GetKey(KeyCode.Escape)){
             cible = NBodySimulation.Instance.relativeBody.gameObject.transform;
             transform.LookAt(cible);
@@ -173,8 +176,8 @@ public class MouvementCamera : MonoBehaviour
     void updateOffset(){
         offset = transform.position - cible.position;
     }
-    public void updateEtatRaycast(Boolean boolean){
-        etatsRayCast = boolean;
+    public void updateSelectionCible(){
+        selectionCible = !selectionCible; 
     }
 }
 

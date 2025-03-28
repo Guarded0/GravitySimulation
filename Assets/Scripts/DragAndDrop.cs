@@ -1,20 +1,22 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DragAndDrop : MonoBehaviour
 {
     public Transform pointeur;
-    private Boolean activer = true;
+    private Boolean activer = false;
     private Vector3 coordone;
-    public LayerMask layerMask; 
+    private CelestialBody planeteACree;
+    public LayerMask layerMask;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
     }
     void Awake()
-    {
-        
+    { 
     }
     // Update is called once per frame
     void Update()
@@ -26,11 +28,18 @@ public class DragAndDrop : MonoBehaviour
                 coordone = hit.point; 
                 pointeur.position = coordone; 
             }
+            if(Input.GetMouseButtonDown(0)){
+                Instantiate(planeteACree, coordone, Quaternion.identity);                
+                activer = false;
+                Camera.main.GetComponent<MouvementCamera>().updateSelectionCible();
+            } 
             
         }
     }
-
-    public void demarerConstruction(CelestialBody body){
+    
+    public void demarerConstruction(ButtonPrefab buttonPrefab){
         activer = true;
+        planeteACree = buttonPrefab.prefab;
+        Camera.main.GetComponent<MouvementCamera>().updateSelectionCible();
     }
 }
