@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Scene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/CinemachineTry.unity
+    guid: 7987952aa1ef1184bb0b872ce2e6f4b1
+  - enabled: 1
+    path: "Assets/Scenes/param\xE8tres.unity"
+    guid: c2ef7a278f62ac84e958414706a405c6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
