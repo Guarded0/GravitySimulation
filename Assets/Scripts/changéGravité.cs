@@ -1,28 +1,28 @@
 using UnityEngine;
 using TMPro;
 
-public class ParamManager : MonoBehaviour
+public class changeGravite : MonoBehaviour
 {
-    public TMP_InputField inputField;   // Champ TMP
-    public float paramValue = 0f;       // Valeur par défaut
+    public TMP_InputField inputField;   
+    public float gravite = 0f;       // gravité initale
 
     void Start()
     {
-        inputField.text = paramValue.ToString();
+        inputField.text = gravite.ToString();
         inputField.onEndEdit.AddListener(ValidateInput);
     }
 
     void ValidateInput(string input)
     {
-        if (float.TryParse(input, out float result))
+        if (float.TryParse(input, out float resultat))
         {
-            paramValue = result;
-            NBodySimulation.Instance.gravConstant = result;
+            gravite = resultat;
+            NBodySimulation.Instance.gravConstant = resultat;
         }
         else
         {
             Debug.LogWarning("Entrée invalide. Seuls les chiffres sont autorisés.");
-            inputField.text = paramValue.ToString();  // Réinitialisation
+            inputField.text = gravite.ToString();  // Réinitialisation
         }
     }
 }

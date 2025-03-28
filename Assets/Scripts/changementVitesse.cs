@@ -3,20 +3,25 @@ using UnityEngine.UI;
 
 public class SliderController : MonoBehaviour
 {
-    public Slider slider;       // Le slider
-    public float parameterVitesse;     // paramètre a modifié
+    public Slider slider; 
+    public float parameterVitesse; 
 
-    void Start()
+    void Start()// Initialiser
     {
-        // Initialise le slider avec la valeur actuelle
+        
         slider.value = parameterVitesse;
+        parameterVitesse = slider.value;
         slider.onValueChanged.AddListener(UpdateParameter);
     }
 
-    void UpdateParameter(float valeur)
+    void UpdateParameter(float valeurVitesse)
     {
-        parameterVitesse = valeur;  // Met à jour le paramètre
+        parameterVitesse = valeurVitesse;  // modifier
         
-        NBodySimulation.Instance.simulationSpeed = valeur;
+        NBodySimulation.Instance.simulationSpeed = valeurVitesse;
+    }
+    void Update()
+    {
+        
     }
 }
