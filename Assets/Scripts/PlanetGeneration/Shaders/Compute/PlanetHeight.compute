@@ -5,6 +5,7 @@
 // with cs.SetTexture
 StructuredBuffer<float3> vertices;
 RWStructuredBuffer<float> heights;
+float initialHeight;
 float blend;
 float4 baseNoiseParams[3];
 float4 ridgidNoiseParams[3];
@@ -17,10 +18,9 @@ float Blend(float startHeight, float blendDst, float height)
 [numthreads(512, 1, 1)]
 void CSMain(uint id : SV_DispatchThreadID)
 {
-    float startingHeight = 1;
     float baseNoiseVal = simpleNoise(vertices[id], baseNoiseParams);
     float ridgidNoiseVal = smoothedRidgidNoise(vertices[id], ridgidNoiseParams);
     float mask = Blend(0, blend, simpleNoise(vertices[id], ridgidMaskNoiseParams));
     //heights[id] = 4+ mask;
-    heights[id] = startingHeight + baseNoiseVal * 0.01 + ridgidNoiseVal * 0.01 * mask;
+    heights[id] = initialHeight + baseNoiseVal * 0.01 + (ridgidNoiseVal + ridgidNoiseParams[1].z) * 0.01 * mask;
 }

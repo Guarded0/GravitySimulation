@@ -4,7 +4,7 @@ public enum bodyType
     Planet,
     Star
 }
-
+[ExecuteAlways]
 public class CelestialBody : MonoBehaviour
 {
     public bodyType bodyType;
@@ -28,14 +28,16 @@ public class CelestialBody : MonoBehaviour
 
     // gameobject rigidbody
     public Rigidbody rb;
-
+    public PlanetGenerator planetGenerator;
     public TrailRenderer trailRenderer;
     public LineRenderer trajectoryRenderer;
 
+    public PlanetSettings planetSettings;
     private void Awake()
     {
         // get rigidbody
         rb = GetComponent<Rigidbody>();
+        planetGenerator = GetComponent<PlanetGenerator>();
         trailRenderer = GetComponent<TrailRenderer>();
         trajectoryRenderer = GetComponent<LineRenderer>();
         if (trailRenderer == null )
@@ -76,5 +78,13 @@ public class CelestialBody : MonoBehaviour
     private void OnDestroy()
     {
         NBodySimulation.planetRemoved.Invoke(gameObject);//
+    }
+    private void OnValidate()
+    {
+        if (planetGenerator != null)
+        {
+            SettingsTranslator.SettingsToVariables(this, planetGenerator);
+        }
+
     }
 }

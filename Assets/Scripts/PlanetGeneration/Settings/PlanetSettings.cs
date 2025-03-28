@@ -6,8 +6,8 @@ using UnityEngine;
 [System.Serializable]
 public class PlanetSettings
 {
-    public float mass;
-    public Vector2 radius = new Vector2(1,1);
+    public float mass = 10f;
+    public float radius = 5f;
     public float temperature;
     public PlanetComposition planetComposition;
     public AtmosphereComposition atmosphereComposition;
@@ -39,7 +39,12 @@ public class SurfaceSettings
     // surfance
     [Range(1.0f, 10.0f)]
     public float complexity;
+    [Range(0.1f, 5f)]
+    public float mountainScale;
+    [Range(0.1f, 5f)]
+    public float mountainFrequency;
     public float mountainSharpness;
+    [Range(0.1f, 5f)]
     public float planetScale;
     public float Roughness;
     // ocean

@@ -10,7 +10,7 @@ public class SimpleNoiseSettings
     public float lacunarity = 2;
     public float persistence = 0.5f;
     public float noiseScale = 1f;
-    public float elevation = 1f;
+    public float elevation = 0f;
     public float weight = 1f;
     public Vector3 offset;
 
@@ -42,7 +42,7 @@ public class RidgidNoiseSettings
     public float lacunarity = 2;
     public float persistence = 0.5f;
     public float noiseScale = 1;
-    public float elevation = 4;
+    public float elevation = 0f;
     public float weight = 1;
     public float power = 1;
     public float gain = 1;

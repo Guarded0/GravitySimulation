@@ -7,6 +7,7 @@ public class PlanetGenerator : MonoBehaviour
 {
     public int seed;
     public int initialSphereResolution = 10;
+    public float planetRadius = 4f;
     public Shader planetShader;
     public ComputeShader PlanetHeightShader;
 
@@ -18,8 +19,7 @@ public class PlanetGenerator : MonoBehaviour
     public ColorTextureGenerator colorTextureGenerator;
     public OceanSettings oceanSettings;
     public AtmosphereSettings atmosphereSettings;
-
-    private bool needsMeshUpdate = false;
+    public bool needsMeshUpdate = false;
 
     private Vector2 sphereBounds = Vector2.zero;
     public float blendStrength = 1.0f;
@@ -63,6 +63,7 @@ public class PlanetGenerator : MonoBehaviour
         PlanetHeightShader.SetBuffer(0, "vertices", verticesBuffer);
         PlanetHeightShader.SetBuffer(0, "heights", heightsBuffer);
         PlanetHeightShader.SetFloat("seed", seed);
+        PlanetHeightShader.SetFloat("initialHeight", planetRadius);
         PlanetHeightShader.SetFloats("baseNoiseParams", baseNoiseSettings.GetValues());
         PlanetHeightShader.SetFloats("ridgidNoiseParams", ridgidNoiseSettings.GetValues());
         PlanetHeightShader.SetFloats("ridgidMaskNoiseParams", ridgidMaskNoiseSettings.GetValues());
