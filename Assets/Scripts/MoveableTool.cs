@@ -1,7 +1,9 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 
 public class MoveTool : MonoBehaviour
 {
+    public float scaleMultiplier;
     public GameObject axisGizmoPrefab;
     private GameObject axisGizmoInstance;
     
@@ -27,6 +29,10 @@ public class MoveTool : MonoBehaviour
         {
             Vector3 newMousePosition = GetMouseWorldPosition();
             selectedObject.position = ConstrainToAxis(newMousePosition);
+        }
+
+        if (axisGizmoInstance != null) {
+            axisGizmoInstance.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier) * Vector3.Distance(axisGizmoInstance.transform.position, mainCamera.transform.position);
         }
 
         if (Input.GetMouseButtonUp(0)) // Release object or axis
