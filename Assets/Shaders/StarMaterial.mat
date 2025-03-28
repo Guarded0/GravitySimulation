@@ -25,12 +25,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _NoiseScale: 8.84
-    - _NoiseSpeed: 0.47
+    - _NoiseScale: 4.33
+    - _NoiseSpeed: 7.7
+    - _Temperature: 10000
     m_Colors:
     - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
-    - _LerpColor1: {r: 36.26747, g: 18.450119, b: 0, a: 1}
-    - _LerpColor2: {r: 2.8167036, g: 1.7115686, b: 0, a: 1}
-    - _LerpColor3: {r: 0.70710677, g: 0.5747174, b: 0, a: 1}
+    - _LerpColor1: {r: 1, g: 1, b: 1, a: 1}
+    - _LerpColor2: {r: 0, g: 0, b: 0, a: 1}
+    - _LerpColor3: {r: 90.50967, g: 73.56383, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

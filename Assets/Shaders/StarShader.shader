@@ -5,6 +5,7 @@ Shader "Example/URPUnlitShaderBasic"
     // because the output color is predefined in the fragment shader code.
     Properties
     { 
+        _Temperature ("Temperature", int) = 1
         _BaseColor ("Base Color", Color) = (1, 1, 1, 1) // A color property
         _NoiseScale ("Noise Scale", Float) = 1.0        // A float property
         _NoiseSpeed ("Noise Speed", Float) = 1.0        // A float property
@@ -50,7 +51,7 @@ Shader "Example/URPUnlitShaderBasic"
                 float4 positionHCS : SV_POSITION; // Clip space position
                 float3 worldPos : TEXCOORD0;     // World space position
             };
-
+            int _Temperature;
             float4 _BaseColor;
             float _NoiseScale;
             float _NoiseSpeed;
@@ -73,11 +74,11 @@ Shader "Example/URPUnlitShaderBasic"
                 return OUT;
             }
 
-            float3 sampleGradientColor(float value)
+            float3 sampleGradientColor(int value)
             {
-                float3 colors[5] = {float3(100,100,100), float3(100,100,100),float3(100,100,100),float3(100,100,100),float3(100,100,100)};
-                float positions[5] = {0, 0.4,0.6,0.8,1};
-                for(int i = 0; i < 5; i++)
+                float3 colors[6] = {float3(0,0,0),float3(1,0,0), float3(1,0.5,0),float3(1,1,0),float3(1, 1, 1),float3(0,0,1)};
+                int positions[6] = {0, 3000, 4000, 6000, 10000, 25000};
+                for(int i = 1; i < 6; i++)
                 {
                     if(value < positions[i])
                     {
@@ -85,6 +86,7 @@ Shader "Example/URPUnlitShaderBasic"
                         return lerp(colors[i-1], colors[i], position);
                     }
                 }
+                return float3(0,0,0);
             }
 
             float random(float3 _st)
@@ -154,7 +156,7 @@ Shader "Example/URPUnlitShaderBasic"
                 // Scale the world position to control the texture density
                 float3 st = worldPos * _NoiseScale;
 
-                float3 color = _BaseColor;
+                float3 color = sampleGradientColor(_Temperature);
 
                 float3 q = float3(0.0, 0.0, 0.0);
                 q.x = fbm(st + 0.00 * _Time.y);
@@ -170,7 +172,7 @@ Shader "Example/URPUnlitShaderBasic"
                     f = fbm(f + r);
                 }
 
-                color = lerp(color,
+                /*color = lerp(color,
                              _LerpColor1.rgb,
                              clamp((f * f) * 4.0, 0.0, 1.0));
 
@@ -181,9 +183,9 @@ Shader "Example/URPUnlitShaderBasic"
                 color = lerp(color,
                              _LerpColor3.rgb,
                              clamp(length(r.x), 0.0, 1.0));
-
+                             */
                 float randomShi = (f * f * f + 0.6 * f * f + 0.5 * f);
-                half4 customColor = half4((randomShi * color).xyz, 1);
+                half4 customColor = half4((randomShi * color).xyz, 10);
                 return customColor;
             }
             ENDHLSL
