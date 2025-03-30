@@ -122,13 +122,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 2
+  bodyType: 0
   mass: 1
   isAnchored: 0
   isPlanet: 1
   hasGravity: 0
   initialVelocity: {x: 0, y: 0, z: 22.9}
   velocity: {x: 0, y: 0, z: 0}
+  rb: {fileID: 0}
+  planetGenerator: {fileID: 0}
+  trailRenderer: {fileID: 0}
+  trajectoryRenderer: {fileID: 0}
+  planetSettings:
+    mass: 10
+    radius: 5
+    temperature: 0
+    planetComposition:
+      iron: 0
+      silicate: 0
+      water: 0
+    atmosphereComposition:
+      oxygen: 0
+      hydrogen: 0
+      carbonDioxide: 0
+      methane: 0
+    surfaceSettings:
+      seed: 0
+      complexity: 1
+      mountainScale: 0.1
+      mountainFrequency: 0.1
+      mountainSharpness: 0
+      planetScale: 0.1
+      Roughness: 0
+      hasOcean: 0
+      oceanRadius: 1
 --- !u!54 &8683832878755732511
 Rigidbody:
   m_ObjectHideFlags: 0

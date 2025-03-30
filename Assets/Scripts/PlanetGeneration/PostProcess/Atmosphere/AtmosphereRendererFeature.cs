@@ -183,7 +183,7 @@ public class AtmosphereRenderPass : ScriptableRenderPass
         material.SetInt(opticalDepthPointsID, atmosphereSettings.opticalDepthPoints);
         material.SetFloat(densityFalloffID, atmosphereSettings.densityFalloff);
         material.SetFloat(oceanRadiusID, oceanRadius);
-        material.SetVector(directionToSunID, Vector3.left);
+        material.SetVector(directionToSunID, (NBodySimulation.Instance.relativeBody.transform.position - planetTransform.position).normalized);
         material.SetVector("_scatteringCoefficients", atmosphereSettings.GetScatteringCoefficient());
         material.SetFloat("_intensity", atmosphereSettings.intensity);
         //

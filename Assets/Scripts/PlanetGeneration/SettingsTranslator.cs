@@ -31,10 +31,14 @@ public class SettingsTranslator
         ridgidMaskSettings.weight = 1;
         ridgidMaskSettings.offset = new Vector3(Random.value, Random.value, Random.value);
 
+        planetGenerator.atmosphereSettings.atmosphereRadius = planetSettings.radius * 1.75f;
         planetGenerator.baseNoiseSettings = baseNoiseSettings;
         planetGenerator.ridgidNoiseSettings = ridgidNoiseSettings;
         planetGenerator.ridgidMaskNoiseSettings = ridgidMaskSettings;
         planetGenerator.needsMeshUpdate = true;
+
+        
+        
     }
 
     // takes variables from planet generator -> settings

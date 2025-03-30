@@ -80,7 +80,7 @@ public class PlanetGenerator : MonoBehaviour
             if (heights[i] < sphereBounds.x) sphereBounds.x = heights[i];
             if (heights[i] > sphereBounds.y) sphereBounds.y = heights[i];
         }
-        atmosphereSettings.planetRadius = (sphereBounds.x + sphereBounds.y)/2;
+        atmosphereSettings.planetRadius =sphereBounds.x ;
         // generate mesh
         SetMesh(vertices, sphere.Triangles);
 

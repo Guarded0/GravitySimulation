@@ -29,7 +29,6 @@ public sealed class OceanVolumeComponent : VolumeComponent, IPostProcessComponen
     {
         displayName = "OceanEffects";
     }
-
     [Tooltip("Enter the description for the property that is shown when hovered")]
     public Vector3Parameter sunDirection = new Vector3Parameter(new Vector3(1f, 0f, 0f));
     public ColorParameter specularColor = new ColorParameter(Color.white);

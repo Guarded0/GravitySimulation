@@ -8,14 +8,9 @@ public enum bodyType
 public class CelestialBody : MonoBehaviour
 {
     public bodyType bodyType;
-    // mass of object
-    public float mass;
 
     // if object is anchored it means it cant move at all
     public bool isAnchored = false;
-
-    // if its a planet (if not it can be a star)
-    public bool isPlanet = false;
 
     // if it has gravity
     public bool hasGravity = true;
@@ -85,6 +80,9 @@ public class CelestialBody : MonoBehaviour
         {
             SettingsTranslator.SettingsToVariables(this, planetGenerator);
         }
-
+        if (bodyType == bodyType.Star)
+        {
+            transform.localScale = Vector3.one * this.planetSettings.radius * 2;
+        }
     }
 }
