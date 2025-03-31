@@ -9,7 +9,7 @@ Shader "Example/URPUnlitShaderBasic"
         _BaseColor ("Base Color", Color) = (1, 1, 1, 1) // A color property
         _NoiseScale ("Noise Scale", Float) = 1.0        // A float property
         _NoiseSpeed ("Noise Speed", Float) = 1.0        // A float property
-
+        _Brightness ("Brightness", Float) = 1.0
 
         // Add new color properties for lerping
         [HDR] _LerpColor1 ("Lerp Color 1", Color) = (0.666667,0.666667,0.498039, 1) // First lerp color
@@ -55,7 +55,7 @@ Shader "Example/URPUnlitShaderBasic"
             float4 _BaseColor;
             float _NoiseScale;
             float _NoiseSpeed;
-
+            float _Brightness;
             float4 _LerpColor1;
             float4 _LerpColor2;
             float4 _LerpColor3;
@@ -82,7 +82,7 @@ Shader "Example/URPUnlitShaderBasic"
                 {
                     if(value < positions[i])
                     {
-                        float position = (value-positions[i-1])/(positions[i]-positions[i-1]);
+                        float position = (float)(value - positions[i - 1]) / (float)(positions[i] - positions[i - 1]);
                         return lerp(colors[i-1], colors[i], position);
                     }
                 }
@@ -157,7 +157,7 @@ Shader "Example/URPUnlitShaderBasic"
                 float3 st = worldPos * _NoiseScale;
 
                 float3 color = sampleGradientColor(_Temperature);
-
+                color = float3(clamp(color.x, 0,1), clamp(color.y, 0,1), clamp(color.z, 0,1));
                 float3 q = float3(0.0, 0.0, 0.0);
                 q.x = fbm(st + 0.00 * _Time.y);
                 q.y = fbm(st + float3(1.0, 1.0, 1.0));
@@ -185,7 +185,7 @@ Shader "Example/URPUnlitShaderBasic"
                              clamp(length(r.x), 0.0, 1.0));
                              */
                 float randomShi = (f * f * f + 0.6 * f * f + 0.5 * f);
-                half4 customColor = half4((randomShi * color).xyz, 10);
+                half4 customColor = half4((randomShi * color).xyz * _Brightness, 1);
                 return customColor;
             }
             ENDHLSL

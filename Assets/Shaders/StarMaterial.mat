@@ -25,9 +25,10 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _Brightness: 1.07
     - _NoiseScale: 2.32
     - _NoiseSpeed: 0.48
-    - _Temperature: 4000
+    - _Temperature: 4671
     m_Colors:
     - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
     - _LerpColor1: {r: 1, g: 0, b: 0, a: 1}
