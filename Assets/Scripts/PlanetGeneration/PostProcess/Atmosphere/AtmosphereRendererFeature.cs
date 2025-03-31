@@ -153,7 +153,7 @@ public class AtmosphereRenderPass : ScriptableRenderPass
         for (int i = 0; i < planets.Count; i++)
         {
             PlanetGenerator gen;
-
+            if (!planets[i]) continue;
             if (!planets[i].TryGetComponent<PlanetGenerator>(out gen)) continue;
             if (gen.atmosphereSettings.atmosphereRadius == 0) continue;
             transforms.Add(planets[i].transform);//
