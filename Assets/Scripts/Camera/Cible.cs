@@ -1,30 +1,69 @@
 using UnityEngine;
+using UnityEngine.Events;
+#nullable enable
 
 public class Cible : MonoBehaviour
 {
-    public static Transform current;
+    public static Transform? current;
+    public static UnityEvent<Transform?> cibleChanged = new UnityEvent<Transform?>();
     public LayerMask layerMask;
     public KeyCode deselectKey;
+    private Transform? currentOutlineTransform;
+    private void Awake()
+    {
+        if (cibleChanged == null)
+            cibleChanged = new UnityEvent<Transform?>();
+    }
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            choisirCible();
-        }
         if (Input.GetKey(deselectKey))
         {
             current = null;
+            cibleChanged.Invoke(null);
         }
+
+        Transform hitTransform = RaycastForCelestialBody();
+        
+        if (Input.GetMouseButtonDown(0) && current != hitTransform)
+        {
+            current = hitTransform;
+            cibleChanged.Invoke(current);
+            
+        }
+        UpdateOutline(hitTransform);
     }
-    void choisirCible()
+
+    Transform RaycastForCelestialBody()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out hit, float.MaxValue, layerMask))
+        Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, layerMask);
+        return hit.transform;
+    }
+    void UpdateOutline(Transform hitTransform)
+    {
+        if (current != null)
         {
-            current = hit.transform;
+            SetOutline(current);
+            return;
         }
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            SetOutline(null);
+            return;
+        }
+        SetOutline(hitTransform);
+    }
+    void SetOutline(Transform? outlineTransform)
+    {
+        if (currentOutlineTransform != null && (currentOutlineTransform != outlineTransform || outlineTransform == null))
+        {
+            Destroy(currentOutlineTransform.GetComponent<Outline>());
+            currentOutlineTransform = null;
+        }
+
+        if (outlineTransform == null || currentOutlineTransform == outlineTransform) return;
+        outlineTransform.gameObject.AddComponent<Outline>();
+        currentOutlineTransform = outlineTransform;
     }
 }

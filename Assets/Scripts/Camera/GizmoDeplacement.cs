@@ -4,7 +4,6 @@ using UnityEngine;
 public class MoveTool : MonoBehaviour
 {
     public float scaleMultiplier;
-    public float distanceMultiplier;
     public GameObject axisGizmoPrefab;
     private GameObject axisGizmoInstance;
 

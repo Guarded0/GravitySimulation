@@ -28,6 +28,10 @@ public class CelestialBody : MonoBehaviour
     public LineRenderer trajectoryRenderer;
 
     public PlanetSettings planetSettings;
+    public bool shouldUpdateSettings { private get => false; set {
+            if (value) SettingsTranslator.SettingsToVariables(this, planetGenerator);
+        }
+    }
     private void Awake()
     {
         // get rigidbody
@@ -70,6 +74,7 @@ public class CelestialBody : MonoBehaviour
         NBodySimulation.planetAdded.Invoke(gameObject);
 
     }
+
     private void OnDestroy()
     {
         NBodySimulation.planetRemoved.Invoke(gameObject);//

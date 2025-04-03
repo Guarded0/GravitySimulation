@@ -17,7 +17,7 @@ public class MouvementCamera : MonoBehaviour
 
     public bool orbitMode = true;
     public static bool softUnlock = false;
-    public float3 inputAxis;
+    private float3 inputAxis;
     //La derniere position de la cible
     private Vector3 dernierePosition = Vector3.zero;
 
@@ -41,15 +41,17 @@ public class MouvementCamera : MonoBehaviour
     void updateMouvementOrbite(Transform cible)
     {
         
-        float mouseX = Input.GetAxis("Mouse X") * sensibilite * 1.5f * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensibilite * 1.5f * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * sensibilite * 2f * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensibilite * 2f * Time.deltaTime;
         // ADDITIONNER LA SOURIS AVEC WASD POUR FACILITER LE MOUVEMENT
         Vector3 mixedInput;
         if (Input.GetMouseButton(1))
         {
+            Cursor.lockState = CursorLockMode.Locked;
             mixedInput = new Vector3(Mathf.Clamp(-inputAxis.x + mouseX,-1,1), Mathf.Clamp(-inputAxis.y + mouseY, -1, 1), inputAxis.z);
         }else
         {
+            Cursor.lockState = CursorLockMode.None;
             mixedInput = new Vector3(-inputAxis.x, -inputAxis.y, inputAxis.z);
         }
         //-------------------- HORIZONTAL AXIS --------------------//
