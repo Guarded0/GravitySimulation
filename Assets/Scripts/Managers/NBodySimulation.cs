@@ -95,16 +95,16 @@ public class NBodySimulation : MonoBehaviour
     public void UpdateVelocity(CelestialBody body)
     {
         Vector3 totalAcceleration = Vector3.zero;
-        body.velocity += CalculateTotalAcceleration(body) * physicsTimeStep *   simulationSpeed;
+        body.planetSettings.velocity += CalculateTotalAcceleration(body) * physicsTimeStep *   simulationSpeed;
     }
 
     public void UpdatePosition(CelestialBody body)
     {
         if (body.isAnchored) return;
-        Vector3 newPos = body.rb.position + body.velocity * physicsTimeStep * simulationSpeed;
+        Vector3 newPos = body.rb.position + body.planetSettings.velocity * physicsTimeStep * simulationSpeed;
         if (isRelativeToBody && relativeBody != null)
         {
-            newPos -= relativeBody.velocity * physicsTimeStep * simulationSpeed;
+            newPos -= relativeBody.planetSettings.velocity * physicsTimeStep * simulationSpeed;
         }
 
         body.rb.MovePosition(newPos );
