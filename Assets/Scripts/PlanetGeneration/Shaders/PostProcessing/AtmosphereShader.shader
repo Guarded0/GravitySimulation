@@ -105,11 +105,22 @@ Shader "Hidden/AtmosphereShader"
 				}
 				return opticalDepth;
 			}
+            float4 Unity_Dither_float4(float4 In, float2 uv)
+            {
+                float DITHER_THRESHOLDS[16] =
+                {
+                    1.0 / 17.0,  9.0 / 17.0,  3.0 / 17.0, 11.0 / 17.0,
+                    13.0 / 17.0,  5.0 / 17.0, 15.0 / 17.0,  7.0 / 17.0,
+                    4.0 / 17.0, 12.0 / 17.0,  2.0 / 17.0, 10.0 / 17.0,
+                    16.0 / 17.0,  8.0 / 17.0, 14.0 / 17.0,  6.0 / 17.0
+                };
+                uint index = (uint(uv.x) % 4) * 4 + uint(uv.y) % 4;
+                return In - DITHER_THRESHOLDS[index];
+            }
             //
-            float4 MainFrag(v2f input) : SV_Target
+            half4 MainFrag(v2f input) : SV_Target
             {
                 float intensity = 1;
-                _directionToSun = float3(-1,0,0);
 
                 float2 uv = input.texcoord;
                 float4 sceneColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
@@ -132,7 +143,6 @@ Shader "Hidden/AtmosphereShader"
                 {
 
                     const float epsilon = 0.0001;
-
                     float3 pointInAtmosphere = rayPos + rayDir * (distanceToAtmosphere + epsilon);
                     // calculate Lighting
                     float3 inScatterPoint = pointInAtmosphere;
@@ -146,23 +156,25 @@ Shader "Hidden/AtmosphereShader"
                         float sunRayOpticalDepth = opticalDepth(inScatterPoint, _directionToSun, sunRayLength);
                         viewRayOpticalDepth = opticalDepth(inScatterPoint, -rayDir, stepSize * i);
                         
-                        //return sunRayOpticalDepth;
                         float3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth) * _scatteringCoefficients);
                         float localDensity = densityAtPoint(inScatterPoint);
-                        inScatteredLight += localDensity * transmittance * _scatteringCoefficients * stepSize * _intensity;
-                        
+                        inScatteredLight += localDensity * transmittance * _scatteringCoefficients * stepSize * _intensity ;
                         inScatterPoint += rayDir * stepSize;
                         
                     }
                     inScatteredLight /= _planetRadius;
-
+                    
                     float sceneColorTransmittance = exp(-viewRayOpticalDepth);
                     float3 finalColor = sceneColor * sceneColorTransmittance + inScatteredLight;
-                   return float4(finalColor, 0);
-                   // return sceneColor + 
+                    
+                    
+
+                    return float4(finalColor,0);
+
                     
                    //return sceneColor * (1- inScatteredLight) + inScatteredLight;
                 }
+                
                 return sceneColor;
             }
 

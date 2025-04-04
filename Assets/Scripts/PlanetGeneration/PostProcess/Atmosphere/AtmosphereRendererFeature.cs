@@ -20,7 +20,7 @@ public class AtmosphereRendererFeature : ScriptableRendererFeature
             return;
         }
         //material = new Material(shader);
-        PlanetGenerator[] planetGenerators = FindObjectsByType<PlanetGenerator>(FindObjectsSortMode.InstanceID);
+        PlanetGenerator[] planetGenerators = FindObjectsByType<PlanetGenerator>(FindObjectsSortMode.None);
 
         AtmosphereSettings[] atmosphereSettings = new AtmosphereSettings[planetGenerators.Length];
         Transform[] planetTransforms = new Transform[planetGenerators.Length];
@@ -96,7 +96,7 @@ public class AtmosphereRenderPass : ScriptableRenderPass
         atmosphereTextureDescriptor.depthBufferBits = 0;
 
         TextureHandle srcCamColor = resourceData.activeColorTexture;
-        TextureHandle intermediate1 = UniversalRenderer.CreateRenderGraphTexture(renderGraph, atmosphereTextureDescriptor, k_AtmosphereTextureName, true);
+        TextureHandle intermediate1 = UniversalRenderer.CreateRenderGraphTexture(renderGraph, atmosphereTextureDescriptor, k_AtmosphereTextureName, false);
         TextureHandle intermediate2 = UniversalRenderer.CreateRenderGraphTexture(renderGraph, atmosphereTextureDescriptor, k_AtmosphereTextureName, false);
 
         if (!srcCamColor.IsValid())

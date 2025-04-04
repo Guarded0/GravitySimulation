@@ -77,7 +77,7 @@ public class OceanRenderPass : ScriptableRenderPass
         this.shader = shader;
         this.oceanSettingsList = new List<OceanSettings>(oceanSettings);
         this.planetTransforms = new List<Transform>(planetTransforms);
-        oceanTextureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
+        oceanTextureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.ARGBHalf, 0);
     }
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
