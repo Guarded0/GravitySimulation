@@ -648,8 +648,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c832eaea31ad344b743773dd0b102d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positionOuvert: {x: 0, y: -454, z: 0}
-  positionFermer: {x: 0, y: -631, z: 0}
+  positionOuvert: {x: 0, y: 0, z: 0}
+  positionFermer: {x: -700, y: 0, z: 0}
 --- !u!1 &7630749717995376011
 GameObject:
   m_ObjectHideFlags: 0
