@@ -27,6 +27,7 @@ public class Cible : MonoBehaviour
         
         if (Input.GetMouseButtonDown(0) && current != hitTransform)
         {
+            if (hitTransform.gameObject.CompareTag("Axis")) return;
             current = hitTransform;
             cibleChanged.Invoke(current);
             

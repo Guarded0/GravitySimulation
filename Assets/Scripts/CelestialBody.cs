@@ -15,12 +15,6 @@ public class CelestialBody : MonoBehaviour
     // if it has gravity
     public bool hasGravity = true;
 
-    // velocity at start
-    public Vector3 initialVelocity = Vector3.zero;
-
-    // current velocity
-    public Vector3 velocity = Vector3.zero;
-
     // gameobject rigidbody
     public Rigidbody rb;
     public PlanetGenerator planetGenerator;
@@ -69,10 +63,7 @@ public class CelestialBody : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // set velocity to starting one
-        velocity = initialVelocity;
         NBodySimulation.planetAdded.Invoke(gameObject);
-
     }
 
     private void OnDestroy()

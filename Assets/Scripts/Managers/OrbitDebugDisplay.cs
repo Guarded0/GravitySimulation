@@ -169,7 +169,7 @@ public class OrbitDebugDisplay : MonoBehaviour
         foreach (CelestialBody celestialBody in FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID))
         {
             //Gizmos.color = celestialBody.gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
-            Gizmos.DrawRay(celestialBody.transform.position, celestialBody.initialVelocity);
+            Gizmos.DrawRay(celestialBody.transform.position, celestialBody.planetSettings.velocity);
         }
     }
 
@@ -188,15 +188,7 @@ public class OrbitDebugDisplay : MonoBehaviour
         {
             if (body == null) return;
             position = body.transform.position;
-            if (Application.isPlaying)
-            {
-                velocity = body.velocity;
-
-            }
-            else
-            {
-                velocity = body.initialVelocity;
-            }
+            velocity = body.planetSettings.velocity;
             mass = body.planetSettings.mass;
             isAnchored = body.isAnchored;
             bodyType = body.bodyType;
