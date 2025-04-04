@@ -8,7 +8,7 @@ public class DragAndDrop : MonoBehaviour
     public Transform pointeur;
     private Boolean activer = false;
     private Vector3 coordone;
-    private CelestialBody planeteACree;
+    private PlanetSettings planeteACree;
     public LayerMask layerMask;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,19 +28,19 @@ public class DragAndDrop : MonoBehaviour
                 coordone = hit.point; 
                 pointeur.position = coordone; 
             }
-            if(Input.GetMouseButtonDown(0)){
+            /*if(Input.GetMouseButtonDown(0)){
                 Instantiate(planeteACree, coordone, Quaternion.identity);                
                 activer = false;
                 
                 //Camera.main.GetComponent<MouvementCamera>().updateSelectionCible();
-            } 
+            } */
             
         }
     }
     
     public void demarerConstruction(ButtonPrefab buttonPrefab){
         activer = true;
-        planeteACree = buttonPrefab.prefab;
+        planeteACree = buttonPrefab.settings;
         //Camera.main.GetComponent<MouvementCamera>().updateSelectionCible();
     }
 }

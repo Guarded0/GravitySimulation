@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ButtonPrefab : MonoBehaviour
 {
-    public CelestialBody prefab;
+    public PlanetSettings settings;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
