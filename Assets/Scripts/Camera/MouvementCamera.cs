@@ -23,7 +23,7 @@ public class MouvementCamera : MonoBehaviour
 
     void Update()
     {
-        inputAxis = new float3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetAxis("Mouse ScrollWheel"));
+        inputAxis = new float3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetAxis("Mouse ScrollWheel") * 10);
         // orbitMode
         if (Cible.current && orbitMode && !softUnlock)
         {

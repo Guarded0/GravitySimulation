@@ -26,6 +26,7 @@ public class OrbitDebugDisplay : MonoBehaviour
     public bool drawOrbits = false;
 
     public Material trajectoryMaterial;
+    private bool lineRenderersEmpty = false;
 
     void Start()
     {
@@ -40,6 +41,7 @@ public class OrbitDebugDisplay : MonoBehaviour
     void Update()
     {
         if (drawOrbits) DrawOrbits();
+        if (!drawOrbits && !lineRenderersEmpty) HideOrbits();
     }
 
     void DrawOrbits()
@@ -110,26 +112,15 @@ public class OrbitDebugDisplay : MonoBehaviour
                 drawPoints[i][step] = newPos;
             }
         }
-
+        lineRenderersEmpty = false;
         // Draw paths
         for (int bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++)
         {
             //if (bodies[bodyIndex] == null) { continue; }
             if (virtualBodies[bodyIndex].isAnchored) { continue; }
             // gets color of the material (has to have the name as color)
-            //var pathColour = bodies[bodyIndex].gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
-            var pathColor = Color.white;
-            if (Application.isPlaying)
-            {
-                bodies[bodyIndex].trajectoryRenderer.positionCount = drawPoints[bodyIndex].Length;
-                bodies[bodyIndex].trajectoryRenderer.SetPositions(drawPoints[bodyIndex]);
-            }else
-            {
-                for (int i = 0; i < drawPoints[bodyIndex].Length - 1; i++)
-                {
-                    Debug.DrawLine(drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColor);
-                }
-            }
+            bodies[bodyIndex].trajectoryRenderer.positionCount = drawPoints[bodyIndex].Length;
+            bodies[bodyIndex].trajectoryRenderer.SetPositions(drawPoints[bodyIndex]);
         }
     }
 
@@ -152,7 +143,11 @@ public class OrbitDebugDisplay : MonoBehaviour
 
     void HideOrbits()
     {
-        // for when we use line renderers instead of Debug.DrawLine()
+        foreach (var body in NBodySimulation.celestialBodies)
+        {
+            body.trajectoryRenderer.positionCount = 0;
+        }
+        lineRenderersEmpty = true;
     }
 
     void OnValidate()
