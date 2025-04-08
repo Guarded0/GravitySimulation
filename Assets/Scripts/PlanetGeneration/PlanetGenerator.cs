@@ -63,7 +63,6 @@ public class PlanetGenerator : MonoBehaviour
         PlanetHeightShader.SetBuffer(0, "vertices", verticesBuffer);
         PlanetHeightShader.SetBuffer(0, "heights", heightsBuffer);
         PlanetHeightShader.SetFloat("seed", seed);
-        PlanetHeightShader.SetFloat("initialHeight", planetRadius);
         PlanetHeightShader.SetFloats("baseNoiseParams", baseNoiseSettings.GetValues());
         PlanetHeightShader.SetFloats("ridgidNoiseParams", ridgidNoiseSettings.GetValues());
         PlanetHeightShader.SetFloats("ridgidMaskNoiseParams", ridgidMaskNoiseSettings.GetValues());
@@ -91,6 +90,8 @@ public class PlanetGenerator : MonoBehaviour
         
         colorTextureGenerator.UpdateTexture();
         UpdateMaterial();
+
+        transform.localScale = new Vector3(planetRadius, planetRadius, planetRadius);
     }
     void GeneratePlanet()
     {

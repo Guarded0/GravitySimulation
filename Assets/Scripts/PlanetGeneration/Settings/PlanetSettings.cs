@@ -43,6 +43,7 @@ public struct PlanetComposition
 [System.Serializable]
 public struct AtmosphereComposition
 {
+    public float atmosphereDensity;
     public float oxygen;
     public float hydrogen;
     public float carbonDioxide;
@@ -50,6 +51,7 @@ public struct AtmosphereComposition
     
     public AtmosphereComposition(float _)
     {
+        this.atmosphereDensity = 0f;
         this.oxygen = 0f;
         this.hydrogen = 0f;
         this.carbonDioxide = 0f;

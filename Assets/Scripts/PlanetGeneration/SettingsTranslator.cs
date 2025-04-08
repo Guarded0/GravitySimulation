@@ -5,6 +5,7 @@ public class SettingsTranslator
     // takes variables from settings -> planet generator
     public static void SettingsToVariables(CelestialBody celestialBody, PlanetGenerator planetGenerator)
     {
+        return;
         PlanetSettings planetSettings = celestialBody.planetSettings;
         Random.InitState(planetSettings.surfaceSettings.seed);
         planetGenerator.planetRadius = planetSettings.radius;
@@ -31,7 +32,10 @@ public class SettingsTranslator
         ridgidMaskSettings.weight = 1;
         ridgidMaskSettings.offset = new Vector3(Random.value, Random.value, Random.value);
 
-        planetGenerator.atmosphereSettings.atmosphereRadius = planetSettings.radius * 1.75f;
+        // atmosphere
+
+
+        planetGenerator.atmosphereSettings.atmosphereRadius = planetSettings.radius * 1.4f;
         planetGenerator.baseNoiseSettings = baseNoiseSettings;
         planetGenerator.ridgidNoiseSettings = ridgidNoiseSettings;
         planetGenerator.ridgidMaskNoiseSettings = ridgidMaskSettings;

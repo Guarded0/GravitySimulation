@@ -121,7 +121,7 @@ Shader "Hidden/AtmosphereShader"
             half4 MainFrag(v2f input) : SV_Target
             {
                 float intensity = 1;
-
+                
                 float2 uv = input.texcoord;
                 float4 sceneColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
                 float depth = SampleSceneDepth(uv);

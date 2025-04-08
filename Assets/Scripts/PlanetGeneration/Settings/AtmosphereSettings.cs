@@ -11,6 +11,7 @@ using UnityEngine.Profiling;
 public class AtmosphereSettings
 {
     public float planetRadius = 1.0f;
+    [Range(0, 3)]
     public float atmosphereRadius = 1.0f;
     public int inScatteringPoints = 9;
     public int opticalDepthPoints = 20;
