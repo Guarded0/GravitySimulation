@@ -17,6 +17,7 @@ public class MouvementCamera : MonoBehaviour
 
     public bool orbitMode = true;
     public static bool softUnlock = false;
+    [SerializeField]
     private float3 inputAxis;
     //La derniere position de la cible
     private Vector3 dernierePosition = Vector3.zero;

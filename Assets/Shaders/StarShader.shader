@@ -172,18 +172,6 @@ Shader "Example/URPUnlitShaderBasic"
                     f = fbm(f + r);
                 }
 
-                /*color = lerp(color,
-                             _LerpColor1.rgb,
-                             clamp((f * f) * 4.0, 0.0, 1.0));
-
-                color = lerp(color,
-                             _LerpColor2.rgb,
-                             clamp(length(q), 0.0, 1.0));
-
-                color = lerp(color,
-                             _LerpColor3.rgb,
-                             clamp(length(r.x), 0.0, 1.0));
-                             */
                 float randomShi = (f * f * f + 0.6 * f * f + 0.5 * f);
                 half4 customColor = half4((randomShi * color).xyz * _Brightness, 1);
                 return customColor;

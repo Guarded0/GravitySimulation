@@ -185,6 +185,8 @@ public class AtmosphereRenderPass : ScriptableRenderPass
         material.SetFloat(oceanRadiusID, oceanRadius * planetTransform.localScale.x);
         material.SetVector(directionToSunID, (NBodySimulation.Instance.relativeBody.transform.position - planetTransform.position).normalized);
         material.SetVector("_scatteringCoefficients", atmosphereSettings.GetScatteringCoefficient());
+        material.SetVector("_atmosphereTint", atmosphereSettings.atmosphereTint);
+        material.SetFloat("_atmosphereTintStrength", atmosphereSettings.atmosphereTint.a);
         material.SetFloat("_intensity", atmosphereSettings.intensity);
         //
     }

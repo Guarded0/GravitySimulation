@@ -20,7 +20,7 @@ public class AtmosphereSettings
 
     public float scatteringStrength = 23f;
     public Vector3 wavelengths = new Vector3(700, 530, 440);
-
+    public Color atmosphereTint = new Color(0.5f, 0.7f, 1.0f, 1.0f);
     public Vector3 GetScatteringCoefficient()
     {
         float redScatter = Mathf.Pow(400 / wavelengths.x, 4) * scatteringStrength;

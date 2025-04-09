@@ -59,6 +59,8 @@ Shader "Hidden/AtmosphereShader"
             float3 _directionToSun;
             
             float3 _scatteringCoefficients;
+            float3 _atmosphereTint;
+            float _atmosphereTintStrength;
             float _intensity;
 
 	        // Returns vector (dstToSphere, dstThroughSphere)
@@ -141,7 +143,6 @@ Shader "Hidden/AtmosphereShader"
 
                 if (distanceThroughAtmosphere > 0)
                 {
-
                     const float epsilon = 0.0001;
                     float3 pointInAtmosphere = rayPos + rayDir * (distanceToAtmosphere + epsilon);
                     // calculate Lighting
@@ -158,12 +159,12 @@ Shader "Hidden/AtmosphereShader"
                         
                         float3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth) * _scatteringCoefficients);
                         float localDensity = densityAtPoint(inScatterPoint);
-                        inScatteredLight += localDensity * transmittance * _scatteringCoefficients * stepSize * _intensity ;
+                        inScatteredLight += localDensity * transmittance * _scatteringCoefficients * stepSize * _intensity;
                         inScatterPoint += rayDir * stepSize;
                         
                     }
                     inScatteredLight /= _planetRadius;
-                    
+                    inScatteredLight *= lerp(float3(1,1,1), _atmosphereTint, _atmosphereTintStrength);
                     float sceneColorTransmittance = exp(-viewRayOpticalDepth);
                     float3 finalColor = sceneColor * sceneColorTransmittance + inScatteredLight;
                     
