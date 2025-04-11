@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4137737120671038703
+--- !u!1 &3762535245935912807
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,52 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7783663986294981375}
-  - component: {fileID: 3649645886998469415}
-  - component: {fileID: 4596857221819905717}
-  - component: {fileID: 4524655759677059565}
-  - component: {fileID: 3737340570462051746}
-  - component: {fileID: 8924508274661083378}
-  - component: {fileID: 4372205676915989791}
-  m_Layer: 0
+  - component: {fileID: 6952207591652825208}
+  - component: {fileID: 7793972070673456176}
+  - component: {fileID: 7823756968994028080}
+  - component: {fileID: 4857596097048583848}
+  - component: {fileID: 1299320343753233724}
+  - component: {fileID: 8975991142476542855}
+  - component: {fileID: 8133708319437010890}
+  - component: {fileID: 4271968007959681377}
+  - component: {fileID: 230888038943662137}
+  m_Layer: 7
   m_Name: Earth Planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7783663986294981375
+--- !u!4 &6952207591652825208
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
+  m_GameObject: {fileID: 3762535245935912807}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.72, y: 0, z: -15.85}
+  m_LocalPosition: {x: 44.9, y: 0, z: 3.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3649645886998469415
+--- !u!33 &7793972070673456176
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Mesh: {fileID: 0}
---- !u!23 &4596857221819905717
+--- !u!23 &7823756968994028080
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -90,67 +92,100 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4524655759677059565
+--- !u!114 &4857596097048583848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
+  m_GameObject: {fileID: 3762535245935912807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyType: 0
+  isAnchored: 0
+  hasGravity: 1
+  rb: {fileID: 4271968007959681377}
+  planetGenerator: {fileID: 1299320343753233724}
+  trailRenderer: {fileID: 8975991142476542855}
+  trajectoryRenderer: {fileID: 8133708319437010890}
+  planetSettings:
+    mass: 0.03
+    velocity: {x: 0, y: 0, z: 19.9}
+    radius: 1
+    temperature: 0
+    planetComposition:
+      iron: 5
+      silicate: 0
+      water: 0
+    atmosphereComposition:
+      oxygen: 0
+      hydrogen: 0
+      carbonDioxide: 0
+      methane: 0
+--- !u!114 &1299320343753233724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d14a3839e6f346247b6b46e9b8ec84e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 0
-  initialSphereResolution: 161
-  planetRadius: 5
+  initialSphereResolution: 99
+  planetRadius: 1
   planetShader: {fileID: -6465566751694194690, guid: 88de1e91a46521542af26795e015dee1, type: 3}
   PlanetHeightShader: {fileID: 7200000, guid: 50f64d4cf1adfe24f89eac739262fe1a, type: 3}
   baseNoiseSettings:
     numLayers: 4
     lacunarity: 6
     persistence: 0.1
-    noiseScale: 1.06
+    noiseScale: 0.3
     elevation: 0
-    weight: 30
+    weight: 1
     offset: {x: 0.58413965, y: 0.5840824, z: 0.67360693}
   ridgidNoiseSettings:
     numLayers: 4
-    lacunarity: 1.86
-    persistence: 0.9
-    noiseScale: 1.59
-    elevation: 0
-    weight: 21.199999
-    power: 1
-    gain: 1
+    lacunarity: 2.2
+    persistence: 0.52
+    noiseScale: 1.9
+    elevation: 14.82
+    weight: 7.36
+    power: 1.52
+    gain: 2.99
     offset: {x: 0, y: 0, z: 0}
   ridgidMaskNoiseSettings:
     numLayers: 1
     lacunarity: 3.5
     persistence: 10
-    noiseScale: 1.06
-    elevation: 0
-    weight: 1
+    noiseScale: 1.57
+    elevation: 0.09
+    weight: 0.37
     offset: {x: 0.766507, y: 0.30503193, z: 0.64987665}
   colorTextureGenerator:
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.021901589, g: 0.3490566, b: 0, a: 1}
-      key1: {r: 0.041464694, g: 0.36540067, b: 0.022025034, a: 1}
-      key2: {r: 0.089960776, g: 0.5018867, b: 0.13729072, a: 0}
-      key3: {r: 0.22305693, g: 0.4521268, b: 0.22480558, a: 0}
-      key4: {r: 0.254717, g: 0.254717, b: 0.254717, a: 0}
-      key5: {r: 1, g: 1, b: 1, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 1, g: 0.92157334, b: 0.6745283, a: 1}
+      key1: {r: 0.021901589, g: 0.3490566, b: 0, a: 1}
+      key2: {r: 0.041464694, g: 0.36540067, b: 0.022025034, a: 0}
+      key3: {r: 0.089960776, g: 0.5018867, b: 0.13729072, a: 0}
+      key4: {r: 0.22305693, g: 0.4521268, b: 0.22480558, a: 0}
+      key5: {r: 0.254717, g: 0.254717, b: 0.254717, a: 0}
+      key6: {r: 1, g: 1, b: 1, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 12529
-      ctime1: 26021
-      ctime2: 44911
-      ctime3: 51272
-      ctime4: 58018
-      ctime5: 65535
-      ctime6: 0
+      ctime0: 29876
+      ctime1: 30455
+      ctime2: 38936
+      ctime3: 44911
+      ctime4: 54548
+      ctime5: 56861
+      ctime6: 57247
       ctime7: 0
       atime0: 0
       atime1: 65535
@@ -162,87 +197,42 @@ MonoBehaviour:
       atime7: 0
       m_Mode: 0
       m_ColorSpace: 0
-      m_NumColorKeys: 6
+      m_NumColorKeys: 7
       m_NumAlphaKeys: 2
     texture: {fileID: 0}
     textureResolution: 925
   oceanSettings:
     colorA: {r: 0, g: 1, b: 0.9898968, a: 0}
     colorB: {r: 0.01677644, g: 0.04698923, b: 0.2735849, a: 0}
-    depthMultiplier: 12.23
-    alphaMultiplier: 24.99
-    oceanRadius: 5.32
+    depthMultiplier: 76.52
+    alphaMultiplier: 298.95
+    oceanRadius: 1.14
     smoothness: 0.96
     waveNormalA: {fileID: 2800000, guid: aff62f833b48c7f43a754f2fb2891a54, type: 3}
     waveNormalB: {fileID: 2800000, guid: 42f4edc9446c49c438d29a81bef3e7d9, type: 3}
     waveStrength: 0.4
-    waveNormalScale: 1.15
+    waveNormalScale: 9.74
     waveSpeed: 0.11
   atmosphereSettings:
-    planetRadius: 4.7365
-    atmosphereRadius: 8.75
+    planetRadius: 1.0358205
+    atmosphereRadius: 1.33
     inScatteringPoints: 15
-    opticalDepthPoints: 20
-    densityFalloff: 12
-    intensity: 0.87
-    scatteringStrength: 2.7
+    opticalDepthPoints: 22
+    densityFalloff: 10.35
+    intensity: 5.2
+    scatteringStrength: 37.75
     wavelengths: {x: 700, y: 530, z: 440}
+    atmosphereTint: {r: 1, g: 0.009791803, b: 0, a: 0}
   needsMeshUpdate: 1
-  blendStrength: 0.49
---- !u!114 &3737340570462051746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bodyType: 0
-  mass: 0
-  isAnchored: 0
-  isPlanet: 0
-  hasGravity: 1
-  initialVelocity: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  rb: {fileID: 0}
-  planetGenerator: {fileID: 4524655759677059565}
-  trailRenderer: {fileID: 8924508274661083378}
-  trajectoryRenderer: {fileID: 4372205676915989791}
-  planetSettings:
-    mass: 0
-    radius: 5
-    temperature: 0
-    planetComposition:
-      iron: 0
-      silicate: 0
-      water: 0
-    atmosphereComposition:
-      oxygen: 0
-      hydrogen: 0
-      carbonDioxide: 0
-      methane: 0
-    surfaceSettings:
-      seed: 0
-      complexity: 1
-      mountainScale: 2.12
-      mountainFrequency: 1.59
-      mountainSharpness: 1.54
-      planetScale: 1.06
-      Roughness: 0.36
-      hasOcean: 1
-      oceanRadius: 0.4
---- !u!96 &8924508274661083378
+  blendStrength: 1.19
+--- !u!96 &8975991142476542855
 TrailRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -342,14 +332,14 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
---- !u!120 &4372205676915989791
+--- !u!120 &8133708319437010890
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137737120671038703}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -387,9 +377,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -449,3 +437,51 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!54 &4271968007959681377
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3762535245935912807}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!135 &230888038943662137
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3762535245935912807}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
