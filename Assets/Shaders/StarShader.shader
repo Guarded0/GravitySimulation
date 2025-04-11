@@ -45,11 +45,15 @@ Shader "Example/URPUnlitShaderBasic"
             struct Attributes
             {
                 float4 positionOS : POSITION; // Object space position
+                float3 normalOS : NORMAL;
+                float2 uv         : TEXCOORD0;
             };
-            struct v2f
+            struct Varyings
             {
                 float4 positionHCS : SV_POSITION; // Clip space position
                 float3 worldPos : TEXCOORD0;     // World space position
+                float3 viewVector : TEXCOORD1; // View vector
+                float3 normalWS : TEXCOORD2;
             };
             int _Temperature;
             float4 _BaseColor;
@@ -61,16 +65,20 @@ Shader "Example/URPUnlitShaderBasic"
             float4 _LerpColor3;
 
 
-            // The vertex shader definition with properties defined in the v2f
+            // The vertex shader definition with properties defined in the Varyings
             // structure. The type of the vert function must match the type (struct)
             // that it returns.
-            v2f vert(Attributes IN)
+            Varyings vert(Attributes IN)
             {
-                v2f OUT;
+                Varyings OUT;
                 // Transform object space position to clip space
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
                 // Transform object space position to world space
                 OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
+
+                float3 viewVector = mul(unity_CameraInvProjection, float4(IN.uv.xy * 2 - 1, 0, -1));
+                OUT.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
+                OUT.normalWS = TransformObjectToWorldNormal(IN.normalOS);
                 return OUT;
             }
 
@@ -147,12 +155,17 @@ Shader "Example/URPUnlitShaderBasic"
                 return v;
              }
 
+             float fresnelEffect(float3 normal, float3 viewDir, float fresnelPower)
+             {
+                 float cosTheta = max(0.0, dot(normal, viewDir));
+                 return pow(1.0 - cosTheta, fresnelPower);
+             }
             // The fragment shader definition.
-                        half4 frag(v2f i) : SV_Target
+            float4 frag(Varyings input) : SV_Target
             {
                 // Use world space position for 3D noise
-                float3 worldPos = i.worldPos;
-
+                float3 worldPos = input.worldPos;
+                
                 // Scale the world position to control the texture density
                 float3 st = worldPos * _NoiseScale;
 
@@ -171,9 +184,9 @@ Shader "Example/URPUnlitShaderBasic"
                 {
                     f = fbm(f + r);
                 }
-
+                
                 float randomShi = (f * f * f + 0.6 * f * f + 0.5 * f);
-                half4 customColor = half4((randomShi * color).xyz * _Brightness, 1);
+                float4 customColor = float4((randomShi * color).xyz * _Brightness, 1);
                 return customColor;
             }
             ENDHLSL
