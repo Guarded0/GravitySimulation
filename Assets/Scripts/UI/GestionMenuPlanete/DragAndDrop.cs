@@ -8,7 +8,7 @@ public class DragAndDrop : MonoBehaviour
     public Transform pointeur;
     private Boolean activer = false;
     private Vector3 coordone;
-    private PlanetSettings planeteACree;
+    private PlanetSettings settingPlaneteACree;
     public LayerMask layerMask;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,11 +29,9 @@ public class DragAndDrop : MonoBehaviour
                 pointeur.position = coordone; 
             }
             if(Input.GetMouseButtonDown(0)){
-                CelestialBody nouvellePlanet = new CelestialBody();
-            
-                Instantiate(nouvellePlanet, coordone, Quaternion.identity);   
-                nouvellePlanet.planetSettings = planeteACree;             
-                activer = false;            
+                NBodySimulation.Instance.CreatePlanet(coordone, settingPlaneteACree, "New planete");             
+                activer = false;    
+                pointeur.gameObject.SetActive(false);        
             }
             
         }
@@ -41,6 +39,7 @@ public class DragAndDrop : MonoBehaviour
     
     public void demarerConstruction(ButtonPrefab buttonPrefab){
         activer = true;
-        planeteACree = buttonPrefab.settings;
+        settingPlaneteACree = buttonPrefab.settings;
+        pointeur.gameObject.SetActive(true);
     }
 }
