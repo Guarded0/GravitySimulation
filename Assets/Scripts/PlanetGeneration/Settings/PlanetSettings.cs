@@ -13,7 +13,7 @@ public struct PlanetSettings
 
    // public float atmosphereDensity;
   //  public float atmosphereRadius;
-   // public float oceanRadius;
+   // public float oceanRadius; 
     public PlanetComposition planetComposition;
     public AtmosphereComposition atmosphereComposition;
 
