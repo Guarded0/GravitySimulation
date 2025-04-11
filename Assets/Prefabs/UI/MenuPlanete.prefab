@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 6690933621636871723}
   - component: {fileID: 3895595317792596552}
   - component: {fileID: 6221656228614966973}
+  - component: {fileID: 8731166470217234774}
   m_Layer: 5
   m_Name: MenuPlanete
   m_TagString: Untagged
@@ -367,6 +368,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positionOuvert: {x: 0, y: -454, z: 0}
   positionFermer: {x: 0, y: -631, z: 0}
+--- !u!114 &8731166470217234774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7025362362974127264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a9c1a031c7b27c48b646441ee5e6b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointeur: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &7630749717995376011
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,6 +680,50 @@ PrefabInstance:
     - target: {fileID: 1075015773609237744, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3067458611110653735, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8731166470217234774}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.mass
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.radius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.velocity.z
+      value: 19.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.hasOcean
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.complexity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.oceanRadius
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.planetScale
+      value: 1.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.mountainScale
+      value: 2.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.mountainFrequency
+      value: 1.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101883795497007029, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
+      propertyPath: settings.surfaceSettings.mountainSharpness
+      value: 1.54
       objectReference: {fileID: 0}
     - target: {fileID: 6518821809079765847, guid: f55719b5bcf1fab4a9b957ed4a2ec60b, type: 3}
       propertyPath: m_Name

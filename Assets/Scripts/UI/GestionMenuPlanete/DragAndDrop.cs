@@ -28,12 +28,13 @@ public class DragAndDrop : MonoBehaviour
                 coordone = hit.point; 
                 pointeur.position = coordone; 
             }
-            /*if(Input.GetMouseButtonDown(0)){
-                Instantiate(planeteACree, coordone, Quaternion.identity);                
-                activer = false;
-                
-                //Camera.main.GetComponent<MouvementCamera>().updateSelectionCible();
-            } */
+            if(Input.GetMouseButtonDown(0)){
+                CelestialBody nouvellePlanet = new CelestialBody();
+            
+                Instantiate(nouvellePlanet, coordone, Quaternion.identity);   
+                nouvellePlanet.planetSettings = planeteACree;             
+                activer = false;            
+            }
             
         }
     }
@@ -41,6 +42,5 @@ public class DragAndDrop : MonoBehaviour
     public void demarerConstruction(ButtonPrefab buttonPrefab){
         activer = true;
         planeteACree = buttonPrefab.settings;
-        //Camera.main.GetComponent<MouvementCamera>().updateSelectionCible();
     }
 }
