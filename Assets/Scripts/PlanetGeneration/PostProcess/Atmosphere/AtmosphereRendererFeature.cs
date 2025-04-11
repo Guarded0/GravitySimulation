@@ -177,14 +177,16 @@ public class AtmosphereRenderPass : ScriptableRenderPass
        var volumeComponent = VolumeManager.instance.stack.GetComponent<AtmosphereVolumeComponent>();
 
         material.SetVector(planetCenterID, planetTransform.position);
-        material.SetFloat(planetRadiusID, atmosphereSettings.planetRadius);
-        material.SetFloat(atmosphereRadiusID, atmosphereSettings.atmosphereRadius);
+        material.SetFloat(planetRadiusID, atmosphereSettings.planetRadius * planetTransform.localScale.x);
+        material.SetFloat(atmosphereRadiusID, atmosphereSettings.atmosphereRadius * planetTransform.localScale.x);
         material.SetInt(inScatteringPointsID, atmosphereSettings.inScatteringPoints);
         material.SetInt(opticalDepthPointsID, atmosphereSettings.opticalDepthPoints);
         material.SetFloat(densityFalloffID, atmosphereSettings.densityFalloff);
-        material.SetFloat(oceanRadiusID, oceanRadius);
+        material.SetFloat(oceanRadiusID, oceanRadius * planetTransform.localScale.x);
         material.SetVector(directionToSunID, (NBodySimulation.Instance.relativeBody.transform.position - planetTransform.position).normalized);
         material.SetVector("_scatteringCoefficients", atmosphereSettings.GetScatteringCoefficient());
+        material.SetVector("_atmosphereTint", atmosphereSettings.atmosphereTint);
+        material.SetFloat("_atmosphereTintStrength", atmosphereSettings.atmosphereTint.a);
         material.SetFloat("_intensity", atmosphereSettings.intensity);
         //
     }

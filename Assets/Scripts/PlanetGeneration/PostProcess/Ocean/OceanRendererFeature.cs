@@ -178,7 +178,8 @@ public class OceanRenderPass : ScriptableRenderPass
         material.SetColor(colorBID, colorB);
         material.SetFloat(depthMultiplierID, depthMultiplier);
         material.SetFloat(alphaMultiplierID, alphaMultiplier);
-        material.SetFloat(oceanRadiusID, oceanRadius);
+        material.SetFloat(oceanRadiusID, oceanRadius * planetTransform.localScale.x);
+        material.SetFloat("_planetScale", planetTransform.localScale.x);
         material.SetVector(planetPositionID, planetTransform.position);
         material.SetFloat(smoothnessID, oceanSettings.smoothness);
         material.SetVector(directionToSunID, (NBodySimulation.Instance.relativeBody.transform.position - planetTransform.position).normalized);

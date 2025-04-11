@@ -15,7 +15,8 @@ public class OceanSettings
     public Color colorB;
     public float depthMultiplier = 10.0f;
     public float alphaMultiplier = 70.0f;
-    public float oceanRadius = 5.0f;
+    [Range(0f, 2f)]
+    public float oceanRadius = 1.0f;
     public float smoothness = 1.0f;
 
 

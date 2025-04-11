@@ -10,9 +10,12 @@ public struct PlanetSettings
     public Vector3 velocity;
     public float radius;
     public float temperature;
+
+   // public float atmosphereDensity;
+  //  public float atmosphereRadius;
+   // public float oceanRadius;
     public PlanetComposition planetComposition;
     public AtmosphereComposition atmosphereComposition;
-    public SurfaceSettings surfaceSettings;
 
     public PlanetSettings(float mass)
     {
@@ -22,7 +25,6 @@ public struct PlanetSettings
         this.temperature = 5f;
         this.planetComposition = new PlanetComposition(0);
         this.atmosphereComposition = new AtmosphereComposition(0);
-        this.surfaceSettings = new SurfaceSettings(0);
     }
 }
 
@@ -54,39 +56,5 @@ public struct AtmosphereComposition
         this.hydrogen = 0f;
         this.carbonDioxide = 0f;
         this.methane = 0f;
-    }
-}
-
-[System.Serializable]
-public struct SurfaceSettings
-{
-    public int seed;
-    // surfance
-    [Range(1.0f, 10.0f)]
-    public float complexity;
-    [Range(0.1f, 5f)]
-    public float mountainScale;
-    [Range(0.1f, 5f)]
-    public float mountainFrequency;
-    public float mountainSharpness;
-    [Range(0.1f, 5f)]
-    public float planetScale;
-    public float roughness;
-    // ocean
-    public bool hasOcean;
-    public float oceanRadius;
-
-    public SurfaceSettings(float _)
-    {
-        this.seed = 0;
-        this.complexity = 1.0f;
-        this.mountainScale = 0.1f;
-        this.mountainFrequency = 0.1f;
-        this.mountainSharpness = 0.5f;
-        this.planetScale = 2f;
-        this.roughness = 2f;
-
-        this.hasOcean = false;
-        this.oceanRadius = 1f;
     }
 }

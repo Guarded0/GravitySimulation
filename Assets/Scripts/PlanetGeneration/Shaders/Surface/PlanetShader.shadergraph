@@ -20,6 +20,12 @@
         },
         {
             "m_Id": "8f9273ee424e483eb4c48c95c43e124b"
+        },
+        {
+            "m_Id": "97e5cc3cce054a9b895fde9ab50b0657"
+        },
+        {
+            "m_Id": "e092fe5df3f641248768443f9b26a561"
         }
     ],
     "m_Keywords": [],
@@ -976,6 +982,12 @@
         },
         {
             "m_Id": "8f9273ee424e483eb4c48c95c43e124b"
+        },
+        {
+            "m_Id": "97e5cc3cce054a9b895fde9ab50b0657"
+        },
+        {
+            "m_Id": "e092fe5df3f641248768443f9b26a561"
         }
     ]
 }
@@ -2093,10 +2105,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -992.0,
-            "y": 62.00001907348633,
-            "width": 206.0,
-            "height": 130.99998474121095
+            "x": -1052.0001220703125,
+            "y": 62.000003814697269,
+            "width": 205.99993896484376,
+            "height": 131.00001525878907
         }
     },
     "m_Slots": [
@@ -2294,6 +2306,34 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "97e5cc3cce054a9b895fde9ab50b0657",
+    "m_Guid": {
+        "m_GuidSerialized": "897951ff-7058-49b2-be6f-5811077d270b"
+    },
+    "m_Name": "OceanRadius",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "OceanRadius",
+    "m_DefaultReferenceName": "_OceanRadius",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 0,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "9a9c459f2a3044c895e7502b7dac8839",
@@ -2356,7 +2396,7 @@
         "linear interpolate"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": true,
+    "m_PreviewExpanded": false,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
@@ -2708,6 +2748,34 @@
     "m_Value": 1.0,
     "m_DefaultValue": 1.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector3ShaderProperty",
+    "m_ObjectId": "e092fe5df3f641248768443f9b26a561",
+    "m_Guid": {
+        "m_GuidSerialized": "5f3de2a8-f787-40e7-acf9-cc09a56e57b1"
+    },
+    "m_Name": "SunPosition",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "SunPosition",
+    "m_DefaultReferenceName": "_SunPosition",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    }
 }
 
 {

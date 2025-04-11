@@ -25,7 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Brightness: 1.07
+    - _Brightness: 1.21
     - _NoiseScale: 0.61
     - _NoiseSpeed: 0.1
     - _Temperature: 4992

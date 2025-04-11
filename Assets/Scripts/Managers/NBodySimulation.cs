@@ -17,6 +17,7 @@ public class NBodySimulation : MonoBehaviour
     public CelestialBody relativeBody = null;
     public float simulationSpeed = 1.0f;
     public bool simulate = true;
+    public GameObject planetTemplate;
     public static NBodySimulation Instance { get; private set; }
     void CreateEvent()
     {
@@ -107,7 +108,15 @@ public class NBodySimulation : MonoBehaviour
             newPos -= relativeBody.planetSettings.velocity * physicsTimeStep * simulationSpeed;
         }
 
-        body.rb.MovePosition(newPos );
+        body.rb.MovePosition(newPos);
+    }
+    public void CreatePlanet(Vector3 position, PlanetSettings planetSettings, string name = "New planet")
+    {
+        GameObject newPlanet = Instantiate(planetTemplate, position, Quaternion.identity);
+        newPlanet.transform.parent = null;
+        newPlanet.name = name;
+        newPlanet.GetComponent<CelestialBody>().planetSettings = planetSettings;
+        newPlanet.GetComponent<CelestialBody>().shouldUpdateSettings = true;
     }
     Vector3 CalculateTotalAcceleration(CelestialBody mainBody)
     {

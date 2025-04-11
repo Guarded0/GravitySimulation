@@ -56,6 +56,7 @@ Shader "Hidden/OceanShader"
             float _alphaMultiplier;
             float _oceanRadius;
             float3 _planetPosition;
+            float _planetScale;
             float3 _directionToSun;
             float _smoothness;
             float4 _specularColor;
@@ -124,8 +125,8 @@ Shader "Hidden/OceanShader"
 
 					float dstAboveWater = length(clipPlanePos - sphereCenter) - _oceanRadius;
 
-                    float opticalDepth = 1 - exp(-oceanViewDepth * _depthMultiplier);
-                    float alpha = 1 - exp(-oceanViewDepth * _alphaMultiplier);
+                    float opticalDepth = 1 - exp(-oceanViewDepth/ _planetScale * _depthMultiplier);
+                    float alpha = 1 - exp(-oceanViewDepth / _planetScale * _alphaMultiplier);
 
                     float3 oceanNormal = normalize(rayOceanIntersectPos);
 
