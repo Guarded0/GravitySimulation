@@ -10,7 +10,8 @@ public class DragAndDrop : MonoBehaviour
     private Vector3 coordone;
     private PlanetSettings settingPlaneteACree;
     public LayerMask layerMask;
-    public Transform listBouton;
+    public Transform listBoutonPlanet;
+    public Transform listBoutonEtoile;
     public GameObject prefabBouton;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -55,7 +56,15 @@ public class DragAndDrop : MonoBehaviour
         {
             GameObject nouveauBouton = Instantiate(prefabBouton, new Vector3(0, 0, 0), Quaternion.identity);
             nouveauBouton.GetComponent<ButtonPrefab>().settings = Cible.current.GetComponent<CelestialBody>().planetSettings;
-            nouveauBouton.transform.SetParent(listBouton, false);
+            nouveauBouton.transform.SetParent(listBoutonPlanet, false);
         }
+    }
+    public void afficherBoutonPlanet(){
+        listBoutonEtoile.gameObject.SetActive(false);
+        listBoutonPlanet.gameObject.SetActive(true);
+    }
+    public void afficherBoutonEtoile(){
+        listBoutonPlanet.gameObject.SetActive(false);
+        listBoutonEtoile.gameObject.SetActive(true);
     }
 }
