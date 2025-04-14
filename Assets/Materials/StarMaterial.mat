@@ -26,7 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Brightness: 1.21
-    - _NoiseScale: 0.61
+    - _NoiseScale: 16.9
     - _NoiseSpeed: 0.1
     - _Temperature: 4992
     m_Colors:

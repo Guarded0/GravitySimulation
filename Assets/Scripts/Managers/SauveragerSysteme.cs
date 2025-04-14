@@ -29,7 +29,7 @@ public class SauveragerSysteme : MonoBehaviour
 
         string donneesSysteme = JsonUtility.ToJson(doneesScene, true);
         System.IO.File.WriteAllText(filePath, donneesSysteme);
-        Debug.Log(filePath);
+ 
     }
 
     void ChargerSystemePlanetaire() {
@@ -41,10 +41,10 @@ public class SauveragerSysteme : MonoBehaviour
         DoneesScene donneesCharger = JsonUtility.FromJson<DoneesScene>(donneesSysteme);
 
         for (int i = 0; i < donneesCharger.listeDonneesPlanetes.Count; i++) {
-            NBodySimulation.Instance.CreatePlanet(donneesCharger.listeCoordonnees[i], donneesCharger.listeDonneesPlanetes[i]);
+            GameObject newPlanet = NBodySimulation.Instance.CreatePlanet(donneesCharger.listeCoordonnees[i], donneesCharger.listeDonneesPlanetes[i]);
             
-            if (donneesCharger.relativeBody != null) {
-                NBodySimulation.Instance.relativeBody.name = donneesCharger.relativeBody;
+            if (donneesCharger.listeDonneesPlanetes[i].name == donneesCharger.relativeBody) {
+                NBodySimulation.Instance.relativeBody = newPlanet.GetComponent<CelestialBody>();
             }
         }
 

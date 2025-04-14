@@ -2,10 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using System.Reflection;
+using System;
 public class Inspector : MonoBehaviour
 {
     private RectTransform rectTransform;
     public Transform inspectorSettingParent;
+    public TMP_Dropdown presetDropdown;
+    public List<PlanetShapePreset> planetShapePresets;
+    
     private List<InspectorSetting> settings;
     private bool isUIShown = false;
     private bool initialized = false;
@@ -72,11 +76,26 @@ public class Inspector : MonoBehaviour
             settings.Add(setting);
                
         }
+
+        if (presetDropdown != null)
+        {
+            presetDropdown.AddOptions(planetShapePresets.ConvertAll(p => p.name));
+            presetDropdown.onValueChanged.AddListener(OnDropdownNewValue);
+        }
+
+
         if (Cible.cibleChanged != null)
         {
             Cible.cibleChanged.AddListener(OnCibleUpdate);
         }
         initialized = true;
+    }
+    void OnDropdownNewValue(int index)
+    {
+        if (Cible.current == null) return;
+        var preset = planetShapePresets[index];
+        Cible.current.GetComponent<CelestialBody>().planetSettings.planetShapeSettings = preset;
+        Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
     }
     void OnNewValue(string input, InspectorSetting setting)
     {
@@ -91,6 +110,13 @@ public class Inspector : MonoBehaviour
             InspectorSetting setting = settings[i];
             var value = GetValueFromObject(cible, setting);
             setting.inputField.SetTextWithoutNotify(value.ToString());
+        }
+
+
+        // Dropdown
+        if (presetDropdown != null)
+        {
+            presetDropdown.value = planetShapePresets.IndexOf(Cible.current.GetComponent<CelestialBody>().planetSettings.planetShapeSettings);
         }
     }
     void SetObjectValue(Transform cible, InspectorSetting setting, object value)

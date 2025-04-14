@@ -131,7 +131,7 @@ public class OrbitDebugDisplay : MonoBehaviour
         {
             if (virtualBodies[i] == body) continue;
             if (!body.hasGravity) continue;
-            if (NBodySimulation.Instance.planetGravity == false && body.bodyType == bodyType.Planet) continue;
+            if (NBodySimulation.Instance.planetGravity == false && body.bodyType == BodyType.Planet) continue;
             Vector3 deltaPosition = body.position - virtualBodies[i].position;
             float sqrDistance = deltaPosition.sqrMagnitude;
             float acceleration = NBodySimulation.Instance.gravConstant * body.mass / sqrDistance;
@@ -176,7 +176,7 @@ public class OrbitDebugDisplay : MonoBehaviour
         public Vector3 velocity;
         public float mass;
         public bool isAnchored;
-        public bodyType bodyType;
+        public BodyType bodyType;
         public bool hasGravity; 
 
         public VirtualBody(CelestialBody body)
@@ -186,7 +186,7 @@ public class OrbitDebugDisplay : MonoBehaviour
             velocity = body.planetSettings.velocity;
             mass = body.planetSettings.mass;
             isAnchored = body.isAnchored;
-            bodyType = body.bodyType;
+            bodyType = body.planetSettings.bodyType;
             hasGravity = body.hasGravity;
         }
     }

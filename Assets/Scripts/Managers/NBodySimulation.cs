@@ -10,6 +10,7 @@ public class NBodySimulation : MonoBehaviour
     public static UnityEvent<GameObject> planetAdded;
     public static UnityEvent<GameObject> planetRemoved;
     public static List<CelestialBody> celestialBodies { get; private set; } = null;
+    public static List<CelestialBody> stars { get; private set; } = null;
     public float gravConstant = 1.0f;
     public static float physicsTimeStep { get; private set; } = 0.01f;
     public bool planetGravity = false;
@@ -42,7 +43,14 @@ public class NBodySimulation : MonoBehaviour
         }
 
         celestialBodies = new List<CelestialBody>(FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID));
-
+        stars = new List<CelestialBody>();
+        foreach (var celestialBody in celestialBodies)
+        {
+            if(celestialBody.planetSettings.bodyType == BodyType.Star)
+            {
+                stars.Add(celestialBody);
+            }
+        }
         CreateEvent();
     }
     private void Awake()
@@ -110,13 +118,15 @@ public class NBodySimulation : MonoBehaviour
 
         body.rb.MovePosition(newPos);
     }
-    public void CreatePlanet(Vector3 position, PlanetSettings planetSettings, string name = "New planet")
+    public GameObject CreatePlanet(Vector3 position, PlanetSettings planetSettings, string name = "New planet")
     {
         GameObject newPlanet = Instantiate(planetTemplate, position, Quaternion.identity);
         newPlanet.transform.parent = null;
         newPlanet.name = name;
         newPlanet.GetComponent<CelestialBody>().planetSettings = planetSettings;
         newPlanet.GetComponent<CelestialBody>().shouldUpdateSettings = true;
+        newPlanet.GetComponent<PlanetGenerator>().CreateUniqueMaterial();
+        return newPlanet;
     }
     Vector3 CalculateTotalAcceleration(CelestialBody mainBody)
     {
@@ -125,7 +135,7 @@ public class NBodySimulation : MonoBehaviour
         {
             if (mainBody == body) continue;
             if (!body.hasGravity) continue;
-            if (planetGravity == false && body.bodyType == bodyType.Planet) continue;
+            if (planetGravity == false && body.planetSettings.bodyType == BodyType.Planet) continue;
             Vector3 deltaPosition = body.transform.position - mainBody.transform.position;
             float sqrDistance = deltaPosition.sqrMagnitude;
             float acceleration = gravConstant * body.planetSettings.mass / sqrDistance;
@@ -141,11 +151,14 @@ public class NBodySimulation : MonoBehaviour
         {
             if (celestialBody.gameObject == gameObject) return;
         }
-        celestialBodies.Add(gameObject.GetComponent<CelestialBody>());
+        CelestialBody celestialBody1 = gameObject.GetComponent<CelestialBody>();
+        celestialBodies.Add(celestialBody1);
+        if (celestialBody1.planetSettings.bodyType == BodyType.Star) stars.Add(celestialBody1);
     }
     void OnPlanetRemoved(GameObject gameObject)
     {
-        celestialBodies.Remove(gameObject.GetComponent<CelestialBody>());
-
+        CelestialBody celestialBody = gameObject.GetComponent<CelestialBody>();
+        celestialBodies.Remove(celestialBody);
+        if (celestialBody.planetSettings.bodyType == BodyType.Star) stars.Remove(celestialBody);
     }
 }

@@ -182,9 +182,8 @@ public class OceanRenderPass : ScriptableRenderPass
         material.SetFloat("_planetScale", planetTransform.localScale.x);
         material.SetVector(planetPositionID, planetTransform.position);
         material.SetFloat(smoothnessID, oceanSettings.smoothness);
-        material.SetVector(directionToSunID, (NBodySimulation.Instance.relativeBody.transform.position - planetTransform.position).normalized);
+        material.SetVector(directionToSunID, (PrimaryLightSource.FindMainLightSource(planetTransform.position).position - planetTransform.position).normalized);
         material.SetColor(specularColorID, volumeComponent.specularColor.value);
-        //
         material.SetTexture("_waveNormalA", oceanSettings.waveNormalA);
         material.SetTexture("_waveNormalB", oceanSettings.waveNormalB);
         material.SetFloat("_waveStrength", oceanSettings.waveStrength);

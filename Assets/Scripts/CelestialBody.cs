@@ -1,5 +1,5 @@
 using UnityEngine;
-public enum bodyType
+public enum BodyType
 {
     Planet,
     Star
@@ -7,8 +7,6 @@ public enum bodyType
 [ExecuteAlways]
 public class CelestialBody : MonoBehaviour
 {
-    public bodyType bodyType;
-
     // if object is anchored it means it cant move at all
     public bool isAnchored = false;
 
@@ -68,17 +66,13 @@ public class CelestialBody : MonoBehaviour
 
     private void OnDestroy()
     {
-        NBodySimulation.planetRemoved.Invoke(gameObject);//
+        NBodySimulation.planetRemoved.Invoke(gameObject);
     }
     private void OnValidate()
     {
         if (planetGenerator != null)
         {
-            SettingsTranslator.SettingsToVariables(this, planetGenerator);
-        }
-        if (bodyType == bodyType.Star)
-        {
-            transform.localScale = Vector3.one * this.planetSettings.radius * 2;
+            shouldUpdateSettings = true;
         }
     }
 }
