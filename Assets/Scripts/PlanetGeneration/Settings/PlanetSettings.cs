@@ -6,25 +6,28 @@ using UnityEngine;
 [System.Serializable]
 public struct PlanetSettings
 {
+    public string name;
+    public BodyType bodyType;
     public float mass;
     public Vector3 velocity;
     public float radius;
-    public float temperature;
+    public int temperature;
 
-   // public float atmosphereDensity;
-  //  public float atmosphereRadius;
-   // public float oceanRadius;
     public PlanetComposition planetComposition;
     public AtmosphereComposition atmosphereComposition;
+    public PlanetShapePreset planetShapeSettings;
 
-    public PlanetSettings(float mass)
+    public PlanetSettings(float _)
     {
+        this.name = "Planet";
+        this.bodyType = BodyType.Planet;
         this.mass = 10f;
         this.velocity = Vector3.zero;
         this.radius = 5f;
-        this.temperature = 5f;
+        this.temperature = 5;
         this.planetComposition = new PlanetComposition(0);
         this.atmosphereComposition = new AtmosphereComposition(0);
+        this.planetShapeSettings = PlanetShapePreset.CreateInstance<PlanetShapePreset>();
     }
 }
 

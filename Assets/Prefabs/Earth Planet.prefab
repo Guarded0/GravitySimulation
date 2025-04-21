@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5350113407822290540
+--- !u!1 &3762535245935912807
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,15 +8,15 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2883938429460405388}
-  - component: {fileID: 8918727091546759203}
-  - component: {fileID: 5384712085167866747}
-  - component: {fileID: 8702164290052040275}
-  - component: {fileID: 5602065946465042267}
-  - component: {fileID: 4692775740603770469}
-  - component: {fileID: 905009571118005509}
-  - component: {fileID: 3856700058796865950}
-  - component: {fileID: 7260262955819041337}
+  - component: {fileID: 6952207591652825208}
+  - component: {fileID: 7793972070673456176}
+  - component: {fileID: 7823756968994028080}
+  - component: {fileID: 4857596097048583848}
+  - component: {fileID: 1299320343753233724}
+  - component: {fileID: 8975991142476542855}
+  - component: {fileID: 8133708319437010890}
+  - component: {fileID: 4271968007959681377}
+  - component: {fileID: 230888038943662137}
   m_Layer: 7
   m_Name: Earth Planet
   m_TagString: Untagged
@@ -24,13 +24,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2883938429460405388
+--- !u!4 &6952207591652825208
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 44.9, y: 0, z: 3.14}
@@ -39,21 +39,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8918727091546759203
+--- !u!33 &7793972070673456176
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Mesh: {fileID: 0}
---- !u!23 &5384712085167866747
+--- !u!23 &7823756968994028080
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -92,13 +92,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8702164290052040275
+--- !u!114 &4857596097048583848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff54143b5df3e68478b497a5e1f6ce2f, type: 3}
@@ -107,10 +107,10 @@ MonoBehaviour:
   bodyType: 0
   isAnchored: 0
   hasGravity: 1
-  rb: {fileID: 3856700058796865950}
-  planetGenerator: {fileID: 5602065946465042267}
-  trailRenderer: {fileID: 4692775740603770469}
-  trajectoryRenderer: {fileID: 905009571118005509}
+  rb: {fileID: 4271968007959681377}
+  planetGenerator: {fileID: 1299320343753233724}
+  trailRenderer: {fileID: 8975991142476542855}
+  trajectoryRenderer: {fileID: 8133708319437010890}
   planetSettings:
     mass: 0.03
     velocity: {x: 0, y: 0, z: 19.9}
@@ -125,13 +125,13 @@ MonoBehaviour:
       hydrogen: 0
       carbonDioxide: 0
       methane: 0
---- !u!114 &5602065946465042267
+--- !u!114 &1299320343753233724
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d14a3839e6f346247b6b46e9b8ec84e9, type: 3}
@@ -225,14 +225,14 @@ MonoBehaviour:
     atmosphereTint: {r: 1, g: 0.009791803, b: 0, a: 0}
   needsMeshUpdate: 1
   blendStrength: 1.19
---- !u!96 &4692775740603770469
+--- !u!96 &8975991142476542855
 TrailRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -332,14 +332,14 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
---- !u!120 &905009571118005509
+--- !u!120 &8133708319437010890
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -437,13 +437,13 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!54 &3856700058796865950
+--- !u!54 &4271968007959681377
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
@@ -464,13 +464,13 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &7260262955819041337
+--- !u!135 &230888038943662137
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350113407822290540}
+  m_GameObject: {fileID: 3762535245935912807}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

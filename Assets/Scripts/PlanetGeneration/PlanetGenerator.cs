@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.Rendering.DebugUI;
 
 [ExecuteInEditMode]
 public class PlanetGenerator : MonoBehaviour
@@ -8,7 +9,22 @@ public class PlanetGenerator : MonoBehaviour
     public int seed;
     public int initialSphereResolution = 10;
     public float planetRadius = 4f;
-    public Shader planetShader;
+    public int temperature = 1000;
+    public BodyType bodyType = BodyType.Planet;
+    public Shader planetShader
+    {
+        get
+        {
+            return Shader.Find("Shader Graphs/PlanetShader");
+        }
+    }
+    public Shader starShader
+    {
+        get
+        {
+            return Shader.Find("Custom/StarShader");
+        }
+    }
     public ComputeShader PlanetHeightShader;
 
     
@@ -32,7 +48,6 @@ public class PlanetGenerator : MonoBehaviour
     private void OnValidate()
     {
         needsMeshUpdate = true;
-        //GeneratePlanet();
     }
     private void Update()
     {
@@ -42,11 +57,18 @@ public class PlanetGenerator : MonoBehaviour
             GenerateMesh();
         }
     }
-    public void GenerateMesh()
+    private void GenerateMesh()
     {
-       
+        transform.localScale = new Vector3(planetRadius, planetRadius, planetRadius);
         // create base sphere
         SphereMesh sphere = new SphereMesh(initialSphereResolution);
+
+        if (bodyType == BodyType.Star)
+        {
+            SetMesh(sphere.Vertices, sphere.Triangles);
+            UpdateMaterial();
+            return;
+        }
         // prepare compute shader buffers
         ComputeBuffer verticesBuffer = new ComputeBuffer(sphere.Vertices.Length, sizeof(float) * 3);
         ComputeBuffer heightsBuffer = new ComputeBuffer(sphere.Vertices.Length, sizeof(float));
@@ -91,11 +113,6 @@ public class PlanetGenerator : MonoBehaviour
         colorTextureGenerator.UpdateTexture();
         UpdateMaterial();
 
-        transform.localScale = new Vector3(planetRadius, planetRadius, planetRadius);
-    }
-    void GeneratePlanet()
-    {
-        GenerateMesh();
     }
     void SetMesh(Vector3[] vertices, int[] triangles)
     {
@@ -117,12 +134,48 @@ public class PlanetGenerator : MonoBehaviour
     void UpdateMaterial()
     {
         Material material = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
-        material.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
-        material.SetTexture("_texture", colorTextureGenerator.texture);
+        if (material.shader == planetShader)
+        {
+            if (bodyType == BodyType.Star)
+            {
+                CreateUniqueMaterial();
+                return;
+            }
+            material.SetVector("_elevationBounds", new Vector4(sphereBounds.x, sphereBounds.y, 0f, 0f));
+            material.SetTexture("_texture", colorTextureGenerator.texture);
+        }
+        else if (material.shader == starShader)
+        {
+            if (bodyType == BodyType.Planet)
+            {
+                CreateUniqueMaterial();
+                return;
+            }
+            material.SetInt("_Temperature", temperature);
+        }
+        else
+        {
+            Debug.LogError("No material found for body type: " + bodyType);
+            return;
+        }
     }
-    void recreateMaterial()
+    public void CreateUniqueMaterial()
     {
-        Material material = new Material(planetShader);
+        Material material;
+        if (bodyType == BodyType.Planet)
+        {
+            material = new Material(planetShader);
+        }
+        else if (bodyType == BodyType.Star)
+        {
+            material = new Material(starShader);
+        }
+        else
+        {
+            Debug.LogError("No material found for body type: " + bodyType);
+            return;
+        }
+
         gameObject.GetComponent<MeshRenderer>().sharedMaterial = material;
         UpdateMaterial();
     }
@@ -139,7 +192,7 @@ public class PlanetGenerator : MonoBehaviour
 
             if (GUILayout.Button("Make unique material"))
             {
-                myScript.recreateMaterial();
+                myScript.CreateUniqueMaterial();
             }
         }
     }

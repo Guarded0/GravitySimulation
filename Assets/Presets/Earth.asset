@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b59203cf7fd20744b40bba34f5fcafc, type: 3}
+  m_Name: Earth
+  m_EditorClassIdentifier: 
+  baseNoiseSettings:
+    numLayers: 4
+    lacunarity: 6
+    persistence: 0.1
+    noiseScale: 0.3
+    elevation: 0
+    weight: 1
+    offset: {x: 0, y: 0, z: 0}
+  ridgidNoiseSettings:
+    numLayers: 4
+    lacunarity: 2.16
+    persistence: 0.55
+    noiseScale: 2.13
+    elevation: 13.65
+    weight: 7.5
+    power: 1.23
+    gain: 2.99
+    offset: {x: 0, y: 0, z: 0}
+  ridgidMaskNoiseSettings:
+    numLayers: 1
+    lacunarity: 3.5
+    persistence: 11.7
+    noiseScale: 1.57
+    elevation: 0.09
+    weight: 0.37
+    offset: {x: 0, y: 0, z: 0}

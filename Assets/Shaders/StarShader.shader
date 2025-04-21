@@ -1,20 +1,15 @@
 // This shader fills the mesh shape with a color predefined in the code.
-Shader "Example/URPUnlitShaderBasic"
+Shader "Custom/StarShader"
 {
     // The properties block of the Unity shader. In this example this block is empty
     // because the output color is predefined in the fragment shader code.
     Properties
     { 
-        _Temperature ("Temperature", int) = 1
+        _Temperature ("Temperature", int) = 1000
         _BaseColor ("Base Color", Color) = (1, 1, 1, 1) // A color property
-        _NoiseScale ("Noise Scale", Float) = 1.0        // A float property
-        _NoiseSpeed ("Noise Speed", Float) = 1.0        // A float property
-        _Brightness ("Brightness", Float) = 1.0
-
-        // Add new color properties for lerping
-        [HDR] _LerpColor1 ("Lerp Color 1", Color) = (0.666667,0.666667,0.498039, 1) // First lerp color
-        [HDR] _LerpColor2 ("Lerp Color 2", Color) = (0, 0, 0.164706, 1) // Second lerp color
-        [HDR] _LerpColor3 ("Lerp Color 3", Color) = (0.666667, 1, 1, 1) // Third lerp color
+        _NoiseScale ("Noise Scale", Float) = 16.0        // A float property
+        _NoiseSpeed ("Noise Speed", Float) = 0.1        // A float property
+        _Brightness ("Brightness", Float) = 1.2
 
         }
 
@@ -54,15 +49,13 @@ Shader "Example/URPUnlitShaderBasic"
                 float3 worldPos : TEXCOORD0;     // World space position
                 float3 viewVector : TEXCOORD1; // View vector
                 float3 normalWS : TEXCOORD2;
+                float4 positionOS : TEXCOORD3; // Object space position
             };
             int _Temperature;
             float4 _BaseColor;
             float _NoiseScale;
             float _NoiseSpeed;
             float _Brightness;
-            float4 _LerpColor1;
-            float4 _LerpColor2;
-            float4 _LerpColor3;
 
 
             // The vertex shader definition with properties defined in the Varyings
@@ -79,6 +72,7 @@ Shader "Example/URPUnlitShaderBasic"
                 float3 viewVector = mul(unity_CameraInvProjection, float4(IN.uv.xy * 2 - 1, 0, -1));
                 OUT.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
                 OUT.normalWS = TransformObjectToWorldNormal(IN.normalOS);
+                OUT.positionOS = IN.positionOS;
                 return OUT;
             }
 
@@ -163,11 +157,9 @@ Shader "Example/URPUnlitShaderBasic"
             // The fragment shader definition.
             float4 frag(Varyings input) : SV_Target
             {
-                // Use world space position for 3D noise
-                float3 worldPos = input.worldPos;
                 
                 // Scale the world position to control the texture density
-                float3 st = worldPos * _NoiseScale;
+                float3 st = input.positionOS * _NoiseScale;
 
                 float3 color = sampleGradientColor(_Temperature);
                 color = float3(clamp(color.x, 0,1), clamp(color.y, 0,1), clamp(color.z, 0,1));
