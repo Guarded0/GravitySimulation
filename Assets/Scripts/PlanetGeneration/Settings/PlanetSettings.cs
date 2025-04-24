@@ -13,7 +13,7 @@ public struct PlanetSettings
     public float radius;
     public int temperature;
 
-    public PlanetComposition planetComposition;
+    public SurfaceColor surfaceColor;
     public AtmosphereComposition atmosphereComposition;
     public PlanetShapePreset planetShapeSettings;
 
@@ -25,23 +25,22 @@ public struct PlanetSettings
         this.velocity = Vector3.zero;
         this.radius = 5f;
         this.temperature = 5;
-        this.planetComposition = new PlanetComposition(0);
+        this.surfaceColor = new SurfaceColor();
         this.atmosphereComposition = new AtmosphereComposition(0);
         this.planetShapeSettings = PlanetShapePreset.CreateInstance<PlanetShapePreset>();
     }
 }
 
 [System.Serializable]
-public struct PlanetComposition
+public struct SurfaceColor
 {
-    public float iron;
-    public float silicate;
-    public float water;
-    public PlanetComposition(float _)
+    public Color low, mid, high;
+
+    public SurfaceColor(float _)
     {
-        this.iron = 0;
-        this.silicate = 0;
-        this.water = 0;
+        this.low = Color.black;
+        this.mid = Color.grey;
+        this.high = Color.white;
     }
 }
 

@@ -13,13 +13,21 @@ public class Inspector : MonoBehaviour
     private List<InspectorSetting> settings;
     private bool isUIShown = false;
     private bool initialized = false;
+
+    public enum SettingType
+    {
+        Float,
+        Color,
+    }
     public struct InspectorSetting
     {
         public Transform panel;
         public InspectorSettingName settingName;
         public TMP_InputField inputField;
+        public ColorField colorField;
         public FieldInfo fieldInfo;
         public bool isNested;
+        public SettingType settingType;
         private static FieldInfo GetNestedFieldInfo(string fieldName)
         {
             FieldInfo field = typeof(CelestialBody).GetField("planetSettings");
@@ -35,6 +43,13 @@ public class Inspector : MonoBehaviour
             // TODO: account for better detection
             this.settingName = panel.GetComponentInChildren<InspectorSettingName>();
             this.inputField = panel.GetComponentInChildren<TMP_InputField>();
+            this.colorField = panel.GetComponentInChildren<ColorField>();
+            if (inputField != null)
+                this.settingType = SettingType.Float;
+            else if (colorField != null)
+                this.settingType = SettingType.Color;
+            else
+                this.settingType = SettingType.Float;
 
             string variableName = settingName.variableName;
             this.isNested = variableName.Contains("/");
@@ -43,6 +58,7 @@ public class Inspector : MonoBehaviour
             else
                 this.fieldInfo = typeof(PlanetSettings).GetField(settingName.variableName);
            
+
             
         }
     }
@@ -72,7 +88,15 @@ public class Inspector : MonoBehaviour
             if (children[i].parent != inspectorSettingParent) continue;
             if (children[i].GetComponent<InspectorSettingName>() == null) continue;
             InspectorSetting setting = new InspectorSetting(children[i]);
-            setting.inputField.onEndEdit.AddListener((string str) => OnNewValue(str, setting));
+            switch(setting.settingType)
+            {
+                case SettingType.Float:
+                    setting.inputField.onEndEdit.AddListener((string str) => OnNewValue(str, setting));
+                    break;
+                case SettingType.Color:
+                    setting.colorField.onColorChanged.AddListener((Color color) => OnColorValue(color, setting));
+                    break;
+            }
             settings.Add(setting);
                
         }
@@ -103,13 +127,21 @@ public class Inspector : MonoBehaviour
         SetObjectValue(Cible.current, setting, newValue);
         Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
     }
+    void OnColorValue(Color color, InspectorSetting setting)
+    {
+        SetObjectValue(Cible.current, setting, color);
+        Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
+    }
     void UpdateFromCible(Transform cible)
     {
         for (int i = 0; i < settings.Count; i++)
         { 
             InspectorSetting setting = settings[i];
             var value = GetValueFromObject(cible, setting);
-            setting.inputField.SetTextWithoutNotify(value.ToString());
+            if (setting.settingType == SettingType.Float)
+                setting.inputField.SetTextWithoutNotify(value.ToString());
+            else
+                setting.colorField.SetColor((Color)value);
         }
 
 
