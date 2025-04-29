@@ -34,8 +34,8 @@ public class ColorField : MonoBehaviour
         Action action = () => colorPicked = true;
         Action actionCancel = () =>
         {
-            colorPicked = false;
             colorPickerScript.SetColor(colorImage.color);
+            colorPicked = true;
         };
         colorPicker.transform.Find("Accept").GetComponent<Button>().onClick.AddListener(action.Invoke);
         colorPicker.transform.Find("Cancel").GetComponent<Button>().onClick.AddListener(actionCancel.Invoke);

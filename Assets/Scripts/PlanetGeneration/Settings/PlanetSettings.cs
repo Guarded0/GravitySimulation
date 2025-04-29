@@ -15,6 +15,7 @@ public struct PlanetSettings
 
     public SurfaceColor surfaceColor;
     public AtmosphereComposition atmosphereComposition;
+    public OceanSettings oceanSettings;
     public PlanetShapePreset planetShapeSettings;
 
     public PlanetSettings(float _)
@@ -27,6 +28,7 @@ public struct PlanetSettings
         this.temperature = 5;
         this.surfaceColor = new SurfaceColor();
         this.atmosphereComposition = new AtmosphereComposition(0);
+        this.oceanSettings = new OceanSettings();
         this.planetShapeSettings = PlanetShapePreset.CreateInstance<PlanetShapePreset>();
     }
 }
@@ -43,7 +45,6 @@ public struct SurfaceColor
         this.high = Color.white;
     }
 }
-
 [System.Serializable]
 public struct AtmosphereComposition
 {

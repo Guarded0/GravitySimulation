@@ -36,9 +36,10 @@ public class SettingsTranslator
                 new GradientAlphaKey(1f, 0.5f),
                 new GradientAlphaKey(1f, 1f)
             }
-        );
+        );//
         planetGenerator.colorTextureGenerator.colorGradient = surfaceColor;
 
+        planetGenerator.oceanSettings = celestialBody.planetSettings.oceanSettings;
 
 
         planetGenerator.needsMeshUpdate = true;

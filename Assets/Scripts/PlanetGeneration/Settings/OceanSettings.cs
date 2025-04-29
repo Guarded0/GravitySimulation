@@ -13,8 +13,8 @@ public class OceanSettings
 
     public Color colorA;
     public Color colorB;
-    public float depthMultiplier = 10.0f;
-    public float alphaMultiplier = 70.0f;
+    public float depthMultiplier = 75.0f;
+    public float alphaMultiplier = 298.0f;
     [Range(0f, 2f)]
     public float oceanRadius = 1.0f;
     public float smoothness = 1.0f;
@@ -22,7 +22,7 @@ public class OceanSettings
 
     public Texture2D waveNormalA;
     public Texture2D waveNormalB;
-    public float waveStrength = 1f;
-    public float waveNormalScale = 1f;
-    public float waveSpeed = 1f;
+    public float waveStrength = 0.4f;
+    public float waveNormalScale = 9.75f;
+    public float waveSpeed = 0.1f;
 }
