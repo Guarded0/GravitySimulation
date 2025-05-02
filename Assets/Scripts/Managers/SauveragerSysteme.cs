@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
 
 
 public class SauveragerSysteme : MonoBehaviour
@@ -12,7 +11,7 @@ public class SauveragerSysteme : MonoBehaviour
         filePath = Application.persistentDataPath + "/data.json";
     }
 
-    void SauveragerSystemePlanetaire() {
+    void SauveragerSystemePlanetaire(string nomFichier) {
         DoneesScene doneesScene = new DoneesScene();
 
         foreach (CelestialBody planete in NBodySimulation.celestialBodies) {
@@ -28,7 +27,8 @@ public class SauveragerSysteme : MonoBehaviour
         }
 
         string donneesSysteme = JsonUtility.ToJson(doneesScene, true);
-        System.IO.File.WriteAllText(filePath, donneesSysteme);
+        string cheminComplet = Application.persistentDataPath + "/" + nomFichier + ".json";
+        System.IO.File.WriteAllText(cheminComplet, donneesSysteme);
  
     }
 
@@ -50,9 +50,31 @@ public class SauveragerSysteme : MonoBehaviour
 
         NBodySimulation.Instance.gravConstant = donneesCharger.gravConstant;
         NBodySimulation.Instance.planetGravity = donneesCharger.planetGravity;
+    }
 
-        
+    public void ChargerSystemePlanetaireDepuisFichier(string nomFichier) {
+        string chemin = Application.persistentDataPath + "/" + nomFichier + ".json";
 
+        if (!System.IO.File.Exists(chemin))
+        return;
+
+        string donneesSysteme = System.IO.File.ReadAllText(chemin);
+        DoneesScene donneesCharger = JsonUtility.FromJson<DoneesScene>(donneesSysteme);
+
+        foreach (CelestialBody planete in NBodySimulation.celestialBodies) {
+            Destroy(planete.gameObject);
+        }
+
+        for (int i = 0; i < donneesCharger.listeDonneesPlanetes.Count; i++) {
+            GameObject newPlanet = NBodySimulation.Instance.CreatePlanet(donneesCharger.listeCoordonnees[i], donneesCharger.listeDonneesPlanetes[i]);
+
+            if (donneesCharger.listeDonneesPlanetes[i].name == donneesCharger.relativeBody) {
+                NBodySimulation.Instance.relativeBody = newPlanet.GetComponent<CelestialBody>();
+            }
+        }
+
+        NBodySimulation.Instance.gravConstant = donneesCharger.gravConstant;
+        NBodySimulation.Instance.planetGravity = donneesCharger.planetGravity;
     }
 
     [System.Serializable]
@@ -65,12 +87,13 @@ public class SauveragerSysteme : MonoBehaviour
         public string relativeBody;
     }
 
-    private void Update()
-    {
+    private void Update() {
         if (Input.GetKeyDown(KeyCode.K)) {
-            SauveragerSystemePlanetaire();
-        } if (Input.GetKeyDown(KeyCode.L)) {
-            ChargerSystemePlanetaire();
+            string horodatage = System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+            SauveragerSystemePlanetaire("sauvegarde_" + horodatage);
+        }
+        if (Input.GetKeyDown(KeyCode.M)) {
+            FindFirstObjectByType<MenuSauvegardes>().AfficherMenu();
         }
     }
 }
