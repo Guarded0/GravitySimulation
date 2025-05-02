@@ -12,7 +12,7 @@ public class resolution : MonoBehaviour
         // Obtenir toutes les résolutions disponibles
         resolutions = Screen.resolutions;
 
-        // Nettoyer les anciennes options
+        // enlever les anciennes options
         resolutionDropdown.ClearOptions();
 
         // Créer une liste de chaînes de texte pour les options
@@ -22,7 +22,7 @@ public class resolution : MonoBehaviour
         for (int i = 0; i < resolutions.Length; i++)
         {
             string option = resolutions[i].width + " x " + resolutions[i].height + " @ " + resolutions[i].refreshRate + "Hz";
-            if (!options.Contains(option)) // éviter les doublons
+            if (!options.Contains(option)) 
                 options.Add(option);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
