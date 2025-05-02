@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections;
 
 public class DragAndDrop : MonoBehaviour
 {
@@ -15,7 +16,8 @@ public class DragAndDrop : MonoBehaviour
     public Transform listBoutonPlanet;
     public Transform listBoutonEtoile;
     public GameObject prefabBouton;
-    public TMP_InputField nomsNouveauBouton; 
+    public TMP_InputField nomsNouveauBouton;
+    private Vector3 vitesse;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,22 +32,49 @@ public class DragAndDrop : MonoBehaviour
         if (activer)
         {
             RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, float.MaxValue, layerMask))
+            if (lancerRayonSurPlan(out hit))
             {
                 coordone = hit.point;
                 pointeur.position = coordone;
             }
             if (Input.GetMouseButtonDown(0))
             {
-                NBodySimulation.Instance.CreatePlanet(coordone, settingPlaneteACree, "New planete");
-                activer = false;
-                pointeur.gameObject.SetActive(false);
-            }
 
+                StartCoroutine(creerPlanete());
+            }
         }
     }
+    public bool lancerRayonSurPlan(out RaycastHit raycastHit)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        return Physics.Raycast(ray, out raycastHit, float.MaxValue, layerMask);
+    }
+    
+    public IEnumerator creerPlanete()
+    {
+        activer = false;
+        yield return new WaitForEndOfFrame();
 
+        RaycastHit raycastHit;
+
+        while (true)
+        {
+
+            lancerRayonSurPlan(out raycastHit);
+            vitesse = raycastHit.point - coordone;
+            if (Input.GetMouseButtonDown(0))
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        settingPlaneteACree.velocity = vitesse;
+        NBodySimulation.Instance.CreatePlanet(coordone, settingPlaneteACree);
+        pointeur.gameObject.SetActive(false);
+       
+
+    }
     public void demarerConstruction(ButtonPrefab buttonPrefab)
     {
         activer = true;

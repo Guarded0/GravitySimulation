@@ -46,34 +46,15 @@ public class OrbitDebugDisplay : MonoBehaviour
 
     void DrawOrbits()
     {
-        // gets all the bodies
-        List<CelestialBody> bodies = NBodySimulation.celestialBodies;
-        if (!Application.isPlaying && (bodies[0] == null))
-        {
-            bodies = new List<CelestialBody>(FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID));
-        }
         // creates virtual body array
-        var virtualBodies = new VirtualBody[bodies.Count];
+        var virtualBodies = CreateVirtualBodies();
         // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
-        var drawPoints = new Vector3[bodies.Count][];
+        var drawPoints = new Vector3[virtualBodies.Length][];
         // index of the body thats relative (have to find it first)
-        int relativeIndex = 0;
-        Vector3 relativeBodyInitialPosition = Vector3.zero;
+        int relativeIndex = FindRelativeBody();
+        Vector3 relativeBodyInitialPosition = virtualBodies[relativeIndex].position;
 
-        // Initialize virtual bodies (don't want to move the actual bodies)
-        for (int i = 0; i < virtualBodies.Length; i++)
-        {
-            virtualBodies[i] = new VirtualBody(bodies[i]);
 
-            drawPoints[i] = new Vector3[numSteps];
-
-            // when the relative body is found
-            if (isRelativeToBody && bodies[i] == relativeBody)
-            {
-                relativeIndex = i;
-                relativeBodyInitialPosition = virtualBodies[i].position;
-            }
-        }
 
         // Simulate
         for (int step = 0; step < numSteps; step++)
@@ -114,6 +95,23 @@ public class OrbitDebugDisplay : MonoBehaviour
         }
         lineRenderersEmpty = false;
         // Draw paths
+        DrawPaths(virtualBodies, drawPoints);
+    }
+
+    VirtualBody[] CreateVirtualBodies()
+    {
+        List<CelestialBody> bodies = NBodySimulation.celestialBodies;
+        VirtualBody[] virtualBodies = new VirtualBody[bodies.Count];
+        for (int i = 0; i < virtualBodies.Length; i++)
+        {
+            virtualBodies[i] = new VirtualBody(bodies[i]);
+        }
+        return virtualBodies;
+    }
+
+    void DrawPaths(in VirtualBody[] virtualBodies, in Vector3[][] drawPoints)
+    {
+        var bodies = NBodySimulation.celestialBodies;
         for (int bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++)
         {
             //if (bodies[bodyIndex] == null) { continue; }
@@ -123,7 +121,18 @@ public class OrbitDebugDisplay : MonoBehaviour
             bodies[bodyIndex].trajectoryRenderer.SetPositions(drawPoints[bodyIndex]);
         }
     }
-
+    int FindRelativeBody()
+    {
+        List<CelestialBody> bodies = NBodySimulation.celestialBodies;
+        for (int i = 0; i < bodies.Count; i++)
+        {
+            if (bodies[i] == relativeBody)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
     Vector3 CalculateAcceleration(int i, VirtualBody[] virtualBodies)
     {
         Vector3 totalAcceleration = Vector3.zero;
@@ -140,7 +149,15 @@ public class OrbitDebugDisplay : MonoBehaviour
         }
         return totalAcceleration;
     }
+    Vector3[] SimulateBodyOrbit(PlanetSettings planetSettings,int generations)
+    {
+        Vector3[] positions = new Vector3[generations];
 
+
+
+
+        return positions;
+    }
     void HideOrbits()
     {
         foreach (var body in NBodySimulation.celestialBodies)
