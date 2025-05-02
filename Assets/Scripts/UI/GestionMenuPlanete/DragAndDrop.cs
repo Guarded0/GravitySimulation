@@ -1,7 +1,9 @@
 using System;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class DragAndDrop : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class DragAndDrop : MonoBehaviour
     public Transform listBoutonPlanet;
     public Transform listBoutonEtoile;
     public GameObject prefabBouton;
+    public TMP_InputField nomsNouveauBouton; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -54,10 +57,19 @@ public class DragAndDrop : MonoBehaviour
     {
         if (Cible.current != null)
         {
+            Debug.Log("star");
             GameObject nouveauBouton = Instantiate(prefabBouton, new Vector3(0, 0, 0), Quaternion.identity);
+            Debug.Log("Instant");
             nouveauBouton.GetComponent<ButtonPrefab>().settings = Cible.current.GetComponent<CelestialBody>().planetSettings;
-            nouveauBouton.transform.SetParent(listBoutonPlanet, false);
+            nouveauBouton.GetComponentInChildren<TMP_Text>().text = nomsNouveauBouton.text;
+            if(Cible.current.GetComponent<CelestialBody>().planetSettings.bodyType == BodyType.Planet){
+            nouveauBouton.transform.SetParent(listBoutonPlanet); 
+            } else{
+               nouveauBouton.transform.SetParent(listBoutonEtoile); 
+            }
+            Debug.Log("3");
         }
+
     }
     public void afficherBoutonPlanet(){
         listBoutonEtoile.gameObject.SetActive(false);
