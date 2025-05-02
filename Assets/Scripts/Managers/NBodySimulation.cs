@@ -19,6 +19,9 @@ public class NBodySimulation : MonoBehaviour
     public float simulationSpeed = 1.0f;
     public bool simulate = true;
     public GameObject planetTemplate;
+
+    public OrbitDebugDisplay orbitDebugDisplay;
+    public bool drawOrbits = false;
     public static NBodySimulation Instance { get; private set; }
     void CreateEvent()
     {
@@ -69,6 +72,10 @@ public class NBodySimulation : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (orbitDebugDisplay != null)
+        {
+            orbitDebugDisplay.drawOrbits = drawOrbits;
+        }
         if (!Application.isPlaying) return;
         if (!simulate) return;
         Vector3 offsetPosition = Vector3.zero;

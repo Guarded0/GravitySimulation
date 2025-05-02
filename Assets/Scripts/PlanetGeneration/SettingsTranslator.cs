@@ -20,7 +20,27 @@ public class SettingsTranslator
             planetGenerator.baseNoiseSettings = celestialBody.planetSettings.planetShapeSettings.baseNoiseSettings;
             planetGenerator.ridgidNoiseSettings = celestialBody.planetSettings.planetShapeSettings.ridgidNoiseSettings;
             planetGenerator.ridgidMaskNoiseSettings = celestialBody.planetSettings.planetShapeSettings.ridgidMaskNoiseSettings;
-        }//
+        }
+        
+        Gradient surfaceColor = new Gradient();
+        surfaceColor.SetKeys(
+            new GradientColorKey[]
+            {
+                new GradientColorKey(celestialBody.planetSettings.surfaceColor.low, 0f),
+                new GradientColorKey(celestialBody.planetSettings.surfaceColor.mid, 0.5f),
+                new GradientColorKey(celestialBody.planetSettings.surfaceColor.high, 1f)
+            },
+            new GradientAlphaKey[]
+            {
+                new GradientAlphaKey(1f, 0f),
+                new GradientAlphaKey(1f, 0.5f),
+                new GradientAlphaKey(1f, 1f)
+            }
+        );//
+        planetGenerator.colorTextureGenerator.colorGradient = surfaceColor;
+
+        planetGenerator.oceanSettings = celestialBody.planetSettings.oceanSettings;
+
 
         planetGenerator.needsMeshUpdate = true;
     }
