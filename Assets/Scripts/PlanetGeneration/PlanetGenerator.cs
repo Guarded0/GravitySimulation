@@ -179,7 +179,7 @@ public class PlanetGenerator : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().sharedMaterial = material;
         UpdateMaterial();
     }
-
+#if UNITY_EDITOR
 
     [CustomEditor(typeof(PlanetGenerator))]
     public class MyScriptEditor : Editor
@@ -196,4 +196,5 @@ public class PlanetGenerator : MonoBehaviour
             }
         }
     }
+#endif
 }

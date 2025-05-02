@@ -1206,6 +1206,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4150922642694497936}
     m_Modifications:
+    - target: {fileID: 331041030392372104, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
+      propertyPath: m_MaxValue
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1019852046502087646, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
       propertyPath: m_Name
       value: SettingSlider
