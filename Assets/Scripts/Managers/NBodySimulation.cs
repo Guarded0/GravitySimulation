@@ -23,6 +23,8 @@ public class NBodySimulation : MonoBehaviour
     public OrbitDebugDisplay orbitDebugDisplay;
     public bool drawOrbits = false;
     public static NBodySimulation Instance { get; private set; }
+
+    private GameObject bodyContainer = null;
     void CreateEvent()
     {
         if (planetAdded == null)
@@ -39,12 +41,14 @@ public class NBodySimulation : MonoBehaviour
         if (Instance != null && Instance != this)
         {
             Destroy(this);
+            return;
         }
         else
         {
             Instance = this;
         }
-
+        
+        bodyContainer = GameObject.Find("BodyContainer") ?? new GameObject("BodyContainer");
         celestialBodies = new List<CelestialBody>(FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID));
         stars = new List<CelestialBody>();
         foreach (var celestialBody in celestialBodies)
@@ -128,7 +132,7 @@ public class NBodySimulation : MonoBehaviour
     public GameObject CreatePlanet(Vector3 position, PlanetSettings planetSettings, string name = "New planet")
     {
         GameObject newPlanet = Instantiate(planetTemplate, position, Quaternion.identity);
-        newPlanet.transform.parent = null;
+        newPlanet.transform.parent = bodyContainer.transform;
         newPlanet.name = name;
         newPlanet.GetComponent<CelestialBody>().planetSettings = planetSettings;
         newPlanet.GetComponent<CelestialBody>().shouldUpdateSettings = true;

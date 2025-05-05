@@ -15,7 +15,7 @@ public class CelestialBody : MonoBehaviour
 
     // gameobject rigidbody
     public Rigidbody rb;
-    public PlanetGenerator planetGenerator;
+    private PlanetGenerator planetGenerator;
     public TrailRenderer trailRenderer;
     public LineRenderer trajectoryRenderer;
 
@@ -49,14 +49,12 @@ public class CelestialBody : MonoBehaviour
 
         // setup trail
         trailRenderer.time = 15f;
-        trailRenderer.startColor = Color.white;
-        trailRenderer.endColor = Color.white;
         trailRenderer.startWidth = 0.2f;
         // setup trajectory
-        trajectoryRenderer.startColor = Color.white;
-        trajectoryRenderer.endColor = Color.white;
+        UpdateLineRenderers();
         trajectoryRenderer.startWidth = 0.1f;
 
+        shouldUpdateSettings = true;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -74,5 +72,12 @@ public class CelestialBody : MonoBehaviour
         {
             shouldUpdateSettings = true;
         }
+    }
+    void UpdateLineRenderers()
+    {
+        trailRenderer.startColor = planetSettings.surfaceColor.mid;
+        trailRenderer.endColor = planetSettings.surfaceColor.mid;
+        trajectoryRenderer.startColor = planetSettings.surfaceColor.mid;
+        trajectoryRenderer.endColor = planetSettings.surfaceColor.mid;
     }
 }

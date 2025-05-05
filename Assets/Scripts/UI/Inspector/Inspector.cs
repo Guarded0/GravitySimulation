@@ -156,7 +156,8 @@ public class Inspector : MonoBehaviour
         if (setting.isNested)
             SetNestedObjectValue(cible, setting, value);
         else
-            setting.fieldInfo.SetValue(GetSettingObject(cible, setting), value);
+            setting.fieldInfo.SetValue(cible.GetComponent<CelestialBody>().planetSettings, value);
+
     }
     void SetNestedObjectValue(Transform cible, InspectorSetting setting, object value)
     {

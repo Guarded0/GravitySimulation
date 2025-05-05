@@ -258,9 +258,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8731166470217234774, guid: 366bbed7f0b3fb442b267ce0cf77340c, type: 3}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DragAndDrop, Assembly-CSharp
-        m_MethodName: demarerConstruction
+        m_MethodName: 
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 6101883795497007029}
@@ -283,16 +283,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
+    name: Planet
+    bodyType: 0
     mass: 0
     velocity: {x: 0, y: 0, z: 0}
+    isAnchored: 0
+    hasGravity: 1
     radius: 0
     temperature: 0
-    planetComposition:
-      iron: 0
-      silicate: 0
-      water: 0
+    surfaceColor:
+      low: {r: 0, g: 0, b: 0, a: 1}
+      mid: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+      high: {r: 1, g: 1, b: 1, a: 1}
     atmosphereComposition:
       oxygen: 0
       hydrogen: 0
       carbonDioxide: 0
       methane: 0
+    oceanSettings:
+      colorA: {r: 0, g: 0, b: 0, a: 0}
+      colorB: {r: 0, g: 0, b: 0, a: 0}
+      depthMultiplier: 75
+      alphaMultiplier: 298
+      oceanRadius: 1
+      oceanPreset: {fileID: 0}
+    planetShapeSettings: {fileID: 0}
