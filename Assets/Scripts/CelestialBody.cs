@@ -7,12 +7,6 @@ public enum BodyType
 [ExecuteAlways]
 public class CelestialBody : MonoBehaviour
 {
-    // if object is anchored it means it cant move at all
-    public bool isAnchored = false;
-
-    // if it has gravity
-    public bool hasGravity = true;
-
     // gameobject rigidbody
     public Rigidbody rb;
     private PlanetGenerator planetGenerator;
@@ -41,7 +35,7 @@ public class CelestialBody : MonoBehaviour
             trajectoryRenderer = gameObject.AddComponent<LineRenderer>();
         }
 
-        if (isAnchored)
+        if (planetSettings.isAnchored)
         {
             rb.constraints = RigidbodyConstraints.FreezePosition;
         }

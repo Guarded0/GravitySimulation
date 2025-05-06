@@ -21,9 +21,6 @@ public class OrbitDebugDisplay : MonoBehaviour
     public bool isRelativeToBody = false;
     public CelestialBody relativeBody = null;
 
-    // well... if u want to draw the damn orbits
-    public bool drawOrbits = false;
-
     public Material trajectoryMaterial;
     private bool lineRenderersEmpty = false;
 
@@ -44,8 +41,8 @@ public class OrbitDebugDisplay : MonoBehaviour
 
     void Update()
     {
-        if (drawOrbits) DrawOrbits();
-        if (!drawOrbits && !lineRenderersEmpty) HideOrbits();
+        if (NBodySimulation.Instance.drawOrbits) DrawOrbits();
+        if (!NBodySimulation.Instance.drawOrbits && !lineRenderersEmpty) HideOrbits();
     }
 
     void DrawOrbits()

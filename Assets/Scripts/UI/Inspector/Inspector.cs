@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.UI;
 using System.Reflection;
 using System;
 public class Inspector : MonoBehaviour
@@ -9,7 +10,7 @@ public class Inspector : MonoBehaviour
     public Transform inspectorSettingParent;
     public TMP_Dropdown presetDropdown;
     public List<PlanetShapePreset> planetShapePresets;
-    
+
     private List<InspectorSetting> settings;
     private bool isUIShown = false;
     private bool initialized = false;
@@ -18,14 +19,15 @@ public class Inspector : MonoBehaviour
     {
         Float,
         Color,
+        Bool,
+        Unkown
     }
     public struct InspectorSetting
     {
         public Transform panel;
         public InspectorSettingName settingName;
-        public TMP_InputField inputField;
-        public ColorField colorField;
         public FieldInfo fieldInfo;
+        public Component targetComponent;
         public bool isNested;
         public SettingType settingType;
         private static FieldInfo GetNestedFieldInfo(string fieldName)
@@ -42,14 +44,28 @@ public class Inspector : MonoBehaviour
             this.panel = panel;
             // TODO: account for better detection
             this.settingName = panel.GetComponentInChildren<InspectorSettingName>();
-            this.inputField = panel.GetComponentInChildren<TMP_InputField>();
-            this.colorField = panel.GetComponentInChildren<ColorField>();
-            if (inputField != null)
+
+            if (panel.GetComponentInChildren<TMP_InputField>() != null)
+            {
+                this.targetComponent = panel.GetComponentInChildren<TMP_InputField>();
                 this.settingType = SettingType.Float;
-            else if (colorField != null)
+            }
+            else if (panel.GetComponentInChildren<ColorField>() != null)
+            {
+                this.targetComponent = panel.GetComponentInChildren<ColorField>();
                 this.settingType = SettingType.Color;
+            }
+            else if (panel.GetComponentInChildren<Toggle>() != null)
+            {
+                this.targetComponent = panel.GetComponentInChildren<Toggle>();
+                this.settingType = SettingType.Bool;
+            }
             else
-                this.settingType = SettingType.Float;
+            {
+                this.targetComponent = null;
+                this.settingType = SettingType.Unkown;
+            }
+
 
             string variableName = settingName.variableName;
             this.isNested = variableName.Contains("/");
@@ -91,10 +107,13 @@ public class Inspector : MonoBehaviour
             switch(setting.settingType)
             {
                 case SettingType.Float:
-                    setting.inputField.onEndEdit.AddListener((string str) => OnNewValue(str, setting));
+                    ((TMP_InputField)setting.targetComponent).onEndEdit.AddListener((string str) => OnNewValue(str, setting));
                     break;
                 case SettingType.Color:
-                    setting.colorField.onColorChanged.AddListener((Color color) => OnColorValue(color, setting));
+                    ((ColorField)setting.targetComponent).onColorChanged.AddListener((Color color) => OnNewValue(color, setting));
+                    break;
+                case SettingType.Bool:
+                    ((Toggle)setting.targetComponent).onValueChanged.AddListener((bool value) => OnNewValue(value, setting));
                     break;
             }
             settings.Add(setting);
@@ -121,16 +140,9 @@ public class Inspector : MonoBehaviour
         Cible.current.GetComponent<CelestialBody>().planetSettings.planetShapeSettings = preset;
         Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
     }
-    void OnNewValue(string input, InspectorSetting setting)
+    void OnNewValue(object input, InspectorSetting setting)
     {
-        float newValue = float.Parse(input);
-        SetObjectValue(Cible.current, setting, newValue);
-        Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
-    }
-    void OnColorValue(Color color, InspectorSetting setting)
-    {
-        SetObjectValue(Cible.current, setting, color);
-        Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
+        SetObjectValue(Cible.current, setting, input);
     }
     void UpdateFromCible(Transform cible)
     {
@@ -138,13 +150,19 @@ public class Inspector : MonoBehaviour
         { 
             InspectorSetting setting = settings[i];
             var value = GetValueFromObject(cible, setting);
-            if (setting.settingType == SettingType.Float)
-                setting.inputField.SetTextWithoutNotify(value.ToString());
-            else
-                setting.colorField.SetColor((Color)value);
+            switch (setting.settingType)
+            {
+                case SettingType.Float:
+                    setting.panel.GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(value.ToString());
+                    break;
+                case SettingType.Color:
+                    setting.panel.GetComponentInChildren<ColorField>().SetColor((Color)value);
+                    break;
+                case SettingType.Bool:
+                    setting.panel.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify((bool)value);
+                    break;
+            }
         }
-
-
         // Dropdown
         if (presetDropdown != null)
         {
@@ -158,6 +176,7 @@ public class Inspector : MonoBehaviour
         else
             setting.fieldInfo.SetValue(cible.GetComponent<CelestialBody>().planetSettings, value);
 
+        Cible.current.GetComponent<CelestialBody>().shouldUpdateSettings = true;
     }
     void SetNestedObjectValue(Transform cible, InspectorSetting setting, object value)
     {
