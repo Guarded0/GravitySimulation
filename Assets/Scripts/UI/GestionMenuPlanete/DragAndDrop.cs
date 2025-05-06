@@ -54,6 +54,7 @@ public class DragAndDrop : MonoBehaviour
     {
         activer = false;
         yield return new WaitForEndOfFrame();
+        yield return null;
 
         RaycastHit raycastHit;
         // SPEED

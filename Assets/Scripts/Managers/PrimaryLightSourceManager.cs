@@ -14,6 +14,6 @@ public class PrimaryLightSource : MonoBehaviour
                 closestStar.Item2 = distance;
             }
         }
-        return closestStar.Item1 != null ? closestStar.Item1.transform : NBodySimulation.Instance.relativeBody.transform;//
+        return closestStar.Item1 != null ? closestStar.Item1.transform : NBodySimulation.Instance.referenceBody.transform;//
     }
 }

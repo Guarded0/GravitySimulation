@@ -17,8 +17,10 @@ public class NBodySimulation : MonoBehaviour
     public float gravConstant = 1.0f;
     public static float physicsTimeStep { get; private set; } = 0.01f;
     public bool planetGravity = false;
-    public bool isRelativeToBody = false;
-    public CelestialBody relativeBody = null;
+
+
+    public CelestialBody referenceBody = null;
+
     public float simulationSpeed = 1.0f;
     public bool simulate = true;
     public GameObject planetTemplate;
@@ -26,6 +28,10 @@ public class NBodySimulation : MonoBehaviour
     public static NBodySimulation Instance { get; private set; }
     private GameObject bodyContainer = null;
     public static float simulationDeltaTime { get; private set;} = 1.0f;
+
+    private DiagnosticChronometer chronometer = new DiagnosticChronometer();
+    public double averageTimeMiliseconds;
+
     void CreateEvent()
     {
         if (planetAdded == null)
@@ -74,23 +80,21 @@ public class NBodySimulation : MonoBehaviour
     {
         if (!Application.isPlaying) return;
         if (!simulate) return;
-
+        chronometer.Start();
         simulationDeltaTime = physicsTimeStep * simulationSpeed;
 
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
         Vector3 offsetPosition = Vector3.zero;
         // TODO: DO THIS IN FUNCTION AND NOT HERE
-        if (isRelativeToBody && relativeBody != null)
+        if (referenceBody != null)
         {
-            offsetPosition = -relativeBody.transform.position;
-            relativeBody.transform.position = Vector3.zero;
+            offsetPosition = -referenceBody.transform.position;
+            referenceBody.transform.position = Vector3.zero;
 
             if (offsetPosition != Vector3.zero)
             {
                 foreach (CelestialBody body in celestialBodies)
                 {
-                    if (relativeBody != body)
+                    if (referenceBody != body)
                     {
                         body.transform.position += offsetPosition;
                     }
@@ -98,8 +102,9 @@ public class NBodySimulation : MonoBehaviour
             }
         }
         UpdateBodiesJobs(celestialBodies);
-        //stopwatch.Stop();
-        //averageTime.AddTime(stopwatch.ElapsedTicks / Time.deltaTime);
+
+        chronometer.Stop();
+        averageTimeMiliseconds = chronometer.GetMeanTimeMiliseconds();
     }
 
     private void UpdateBodiesJobs(List<CelestialBody> celestialBodies)
@@ -108,24 +113,26 @@ public class NBodySimulation : MonoBehaviour
         // FIXME: SKIP ANCHORED BODIES
         NativeArray<BodyData> bodyDatas = new NativeArray<BodyData>(celestialBodies.Count, Allocator.TempJob);
         NativeArray<Vector3> velocities = new NativeArray<Vector3>(celestialBodies.Count, Allocator.TempJob);
+        NativeArray<Vector3> positions = new NativeArray<Vector3>(celestialBodies.Count, Allocator.TempJob);
         int relativeIndex = -1;
 
         for (int i = 0; i < celestialBodies.Count; i++)
         {
-            if (celestialBodies[i] == relativeBody) relativeIndex = i;
+            if (celestialBodies[i] == referenceBody) relativeIndex = i;
             bodyDatas[i] = new BodyData
             {
-                position = celestialBodies[i].transform.position,
                 mass = celestialBodies[i].planetSettings.mass,
                 hasGravity = celestialBodies[i].planetSettings.hasGravity,
                 isAnchored = celestialBodies[i].planetSettings.isAnchored,
             };
             velocities[i] = celestialBodies[i].planetSettings.velocity;
+            positions[i] = celestialBodies[i].transform.position;
         }
         VelocityJob velocityJob = new VelocityJob
         {
             bodyDatas = bodyDatas,
             velocities = velocities,
+            positions = positions,
             gravConstant = gravConstant,
             deltaTime = simulationDeltaTime,
         };
@@ -139,11 +146,12 @@ public class NBodySimulation : MonoBehaviour
             if (bodyDatas[i].isAnchored) continue;
             celestialBodies[i].planetSettings.velocity = velocities[i];
             // update Position 
-            celestialBodies[i].rb.MovePosition(bodyDatas[i].position + (velocities[i] - referenceVelocityOffset) * simulationDeltaTime);
+            celestialBodies[i].rb.MovePosition(positions[i] + (velocities[i] - referenceVelocityOffset) * simulationDeltaTime);
         }
 
         bodyDatas.Dispose();
         velocities.Dispose();
+        positions.Dispose();
     }
 
     public GameObject CreatePlanet(Vector3 position, PlanetSettings planetSettings, string name = "New planet")
@@ -155,22 +163,6 @@ public class NBodySimulation : MonoBehaviour
         newPlanet.GetComponent<CelestialBody>().shouldUpdateSettings = true;
         newPlanet.GetComponent<PlanetGenerator>().CreateUniqueMaterial();
         return newPlanet;
-    }
-    Vector3 CalculateTotalAcceleration(CelestialBody mainBody)
-    {
-        Vector3 totalAcceleration = Vector3.zero;
-        foreach (CelestialBody body in celestialBodies)
-        {
-            if (mainBody == body) continue;
-            if (!body.planetSettings.hasGravity) continue;
-            if (planetGravity == false && body.planetSettings.bodyType == BodyType.Planet) continue;
-            Vector3 deltaPosition = body.transform.position - mainBody.transform.position;
-            float sqrDistance = deltaPosition.sqrMagnitude;
-            float acceleration = gravConstant * body.planetSettings.mass / sqrDistance;
-
-            totalAcceleration += Vector3.ClampMagnitude(deltaPosition.normalized * acceleration, float.MaxValue);
-        }
-        return totalAcceleration;
     }
 
     void OnPlanetAdded(GameObject gameObject)
@@ -193,7 +185,6 @@ public class NBodySimulation : MonoBehaviour
 
 public struct BodyData
 {
-    public Vector3 position;
     public float mass;
     public bool hasGravity;
     public bool isAnchored;
@@ -205,6 +196,7 @@ public struct VelocityJob : IJobParallelFor
 {
     [ReadOnly] public NativeArray<BodyData> bodyDatas;
     public NativeArray<Vector3> velocities;
+    [ReadOnly] public NativeArray<Vector3> positions;
     public float gravConstant;
     public float deltaTime;
     public void Execute(int index)
@@ -215,27 +207,10 @@ public struct VelocityJob : IJobParallelFor
         {
             if (index == j) continue; // if the same body
             if (!bodyDatas[j].hasGravity) continue; // if no gravity
-            Vector3 deltaPosition = bodyDatas[j].position - bodyDatas[index].position;
+            Vector3 deltaPosition = positions[j] - positions[index];
             float sqrDistance = deltaPosition.sqrMagnitude;
             acceleration += deltaPosition.normalized * gravConstant * bodyDatas[j].mass / sqrDistance;
         }
         velocities[index] += acceleration * deltaTime;
-    }
-}
-
-public class AverageTime
-{
-    public double accumulatedTimes;
-    public int count;
-
-    public void AddTime(double time)
-    {
-        accumulatedTimes = accumulatedTimes + time;
-        count++;
-    }
-    public double GetAverage()
-    {
-        if (count == 0) return 0;
-        return accumulatedTimes / count;
     }
 }
