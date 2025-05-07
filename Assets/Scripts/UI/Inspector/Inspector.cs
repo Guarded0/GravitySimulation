@@ -107,7 +107,7 @@ public class Inspector : MonoBehaviour
             switch(setting.settingType)
             {
                 case SettingType.Float:
-                    ((TMP_InputField)setting.targetComponent).onEndEdit.AddListener((string str) => OnNewValue(str, setting));
+                    ((TMP_InputField)setting.targetComponent).onEndEdit.AddListener((string str) => OnNewValue(float.Parse(str), setting));
                     break;
                 case SettingType.Color:
                     ((ColorField)setting.targetComponent).onColorChanged.AddListener((Color color) => OnNewValue(color, setting));

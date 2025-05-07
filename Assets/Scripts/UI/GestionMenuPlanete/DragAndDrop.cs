@@ -66,7 +66,7 @@ public class DragAndDrop : MonoBehaviour
             lancerRayonSurPlan(out raycastHit);
             vitesse = raycastHit.point - coordone;
             newPlanetSettings.velocity = vitesse;
-            OrbitDebugDisplay.CreateTemporaryVirtualBody(coordone, newPlanetSettings);
+            OrbitPathRenderer.CreateTemporaryVirtualBody(coordone, newPlanetSettings);
             prefabAxeVitesse.transform.position = coordone;
             prefabAxeVitesse.transform.up = vitesse.normalized;
             prefabAxeVitesse.transform.localScale = new Vector3(0.5f, vitesse.magnitude / 8f, 0.5f);
