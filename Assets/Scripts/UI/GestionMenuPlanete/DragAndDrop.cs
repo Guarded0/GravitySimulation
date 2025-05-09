@@ -21,6 +21,7 @@ public class DragAndDrop : MonoBehaviour
     public GameObject boutonCreationBouton;
     private Vector3 vitesse;
     public GameObject prefabAxeVitesse;
+    private string cheminPresetBouton = Application.persistentDataPath + "/" + "Preset" + ".json";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -121,8 +122,41 @@ public class DragAndDrop : MonoBehaviour
     }
 
     public void sauvegarderBouton(){
-       DoneesBouton doneesBouton = new DoneesBouton();
+        
+        System.IO.File.Delete(cheminPresetBouton);
+    
+
+        DoneesBouton doneesBouton = new DoneesBouton();
+        foreach (GameObject bouton in listBoutonPlanet){
+            ajouterDoneesList(bouton, doneesBouton);
+        }
+        foreach (GameObject bouton in listBoutonEtoile){
+            ajouterDoneesList(bouton, doneesBouton);
+        }
        
+        string donneesListBouton = JsonUtility.ToJson(doneesBouton, true);
+        System.IO.File.WriteAllText(cheminPresetBouton, donneesListBouton);
+    }
+    public void chargerListBouton(){
+        foreach (GameObject bouton in listBoutonPlanet){
+            Destroy(bouton);
+        }
+        foreach (GameObject bouton in listBoutonEtoile){
+            Destroy(bouton);
+        }
+
+        string donneesBouton = System.IO.File.ReadAllText(cheminPresetBouton);
+
+        DoneesBouton doneesBoutonCharger = JsonUtility.FromJson<DoneesBouton>(donneesBouton);
+        for (int i = 0; i < doneesBoutonCharger.listeDonneesPlanetes.Count; i++){
+            creeBouton(doneesBoutonCharger.listeDonneesPlanetes[i], doneesBoutonCharger.listNoms[i]);
+        }
+    }
+
+    private void ajouterDoneesList(GameObject bouton, DoneesBouton doneesBouton)
+    {
+        doneesBouton.listeDonneesPlanetes.Add(bouton.GetComponent<ButtonPrefab>().settings);
+        doneesBouton.listNoms.Add(bouton.GetComponentInChildren<TMP_Text>().text);
     }
 
     public class DoneesBouton {
