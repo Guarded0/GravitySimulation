@@ -4,10 +4,13 @@ using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine.Profiling;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
-using Unity.VisualScripting.Antlr3.Runtime;
+
+
 // THIS FUNCTION BASICALLY DOES THE SAME THING AS THE SIMULATION JUST AT A FASTER RATE AND TRACKS THE POINT ON EACH STEP
 // STEP
 // CALCULATE VELOCITY
@@ -36,9 +39,10 @@ public class OrbitPathRenderer : MonoBehaviour
 
 
 
-    // Thread stuff
+    // THREAD STUFF
     ManualResetEventSlim positionsReady = new ManualResetEventSlim(false);
     ManualResetEventSlim positionsWritten = new ManualResetEventSlim(true);
+    ManualResetEventSlim startSimulationEvent = new ManualResetEventSlim(false);
     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     CancellationToken cancellationToken;
 
@@ -55,8 +59,11 @@ public class OrbitPathRenderer : MonoBehaviour
     List<VirtualBody> virtualBodies;
     Vector3[][] drawPoints;
 
-    bool simulationRunning = false;
-    bool simulationComplete = false;
+    [SerializeField] bool simulationComplete = false;
+
+    const bool CANCEL_THREAD = false;
+    const int TIMEOUT_MILISECONDS = 10000;
+
     private void Awake()
     {
         privateOrbitRenderer = GameObject.Find("Private Orbit Renderer") ?? CreatePrivateOrbitRenderer();
@@ -73,35 +80,39 @@ public class OrbitPathRenderer : MonoBehaviour
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (simulationComplete) DrawPaths(virtualBodies, drawPoints);
-        if (NBodySimulation.Instance.drawOrbits && !simulationRunning) DrawOrbits();
+        if (NBodySimulation.Instance.drawOrbits && !startSimulationEvent.IsSet) DrawOrbits();
         if (!NBodySimulation.Instance.drawOrbits && !lineRenderersEmpty) HideOrbits();
     }
 
     void DrawOrbits()
     {
-        chronometer.Start();
-        simulationRunning = true;
         currentReferenceBody = NBodySimulation.Instance.referenceBody;
-        // index of the body thats relative (have to find it first)
+
         // creates virtual body array
         virtualBodies = CreateVirtualBodies();
 
         // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
         drawPoints = new Vector3[virtualBodies.Count][];
+     
         // populate array
         for (int i = 0; i < virtualBodies.Count; i++)
         {
             drawPoints[i] = new Vector3[numSteps];
         }
 
-        bodyDatas = new NativeArray<BodyData>(virtualBodies.Count, Allocator.Persistent);
-        velocities = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
-        positions = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
+        // create native arrays if not exist
+        if((bodyDatas.IsCreated || velocities.IsCreated || positions.IsCreated) == false)
+        {
+            bodyDatas = new NativeArray<BodyData>(virtualBodies.Count, Allocator.Persistent);
+            velocities = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
+            positions = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
+        }
         gravConstant = NBodySimulation.Instance.gravConstant;
 
+        // populate native arrays
         for (int i = 0; i < virtualBodies.Count; i++)
         {
             bodyDatas[i] = new BodyData
@@ -114,71 +125,125 @@ public class OrbitPathRenderer : MonoBehaviour
             positions[i] = virtualBodies[i].position;
         }
 
-        Vector3 referenceBodyOffset = referenceIndex != -1 ? positions[referenceIndex] : Vector3.zero;
+        // reference offset to apply for draw points
+        referenceBodyOffset = referenceIndex != -1 ? positions[referenceIndex] : Vector3.zero;
 
-        calculationThread.Start();
-        writeThread.Start();
+        // if cancellation token source is somehow gone or cancelled???
+        if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested)
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationToken = cancellationTokenSource.Token;
+        }
+
+        // Start threads if never started
+        if(calculationThread.ThreadState == ThreadState.Unstarted)
+        {
+            calculationThread.Start();
+            writeThread.Start();
+        }
+
+        startSimulationEvent.Set();
     }
 
     void CalculatePositions()
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            // Calculate velocity
-            VelocityJob velocityJob = new VelocityJob
-            {
-                bodyDatas = bodyDatas,
-                velocities = velocities,
-                positions = positions,
-                gravConstant = gravConstant,
-                deltaTime = timeStep
-            };
-            JobHandle velocityHandle = velocityJob.Schedule(virtualBodies.Count, 64);
-            velocityHandle.Complete();
+            // WAIT FOR START SIMULATION FLAG
+            if (WaitForManualResetEvent(startSimulationEvent) == CANCEL_THREAD) break;
 
-            // wait for positions to be written
-            positionsWritten.Wait();
-            positionsWritten.Reset();
-            Vector3 referenceBodyOffset = referenceIndex != -1 ? positions[referenceIndex] : Vector3.zero;
-            // Update positions
-            for (int i = 0; i < virtualBodies.Count; i++)
+            // ENTER LOOP
+            while (!simulationComplete)
             {
-                if (virtualBodies[i].isAnchored) { continue; }
+                // CALCULATE VELOCITIES
+                VelocityJob velocityJob = new VelocityJob
+                {
+                    bodyDatas = bodyDatas,
+                    velocities = velocities,
+                    positions = positions,
+                    gravConstant = gravConstant,
+                    deltaTime = timeStep
+                };
+                JobHandle velocityHandle = velocityJob.Schedule(virtualBodies.Count, 64);
+                velocityHandle.Complete();
 
-                // Store position
-                Vector3 newPosition = positions[i] + velocities[i] * timeStep;
-                positions[i] = newPosition;
+
+                // WAIT FOR POSITIONS TO BE WRITTEN TO DRAWPOINTS ARRAY
+                if (WaitForManualResetEvent(positionsWritten) == CANCEL_THREAD) break;
+                positionsWritten.Reset();
+
+                // IF SIMULATION IS COMPLETE BREAK OUT OF LOOP (BEFORE DOING USELESS WORK)
+                if (simulationComplete) break;
+
+                // UPDATE POSITIONS
+                for (int i = 0; i < virtualBodies.Count; i++)
+                {
+                    if (virtualBodies[i].isAnchored) continue;
+
+                    // Store position
+                    Vector3 newPosition = positions[i] + velocities[i] * timeStep;
+                    positions[i] = newPosition;
+                }
+
+                positionsReady.Set();
             }
-            positionsReady.Set();
+            positionsWritten.Set(); // W fix
+            // SIMULATION END
         }
-
-        positionsReady.Reset();
-        simulationRunning = false;
-
     }
     void WritePositions()
     {
-        int currentStep = 0;
-        while (!cancellationToken.IsCancellationRequested && currentStep < numSteps)
+        while (!cancellationToken.IsCancellationRequested)
         {
-            positionsReady.Wait();
-            positionsReady.Reset();
-
-            // write positions to draw points
-            for (int i = 0; i < virtualBodies.Count; i++)
+            // WAIT FOR SIMULATION START
+            if (WaitForManualResetEvent(startSimulationEvent) == CANCEL_THREAD) break;
+            // START LOOP
+            int currentStep = 0;
+            while (currentStep < numSteps)
             {
-                if (virtualBodies[i].isAnchored) { continue; }
-                drawPoints[i][currentStep] = positions[i] - referenceBodyOffset;
+                // WAIT POSITIONS TO BE READY TO WRITE
+                if (WaitForManualResetEvent(positionsReady) == CANCEL_THREAD) break;
+                positionsReady.Reset();
+
+                // WRITE POSITIONS TO DRAWPOINTS ARRAY
+                referenceBodyOffset = referenceIndex != -1 ? positions[referenceIndex] : Vector3.zero;
+                for (int i = 0; i < virtualBodies.Count; i++)
+                {
+                    if (virtualBodies[i].isAnchored) { continue; }
+                    drawPoints[i][currentStep] = positions[i] - referenceBodyOffset;
+                }
+
+
+                currentStep++;
+                positionsWritten.Set();
             }
-            currentStep++;
+
+            // SIMULATION END
+            startSimulationEvent.Reset();
+            lineRenderersEmpty = false;
+            simulationComplete = true;
             positionsWritten.Set();
         }
-        cancellationTokenSource.Cancel();
-
-        lineRenderersEmpty = false;
-        simulationComplete = true;
     }
-
+    // Returns false if break
+    // Returns true if waited successfully
+    bool WaitForManualResetEvent(ManualResetEventSlim manualEvent)
+    {
+        bool timedOut;
+        try
+        {
+            timedOut = !manualEvent.Wait(TIMEOUT_MILISECONDS, cancellationToken);
+        }catch(OperationCanceledException)
+        {
+            return false;
+        }
+        if (timedOut)
+        {
+            Debug.LogWarning("THREAD TIMED OUT");
+            return false;
+        }
+        return true;
+    }
     List<VirtualBody> CreateVirtualBodies()
     {
         referenceIndex = -1;
@@ -218,7 +283,7 @@ public class OrbitPathRenderer : MonoBehaviour
             }
         }
         simulationComplete = false;
-        chronometer.Stop();
+
     }
     static public void CreateTemporaryVirtualBody(in Vector3 position, in PlanetSettings planetSettings)
     {
@@ -280,17 +345,18 @@ public class OrbitPathRenderer : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (calculationThread != null)
-        {
-            if (calculationThread.IsAlive) calculationThread.Abort();
-            calculationThread?.Join();
-        }
-        if (writeThread != null)
-        {
-            if (writeThread.IsAlive) writeThread.Abort();
-            writeThread?.Join();
-        }
         cancellationTokenSource.Cancel();
+        // JOIN THREADS IF RUNNING
+        if (calculationThread != null && calculationThread.IsAlive)
+        { 
+            calculationThread.Join();
+        }
+        if (writeThread != null && writeThread.IsAlive)
+        {
+            writeThread.Join();
+        }
+
+        cancellationTokenSource.Dispose();
         positionsReady.Dispose();
         positionsWritten.Dispose();
         bodyDatas.Dispose();
