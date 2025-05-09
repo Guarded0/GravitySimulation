@@ -57,7 +57,7 @@ public class resolution : MonoBehaviour
 
         // Ajouter les options au Dropdown
         resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = currentResolutionIndex;
+        resolutionDropdown.SetValueWithoutNotify(currentResolutionIndex); // pour ne pas call la fonction
         resolutionDropdown.RefreshShownValue();
 
         // Ajouter l'écouteur d'événement
@@ -79,13 +79,11 @@ public class resolution : MonoBehaviour
     {
         parametres.resolution = resolutions[index];
         Screen.SetResolution(parametres.resolution.width, parametres.resolution.height, true);
-        Debug.Log("Résolution changée : " + parametres.resolution.width + "x" + parametres.resolution.height);
     }
 
     public void SetPleinEcran(Boolean boolPleinEcran){
         parametres.pleinEcran = boolPleinEcran; 
         Screen.fullScreen = parametres.pleinEcran; // Met en plein écran
-        Debug.Log("Plein Écran: " + parametres.pleinEcran);
 
     }
     public void setSensibiliteAvecInputField(string StringValeur)

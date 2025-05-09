@@ -9,21 +9,35 @@ public class UpdateMenu : MonoBehaviour
     public Vector3 positionOuvert = new Vector3();
     public Vector3 positionFermer = new Vector3();
     private TMP_Text text;
-
+    RectTransform transformToMove;
     private void Awake()
     {
-        GetComponent<Button>().onClick.AddListener(updateEtatMenu);
+        var button = GetComponent<Button>();
+        if (button != null) button.onClick.AddListener(updateEtatMenu);
         text = GetComponentInChildren<TMP_Text>();
+        if (transform.parent.TryGetComponent<Canvas>(out _))
+        {
+            transformToMove = GetComponent<RectTransform>();
+        }
+        else
+        {
+            transformToMove = transform.parent.GetComponent<RectTransform>();
+        }
     }
     public void updateEtatMenu(){
-         if(activer){
-            LeanTween.move(transform.parent.GetComponent<RectTransform>(), positionFermer, 0.5f).setEase(LeanTweenType.easeOutExpo);
-            text.text = ">";
+
+        if (activer)
+        {
+
+            LeanTween.move(transformToMove, positionFermer, 0.5f).setEase(LeanTweenType.easeOutExpo);
+            if (text != null && text.text == "<") text.text = ">";
             activer = false;
-        } else{
-            LeanTween.move(transform.parent.GetComponent<RectTransform>(), positionOuvert, 0.5f).setEase(LeanTweenType.easeOutExpo);
-            text.text = "<";
-            activer = true;  
+        }
+        else
+        {
+            LeanTween.move(transformToMove, positionOuvert, 0.5f).setEase(LeanTweenType.easeOutExpo);
+            if (text != null && text.text == ">") text.text = "<";
+            activer = true;
         }
 
     }
