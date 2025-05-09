@@ -31,10 +31,8 @@ public class Cible : MonoBehaviour
         if (isOverUI) return;
 
         Transform hitTransform = RaycastForCelestialBody();
-        
         if (Input.GetMouseButtonDown(0) && current != hitTransform)
         {
-
             if (hitTransform != null && hitTransform.gameObject.CompareTag("Axis")) return;
             current = hitTransform;
             cibleChanged.Invoke(current);

@@ -155,7 +155,6 @@ MonoBehaviour:
   isAnchored: 0
   hasGravity: 1
   rb: {fileID: 5695254334707969876}
-  planetGenerator: {fileID: 2510985909121778387}
   trailRenderer: {fileID: 1910902519052087455}
   trajectoryRenderer: {fileID: 2035693181746840808}
   planetSettings:
@@ -163,17 +162,26 @@ MonoBehaviour:
     bodyType: 0
     mass: 1
     velocity: {x: 0, y: 0, z: 19.9}
+    isAnchored: 0
+    hasGravity: 1
     radius: 5
     temperature: 0
-    planetComposition:
-      iron: 0.3
-      silicate: 0
-      water: 0
+    surfaceColor:
+      low: {r: 0, g: 0, b: 0, a: 1}
+      mid: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+      high: {r: 1, g: 1, b: 1, a: 1}
     atmosphereComposition:
       oxygen: 0
       hydrogen: 0
       carbonDioxide: 0
       methane: 0
+    oceanSettings:
+      colorA: {r: 0, g: 0, b: 0, a: 0}
+      colorB: {r: 0, g: 0, b: 0, a: 0}
+      depthMultiplier: 75
+      alphaMultiplier: 298
+      oceanRadius: 1
+      oceanPreset: {fileID: 11400000, guid: 79aaa7c9cd063da4da44064c31494e3a, type: 2}
     planetShapeSettings: {fileID: 11400000, guid: 5289bc669149183478d66e336f835a14, type: 2}
 --- !u!114 &2510985909121778387
 MonoBehaviour:
@@ -258,12 +266,7 @@ MonoBehaviour:
     depthMultiplier: 12.23
     alphaMultiplier: 24.2
     oceanRadius: 0
-    smoothness: 0.96
-    waveNormalA: {fileID: 2800000, guid: aff62f833b48c7f43a754f2fb2891a54, type: 3}
-    waveNormalB: {fileID: 2800000, guid: 42f4edc9446c49c438d29a81bef3e7d9, type: 3}
-    waveStrength: 0.4
-    waveNormalScale: 1.15
-    waveSpeed: 0.11
+    oceanPreset: {fileID: 0}
   atmosphereSettings:
     planetRadius: 0.99547225
     atmosphereRadius: 0
@@ -300,7 +303,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -407,7 +410,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

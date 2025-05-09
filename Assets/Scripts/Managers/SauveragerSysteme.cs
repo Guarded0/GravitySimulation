@@ -22,8 +22,8 @@ public class SauveragerSysteme : MonoBehaviour
         doneesScene.gravConstant = NBodySimulation.Instance.gravConstant;
         doneesScene.planetGravity = NBodySimulation.Instance.planetGravity;
 
-        if (NBodySimulation.Instance.relativeBody != null) {
-        doneesScene.relativeBody = NBodySimulation.Instance.relativeBody.name;
+        if (NBodySimulation.Instance.referenceBody != null) {
+        doneesScene.relativeBody = NBodySimulation.Instance.referenceBody.name;
         }
 
         string donneesSysteme = JsonUtility.ToJson(doneesScene, true);
@@ -44,7 +44,7 @@ public class SauveragerSysteme : MonoBehaviour
             GameObject newPlanet = NBodySimulation.Instance.CreatePlanet(donneesCharger.listeCoordonnees[i], donneesCharger.listeDonneesPlanetes[i]);
             
             if (donneesCharger.listeDonneesPlanetes[i].name == donneesCharger.relativeBody) {
-                NBodySimulation.Instance.relativeBody = newPlanet.GetComponent<CelestialBody>();
+                NBodySimulation.Instance.referenceBody = newPlanet.GetComponent<CelestialBody>();
             }
         }
 
@@ -69,7 +69,7 @@ public class SauveragerSysteme : MonoBehaviour
             GameObject newPlanet = NBodySimulation.Instance.CreatePlanet(donneesCharger.listeCoordonnees[i], donneesCharger.listeDonneesPlanetes[i]);
 
             if (donneesCharger.listeDonneesPlanetes[i].name == donneesCharger.relativeBody) {
-                NBodySimulation.Instance.relativeBody = newPlanet.GetComponent<CelestialBody>();
+                NBodySimulation.Instance.referenceBody = newPlanet.GetComponent<CelestialBody>();
             }
         }
 

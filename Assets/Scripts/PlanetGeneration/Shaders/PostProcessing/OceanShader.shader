@@ -133,8 +133,8 @@ Shader "Hidden/OceanShader"
 
                     float2 waveOffsetA = float2(_Time.x * _waveSpeed, _Time.x * _waveSpeed * 0.8);
 					float2 waveOffsetB = float2(_Time.x * _waveSpeed * - 0.8, _Time.x * _waveSpeed * -0.3);
-					float3 waveNormal = triplanarNormal(rayOceanIntersectPos, oceanNormal, _waveNormalScale, waveOffsetA, _waveNormalA);
-					waveNormal = triplanarNormal(rayOceanIntersectPos, waveNormal, _waveNormalScale, waveOffsetB, _waveNormalB);
+					float3 waveNormal = triplanarNormal(rayOceanIntersectPos, oceanNormal, _waveNormalScale / _planetScale, waveOffsetA, _waveNormalA);
+					waveNormal = triplanarNormal(rayOceanIntersectPos, waveNormal, _waveNormalScale / _planetScale, waveOffsetB, _waveNormalB);
 					waveNormal = normalize(lerp(oceanNormal, waveNormal, _waveStrength));
 
                     float diffuseLighting = saturate(dot(oceanNormal, _directionToSun ));

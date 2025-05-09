@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlanetShapePreset", menuName = "ScriptableObjects/PlanetShapePreset", order = 1)]
+[CreateAssetMenu(fileName = "PlanetShapePreset", menuName = "ScriptableObjects/PlanetShapePreset")]
 public class PlanetShapePreset : ScriptableObject
 {
     public SimpleNoiseSettings baseNoiseSettings;

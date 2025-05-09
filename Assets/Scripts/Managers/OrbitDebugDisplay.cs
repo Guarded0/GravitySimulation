@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Burst;
+using Unity.Jobs;
+using Unity.Collections;
+using UnityEngine.Profiling;
 // THIS FUNCTION BASICALLY DOES THE SAME THING AS THE SIMULATION JUST AT A FASTER RATE AND TRACKS THE POINT ON EACH STEP
 // STEP
 // CALCULATE VELOCITY
@@ -8,7 +12,6 @@ using System.Collections.Generic;
 // DO IT AGAIN
 
 
-[ExecuteAlways]
 public class OrbitDebugDisplay : MonoBehaviour
 {
     // amount of steps itll run the sim for
@@ -19,18 +22,21 @@ public class OrbitDebugDisplay : MonoBehaviour
     public bool usePhysicsTimeStep;
 
     // relative to somethin...
-    public bool isRelativeToBody = false;
-    public CelestialBody relativeBody = null;
-
-    // well... if u want to draw the damn orbits
-    public bool drawOrbits = false;
+    public CelestialBody referenceBody = null;
 
     public Material trajectoryMaterial;
     private bool lineRenderersEmpty = false;
 
+    static private GameObject privateOrbitRenderer;
+    static private VirtualBody temporaryVirtualBody;
+
+    public DiagnosticChronometer chronometer = new DiagnosticChronometer();
+    private void Awake()
+    {
+        privateOrbitRenderer = GameObject.Find("Private Orbit Renderer") ?? CreatePrivateOrbitRenderer();
+    }
     void Start()
     {
-        if (!Application.isPlaying) return;
         foreach(CelestialBody body in NBodySimulation.celestialBodies)
         {
             body.trailRenderer.material = trajectoryMaterial; // this shouldnt be here but for now
@@ -40,123 +46,128 @@ public class OrbitDebugDisplay : MonoBehaviour
 
     void Update()
     {
-        if (drawOrbits) DrawOrbits();
-        if (!drawOrbits && !lineRenderersEmpty) HideOrbits();
+        chronometer.Start();
+        if (NBodySimulation.Instance.drawOrbits) DrawOrbits();
+        if (!NBodySimulation.Instance.drawOrbits && !lineRenderersEmpty) HideOrbits();
+        chronometer.Stop();
     }
 
     void DrawOrbits()
     {
-        // creates virtual body array
-        var virtualBodies = CreateVirtualBodies();
-        // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
-        var drawPoints = new Vector3[virtualBodies.Length][];
         // index of the body thats relative (have to find it first)
-        int relativeIndex = FindRelativeBody();
-        Vector3 relativeBodyInitialPosition = virtualBodies[relativeIndex].position;
+        int relativeIndex;
+        // creates virtual body array
+        List<VirtualBody> virtualBodies = CreateVirtualBodies(out relativeIndex);
+        // create array for storing positions in each step (array[celestialBodyIndex][step number] = position at that step)
+        Vector3[][] drawPoints = new Vector3[virtualBodies.Count][];
+        // populate array
+        for (int i = 0; i < virtualBodies.Count; i++)
+        {
+            drawPoints[i] = new Vector3[numSteps];
+        }
+
+        NativeArray<BodyData> bodyDatas = new NativeArray<BodyData>(virtualBodies.Count, Allocator.TempJob);
+        NativeArray<Vector3> velocities = new NativeArray<Vector3>(virtualBodies.Count, Allocator.TempJob);
+        NativeArray<Vector3> positions = new NativeArray<Vector3>(virtualBodies.Count, Allocator.TempJob);
+        float gravConstant = NBodySimulation.Instance.gravConstant;
+        for (int i = 0; i < virtualBodies.Count; i++)
+        {
+            bodyDatas[i] = new BodyData
+            {
+                mass = virtualBodies[i].mass,
+                isAnchored = virtualBodies[i].isAnchored,
+                hasGravity = virtualBodies[i].hasGravity
+            };
+            velocities[i] = virtualBodies[i].velocity;
+            positions[i] = virtualBodies[i].position;
+        }
 
 
-
-        // Simulate
         for (int step = 0; step < numSteps; step++)
         {
-            Vector3 relativeBodyPosition = (isRelativeToBody) ? virtualBodies[relativeIndex].position : Vector3.zero;
-            // Update velocities
-            for (int i = 0; i < virtualBodies.Length; i++)
+            VelocityJob velocityJob = new VelocityJob
             {
-                if (virtualBodies[i].isAnchored) { continue; }
-                virtualBodies[i].velocity += CalculateAcceleration(i, virtualBodies) * timeStep;
-            }
+                bodyDatas = bodyDatas,
+                velocities = velocities,
+                positions = positions,
+                gravConstant = gravConstant,
+                deltaTime = timeStep
+            };
+            JobHandle velocityHandle = velocityJob.Schedule(virtualBodies.Count, 64);
+            velocityHandle.Complete();
+
+            Vector3 referenceBodyOffset = relativeIndex != -1 ? positions[relativeIndex] : Vector3.zero;
             // Update positions
-            for (int i = 0; i < virtualBodies.Length; i++)
+            for (int i = 0; i < virtualBodies.Count; i++)
             {
                 if (virtualBodies[i].isAnchored) { continue; }
-                // calculate new position
-                Vector3 newPos = virtualBodies[i].position + virtualBodies[i].velocity * timeStep;
-                virtualBodies[i].position = newPos;
-                // account for relative body
-                if (isRelativeToBody)
-                {
-                    // if its the relative body
-                    if (i == relativeIndex)
-                    {
-                        newPos = relativeBodyInitialPosition;
-                    }
-                    else // if its not...
-                    {
-                        // apply offset
-                        var relativeOffset = relativeBodyPosition - relativeBodyInitialPosition;
-                        newPos -= relativeOffset;
-                    }
-                }
 
                 // Store position
-                drawPoints[i][step] = newPos;
+                Vector3 newPosition = positions[i] + velocities[i] * timeStep;
+                positions[i] = newPosition;
+                // account for relative body
+                
+                drawPoints[i][step] = positions[i] - referenceBodyOffset;
             }
+
         }
+
+        // dispose
+        bodyDatas.Dispose();
+        velocities.Dispose();
+        positions.Dispose();
         lineRenderersEmpty = false;
         // Draw paths
         DrawPaths(virtualBodies, drawPoints);
     }
-
-    VirtualBody[] CreateVirtualBodies()
+    List<VirtualBody> CreateVirtualBodies(out int relativeIndex)
     {
+        relativeIndex = -1;
         List<CelestialBody> bodies = NBodySimulation.celestialBodies;
-        VirtualBody[] virtualBodies = new VirtualBody[bodies.Count];
-        for (int i = 0; i < virtualBodies.Length; i++)
+        List<VirtualBody> virtualBodies = new List<VirtualBody>();
+        for (int i = 0; i < bodies.Count; i++)
         {
-            virtualBodies[i] = new VirtualBody(bodies[i]);
+            if (referenceBody == bodies[i])
+            {
+                relativeIndex = i;
+            }
+            virtualBodies.Add(new VirtualBody(bodies[i].transform.position, bodies[i].planetSettings));
         }
+        if (temporaryVirtualBody != null) virtualBodies.Add(temporaryVirtualBody);
         return virtualBodies;
     }
 
-    void DrawPaths(in VirtualBody[] virtualBodies, in Vector3[][] drawPoints)
+    void DrawPaths(in List<VirtualBody> virtualBodies, in Vector3[][] drawPoints)
     {
         var bodies = NBodySimulation.celestialBodies;
-        for (int bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++)
+        for (int bodyIndex = 0; bodyIndex < virtualBodies.Count; bodyIndex++)
         {
             //if (bodies[bodyIndex] == null) { continue; }
             if (virtualBodies[bodyIndex].isAnchored) { continue; }
             // gets color of the material (has to have the name as color)
-            bodies[bodyIndex].trajectoryRenderer.positionCount = drawPoints[bodyIndex].Length;
-            bodies[bodyIndex].trajectoryRenderer.SetPositions(drawPoints[bodyIndex]);
-        }
-    }
-    int FindRelativeBody()
-    {
-        List<CelestialBody> bodies = NBodySimulation.celestialBodies;
-        for (int i = 0; i < bodies.Count; i++)
-        {
-            if (bodies[i] == relativeBody)
+            if (bodyIndex < bodies.Count)
             {
-                return i;
+                bodies[bodyIndex].trajectoryRenderer.positionCount = drawPoints[bodyIndex].Length;
+                bodies[bodyIndex].trajectoryRenderer.SetPositions(drawPoints[bodyIndex]);
+            }else
+            {
+                // if its a temporary body
+                var lineRenderer = privateOrbitRenderer.GetComponent<LineRenderer>();
+                lineRenderer.positionCount = drawPoints[bodyIndex].Length;
+                lineRenderer.SetPositions(drawPoints[bodyIndex]);
             }
+
         }
-        return -1;
     }
-    Vector3 CalculateAcceleration(int i, VirtualBody[] virtualBodies)
+    static public void CreateTemporaryVirtualBody(in Vector3 position, in PlanetSettings planetSettings)
     {
-        Vector3 totalAcceleration = Vector3.zero;
-        foreach (var body in virtualBodies)
-        {
-            if (virtualBodies[i] == body) continue;
-            if (!body.hasGravity) continue;
-            if (NBodySimulation.Instance.planetGravity == false && body.bodyType == BodyType.Planet) continue;
-            Vector3 deltaPosition = body.position - virtualBodies[i].position;
-            float sqrDistance = deltaPosition.sqrMagnitude;
-            float acceleration = NBodySimulation.Instance.gravConstant * body.mass / sqrDistance;
-
-            totalAcceleration += Vector3.ClampMagnitude(deltaPosition.normalized * acceleration, float.MaxValue);
-        }
-        return totalAcceleration;
+        temporaryVirtualBody = new VirtualBody(position, planetSettings);
+        privateOrbitRenderer.SetActive(true);
     }
-    Vector3[] SimulateBodyOrbit(PlanetSettings planetSettings,int generations)
+    static public void ClearTemporaryVirtualBodies()
     {
-        Vector3[] positions = new Vector3[generations];
-
-
-
-
-        return positions;
+        temporaryVirtualBody = null;
+        privateOrbitRenderer.SetActive(false);
     }
     void HideOrbits()
     {
@@ -174,21 +185,20 @@ public class OrbitDebugDisplay : MonoBehaviour
             timeStep = NBodySimulation.physicsTimeStep;
         }
     }
-    private void OnDrawGizmos()
+    private GameObject CreatePrivateOrbitRenderer()
     {
-        if (Application.isPlaying) return;
-        // draw initial velocity ray
-        foreach (CelestialBody celestialBody in FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID))
-        {
-            //Gizmos.color = celestialBody.gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
-            Gizmos.DrawRay(celestialBody.transform.position, celestialBody.planetSettings.velocity);
-        }
+        var orbitRenderer = new GameObject("Private Orbit Renderer");
+        orbitRenderer.transform.SetParent(transform);
+        var lineRenderer = orbitRenderer.AddComponent<LineRenderer>();
+        lineRenderer.material = trajectoryMaterial;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+        return orbitRenderer;
     }
 
     // basically a copy of CelestialBody for the orbit sim 
     class VirtualBody
     {
-
         public Vector3 position;
         public Vector3 velocity;
         public float mass;
@@ -196,15 +206,15 @@ public class OrbitDebugDisplay : MonoBehaviour
         public BodyType bodyType;
         public bool hasGravity; 
 
-        public VirtualBody(CelestialBody body)
+        public VirtualBody(in Vector3 startPosition, in PlanetSettings planetSettings)
         {
-            if (body == null) return;
-            position = body.transform.position;
-            velocity = body.planetSettings.velocity;
-            mass = body.planetSettings.mass;
-            isAnchored = body.isAnchored;
-            bodyType = body.planetSettings.bodyType;
-            hasGravity = body.hasGravity;
+            position = startPosition;
+            velocity = planetSettings.velocity;
+            mass = planetSettings.mass;
+            isAnchored = planetSettings.isAnchored;
+            bodyType = planetSettings.bodyType;
+            hasGravity = planetSettings.hasGravity;
         }
     }
+
 }

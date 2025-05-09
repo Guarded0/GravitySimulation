@@ -18,6 +18,7 @@ public class DragAndDrop : MonoBehaviour
     public GameObject prefabBouton;
     public TMP_InputField nomsNouveauBouton;
     private Vector3 vitesse;
+    public GameObject prefabAxeVitesse;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -39,7 +40,6 @@ public class DragAndDrop : MonoBehaviour
             }
             if (Input.GetMouseButtonDown(0))
             {
-
                 StartCoroutine(creerPlanete());
             }
         }
@@ -54,31 +54,37 @@ public class DragAndDrop : MonoBehaviour
     {
         activer = false;
         yield return new WaitForEndOfFrame();
+        yield return null;
 
         RaycastHit raycastHit;
-
+        // SPEED
+        PlanetSettings newPlanetSettings = new PlanetSettings(settingPlaneteACree);
+        prefabAxeVitesse.SetActive(true);
         while (true)
         {
 
             lancerRayonSurPlan(out raycastHit);
             vitesse = raycastHit.point - coordone;
+            newPlanetSettings.velocity = vitesse;
+            OrbitPathRenderer.CreateTemporaryVirtualBody(coordone, newPlanetSettings);
+            prefabAxeVitesse.transform.position = coordone;
+            prefabAxeVitesse.transform.up = vitesse.normalized;
+            prefabAxeVitesse.transform.localScale = new Vector3(0.5f, vitesse.magnitude / 8f, 0.5f);
             if (Input.GetMouseButtonDown(0))
             {
                 break;
             }
             yield return null;
         }
-
-        settingPlaneteACree.velocity = vitesse;
-        NBodySimulation.Instance.CreatePlanet(coordone, settingPlaneteACree);
+        NBodySimulation.Instance.CreatePlanet(coordone, newPlanetSettings);
         pointeur.gameObject.SetActive(false);
-       
-
+        prefabAxeVitesse.SetActive(false);
     }
     public void demarerConstruction(ButtonPrefab buttonPrefab)
     {
         activer = true;
         settingPlaneteACree = buttonPrefab.settings;
+        pointeur.transform.localScale = new Vector3(settingPlaneteACree.radius, settingPlaneteACree.radius, settingPlaneteACree.radius) * 2;
         pointeur.gameObject.SetActive(true);
     }
 
@@ -86,17 +92,17 @@ public class DragAndDrop : MonoBehaviour
     {
         if (Cible.current != null)
         {
-            Debug.Log("star");
             GameObject nouveauBouton = Instantiate(prefabBouton, new Vector3(0, 0, 0), Quaternion.identity);
-            Debug.Log("Instant");
             nouveauBouton.GetComponent<ButtonPrefab>().settings = Cible.current.GetComponent<CelestialBody>().planetSettings;
             nouveauBouton.GetComponentInChildren<TMP_Text>().text = nomsNouveauBouton.text;
+
             if(Cible.current.GetComponent<CelestialBody>().planetSettings.bodyType == BodyType.Planet){
             nouveauBouton.transform.SetParent(listBoutonPlanet); 
             } else{
                nouveauBouton.transform.SetParent(listBoutonEtoile); 
             }
-            Debug.Log("3");
+
+            nouveauBouton.GetComponent<Button>().onClick.AddListener(() => demarerConstruction(nouveauBouton.GetComponent<ButtonPrefab>()));
         }
 
     }

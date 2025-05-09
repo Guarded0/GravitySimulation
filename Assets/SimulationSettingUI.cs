@@ -38,7 +38,7 @@ public class SimulationSettingUI : MonoBehaviour
                 this.isToggle = false;
                 this.toggle = null;
             }
-                string variableName = settingName.variableName;
+            string variableName = settingName.variableName;
             this.fieldInfo = typeof(NBodySimulation).GetField(settingName.variableName);
 
         }
@@ -70,7 +70,7 @@ public class SimulationSettingUI : MonoBehaviour
             else
             {
                 setting.slider.onValueChanged.AddListener((float value) => SetObjectValue(setting, value));
-                setting.inputField.onEndEdit.AddListener((string str) => OnNewStringValue(str, setting));
+                setting.inputField.onEndEdit.AddListener((string str) => SetObjectValue(setting, float.Parse(str)));
             }
                 
             settings.Add(setting);
@@ -78,18 +78,17 @@ public class SimulationSettingUI : MonoBehaviour
         }
         initialized = true;
     }
-    void OnNewStringValue(string input, SimulationSetting setting)
-    {
-        float newValue = float.Parse(input);
-        SetObjectValue(setting, newValue);
-    }
     void SetObjectValue(SimulationSetting setting, object value)
     {
         setting.fieldInfo.SetValue(NBodySimulation.Instance, value);
-        if (setting.isToggle==false)
+        if (setting.isToggle == false)
         {
             setting.inputField.SetTextWithoutNotify(value.ToString());
             setting.slider.SetValueWithoutNotify((float)value);
+        }
+        else
+        {
+            setting.toggle.SetIsOnWithoutNotify((bool)value);
         }
     }
 }
