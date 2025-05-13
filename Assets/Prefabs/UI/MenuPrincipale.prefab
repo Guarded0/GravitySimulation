@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 104821597001474307}
   - component: {fileID: 5104219621713903451}
   - component: {fileID: 9058633379576568412}
+  - component: {fileID: 1675806551321405973}
   m_Layer: 5
   m_Name: ButtonHamberger
   m_TagString: Untagged
@@ -121,7 +122,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7655108489862005663}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UpdateMenu, Assembly-CSharp
         m_MethodName: updateEtatMenu
         m_Mode: 1
@@ -133,6 +134,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1675806551321405973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3091905097548553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c832eaea31ad344b743773dd0b102d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positionOuvert: {x: -700, y: 0, z: 0}
+  positionFermer: {x: 0, y: 0, z: 0}
 --- !u!1 &878318640866223068
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,7 +1091,6 @@ GameObject:
   - component: {fileID: 3223343874633829391}
   - component: {fileID: 7903040674732329014}
   - component: {fileID: 7987405732089140625}
-  - component: {fileID: 4490658966925036173}
   m_Layer: 5
   m_Name: boutonQuitter
   m_TagString: Untagged
@@ -1185,7 +1199,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3223343874633829391}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7987405732089140625}
+        m_TargetAssemblyTypeName: codeQuitter, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7987405732089140625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1198,35 +1224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141fbe8b2d1d59246934461b053761b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4490658966925036173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7252369448206798172}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7987405732089140625}
-          m_TargetAssemblyTypeName: codeQuitter, Assembly-CSharp
-          m_MethodName: QuitGame
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  menuBoutonPlanete: {fileID: 0}
 --- !u!1 &7334348845316660053
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,7 +1236,6 @@ GameObject:
   - component: {fileID: 2325280408243545752}
   - component: {fileID: 241178308373514921}
   - component: {fileID: 5629104696523479896}
-  - component: {fileID: 7655108489862005663}
   m_Layer: 5
   m_Name: MenuPrincipale
   m_TagString: Untagged
@@ -1306,20 +1303,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7655108489862005663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7334348845316660053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7c832eaea31ad344b743773dd0b102d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  positionOuvert: {x: -700, y: 0, z: 0}
-  positionFermer: {x: 0, y: 0, z: 0}
 --- !u!1 &7669017953203714964
 GameObject:
   m_ObjectHideFlags: 0

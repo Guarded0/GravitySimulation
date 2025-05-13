@@ -133,9 +133,6 @@ public class DragAndDrop : MonoBehaviour
     }
 
     public void sauvegarderBouton(){
-        Debug.Log(cheminPresetBouton);
-        Debug.Log("Sauvegard");
-        
         DoneesBouton doneesBouton = new DoneesBouton();
         foreach (Transform bouton in listBoutonPlanet){
             ajouterDoneesList(bouton.gameObject, doneesBouton);
@@ -148,7 +145,7 @@ public class DragAndDrop : MonoBehaviour
         string donneesListBouton = JsonUtility.ToJson(doneesBouton, true);
     
         System.IO.File.WriteAllText(cheminPresetBouton, donneesListBouton);
-        Debug.Log("Sauvegard executer");
+    
     }
     public void chargerBouton(){
         

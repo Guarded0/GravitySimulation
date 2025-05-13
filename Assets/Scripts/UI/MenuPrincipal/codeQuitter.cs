@@ -20,6 +20,6 @@ public class codeQuitter : MonoBehaviour
     public void QuitGame()
 {
     menuBoutonPlanete.GetComponent<DragAndDrop>().sauvegarderBouton();
-    //Application.Quit();
+    Application.Quit();
 }
 }
