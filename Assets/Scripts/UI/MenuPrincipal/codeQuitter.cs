@@ -2,11 +2,14 @@ using UnityEngine;
 
 public class codeQuitter : MonoBehaviour
 {
+
+    public GameObject menuBoutonPlanete; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
        
     }
+    
 
 
     // Update is called once per frame
@@ -16,6 +19,7 @@ public class codeQuitter : MonoBehaviour
     }
     public void QuitGame()
 {
-    Application.Quit();
+    menuBoutonPlanete.GetComponent<DragAndDrop>().sauvegarderBouton();
+    //Application.Quit();
 }
 }
