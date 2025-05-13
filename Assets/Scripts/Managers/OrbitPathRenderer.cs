@@ -63,7 +63,7 @@ public class OrbitPathRenderer : MonoBehaviour
 
     const bool CANCEL_THREAD = false;
     const int TIMEOUT_MILISECONDS = 10000;
-
+    int lastCount = 0;
     private void Awake()
     {
         privateOrbitRenderer = GameObject.Find("Private Orbit Renderer") ?? CreatePrivateOrbitRenderer();
@@ -104,11 +104,12 @@ public class OrbitPathRenderer : MonoBehaviour
         }
 
         // create native arrays if not exist
-        if((bodyDatas.IsCreated || velocities.IsCreated || positions.IsCreated) == false)
+        if(virtualBodies.Count != lastCount || (bodyDatas.IsCreated || velocities.IsCreated || positions.IsCreated) == false)
         {
             bodyDatas = new NativeArray<BodyData>(virtualBodies.Count, Allocator.Persistent);
             velocities = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
             positions = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
+            lastCount = virtualBodies.Count;
         }
         gravConstant = NBodySimulation.Instance.gravConstant;
 

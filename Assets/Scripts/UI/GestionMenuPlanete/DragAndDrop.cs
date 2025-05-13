@@ -77,6 +77,7 @@ public class DragAndDrop : MonoBehaviour
             yield return null;
         }
         NBodySimulation.Instance.CreatePlanet(coordone, newPlanetSettings);
+        OrbitPathRenderer.ClearTemporaryVirtualBodies();
         pointeur.gameObject.SetActive(false);
         prefabAxeVitesse.SetActive(false);
     }

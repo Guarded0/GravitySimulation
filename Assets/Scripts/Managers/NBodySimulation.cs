@@ -164,7 +164,9 @@ public class NBodySimulation : MonoBehaviour
         newPlanet.GetComponent<PlanetGenerator>().CreateUniqueMaterial();
         return newPlanet;
     }
-
+    public void DestroyBody(GameObject gameObject)
+    {
+    }
     void OnPlanetAdded(GameObject gameObject)
     {
         foreach (var celestialBody in celestialBodies)
