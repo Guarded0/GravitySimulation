@@ -4,6 +4,7 @@ public class codeQuitter : MonoBehaviour
 {
 
     public GameObject menuBoutonPlanete; 
+    public GameObject menuParametre; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
