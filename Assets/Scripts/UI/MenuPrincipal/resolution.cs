@@ -10,7 +10,18 @@ public class Parametres{
     public bool pleinEcran = false; // Mode plein écran activé ou désactivé
     public bool fps = false; // Affichage des FPS activé ou désactivé
     public float sensibiliter = 100; //sensibilité de la camera
-    }
+    
+}
+
+//classe pour sauvegarder les paramètres 
+[System.Serializable]
+public class DonneesParametres{
+    public Resolution resolutionSauvgarder;
+    public bool pleinEcranSauvgarder;
+    public bool fpsSauvgarder;
+    public float sensibiliterSauvgarder;
+
+}
 
 // résolution gère la résolution de l'écran, l'option plein écran, le FPS et la sensibilité de la camera
 public class resolution : MonoBehaviour
@@ -25,6 +36,8 @@ public class resolution : MonoBehaviour
     // menu déroulant des résolutions
     private Resolution[] resolutions;
 
+    private string cheminParametre;
+
     public static Parametres parametres = new Parametres();
 
     // Variables utilisées pour calculer les FPS
@@ -33,6 +46,9 @@ public class resolution : MonoBehaviour
 
     void Start()
     {
+        cheminParametre = Application.persistentDataPath+"/"+"parametre"+".json";
+        chargerParametre();
+
         resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
@@ -84,6 +100,10 @@ public class resolution : MonoBehaviour
         parametres.resolution = resolutions[index];
         Screen.SetResolution(parametres.resolution.width, parametres.resolution.height, true);
     }
+    public void SetResolution(Resolution resolution){
+        parametres.resolution = resolution;
+        Screen.SetResolution(parametres.resolution.width, parametres.resolution.height, true);
+    }
 
     // Active ou désactive le plein écran
     public void SetPleinEcran(bool boolPleinEcran)
@@ -112,6 +132,16 @@ public class resolution : MonoBehaviour
         // Mettre à jour le texte
         inputFieldSensibiliter.text = valeur.ToString("F1");
     }
+    public void setSensibilite(float valeur)
+    {
+        parametres.sensibiliter = valeur;
+
+        // Mettre à jour le texte
+        inputFieldSensibiliter.text = valeur.ToString("F1");
+        //Mettre à jour le slider
+        sliderSensibiliter.value = valeur;
+    }
+
 
     // Active ou désactive l'affichage des FPS
     public void ShowFPS(bool boolFPS)
@@ -134,6 +164,33 @@ public class resolution : MonoBehaviour
             frameCount = 0;
         }
     }
+
+    public void sauvgarderParametre(){
+        DonneesParametres donneesParametres = new DonneesParametres();
+
+        donneesParametres.resolutionSauvgarder = parametres.resolution;
+        donneesParametres.pleinEcranSauvgarder = parametres.pleinEcran;
+        donneesParametres.fpsSauvgarder = parametres.fps;
+        donneesParametres.sensibiliterSauvgarder = parametres.sensibiliter;
+
+        string stringDonneesParametres = JsonUtility.ToJson(donneesParametres, true);
+
+        System.IO.File.WriteAllText(cheminParametre, stringDonneesParametres);
+        
+    }
+
+    public void chargerParametre (){
+        DonneesParametres donneesParametres = JsonUtility.FromJson<DonneesParametres>(System.IO.File.ReadAllText(cheminParametre));
+        SetResolution(donneesParametres.resolutionSauvgarder);
+        SetPleinEcran(donneesParametres.pleinEcranSauvgarder);
+        ShowFPS(donneesParametres.fpsSauvgarder);
+        setSensibilite(donneesParametres.sensibiliterSauvgarder);
+
+
+    }
+
 }
+
+
 
 
