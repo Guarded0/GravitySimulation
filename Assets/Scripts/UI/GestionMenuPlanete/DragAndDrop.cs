@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DragAndDrop : MonoBehaviour
 {
@@ -17,8 +18,10 @@ public class DragAndDrop : MonoBehaviour
     public Transform listBoutonEtoile;
     public GameObject prefabBouton;
     public TMP_InputField nomsNouveauBouton;
+    public GameObject boutonCreationBouton;
     private Vector3 vitesse;
     public GameObject prefabAxeVitesse;
+    private string cheminPresetBouton = Application.persistentDataPath + "/" + "Preset" + ".json";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,6 +29,7 @@ public class DragAndDrop : MonoBehaviour
     }
     void Awake()
     {
+       boutonCreationBouton.GetComponent<Button>().onClick.AddListener(() => creeBouton(Cible.current.GetComponent<CelestialBody>().planetSettings, nomsNouveauBouton.text ));
     }
     // Update is called once per frame
     void Update()
@@ -88,16 +92,18 @@ public class DragAndDrop : MonoBehaviour
         pointeur.transform.localScale = new Vector3(settingPlaneteACree.radius, settingPlaneteACree.radius, settingPlaneteACree.radius) * 2;
         pointeur.gameObject.SetActive(true);
     }
+    
 
-    public void creeBouton()
+
+    public void creeBouton(PlanetSettings settings, String noms)
     {
-        if (Cible.current != null)
+        if (settings != null )
         {
             GameObject nouveauBouton = Instantiate(prefabBouton, new Vector3(0, 0, 0), Quaternion.identity);
-            nouveauBouton.GetComponent<ButtonPrefab>().settings = Cible.current.GetComponent<CelestialBody>().planetSettings;
-            nouveauBouton.GetComponentInChildren<TMP_Text>().text = nomsNouveauBouton.text;
+            nouveauBouton.GetComponent<ButtonPrefab>().settings = settings;
+            nouveauBouton.GetComponentInChildren<TMP_Text>().text = noms; 
 
-            if(Cible.current.GetComponent<CelestialBody>().planetSettings.bodyType == BodyType.Planet){
+            if(nouveauBouton.GetComponent<ButtonPrefab>().settings.bodyType == BodyType.Planet){
             nouveauBouton.transform.SetParent(listBoutonPlanet); 
             } else{
                nouveauBouton.transform.SetParent(listBoutonEtoile); 
@@ -114,5 +120,48 @@ public class DragAndDrop : MonoBehaviour
     public void afficherBoutonEtoile(){
         listBoutonPlanet.gameObject.SetActive(false);
         listBoutonEtoile.gameObject.SetActive(true);
+    }
+
+    public void sauvegarderBouton(){
+        
+        System.IO.File.Delete(cheminPresetBouton);
+    
+
+        DoneesBouton doneesBouton = new DoneesBouton();
+        foreach (GameObject bouton in listBoutonPlanet){
+            ajouterDoneesList(bouton, doneesBouton);
+        }
+        foreach (GameObject bouton in listBoutonEtoile){
+            ajouterDoneesList(bouton, doneesBouton);
+        }
+       
+        string donneesListBouton = JsonUtility.ToJson(doneesBouton, true);
+        System.IO.File.WriteAllText(cheminPresetBouton, donneesListBouton);
+    }
+    public void chargerListBouton(){
+        foreach (GameObject bouton in listBoutonPlanet){
+            Destroy(bouton);
+        }
+        foreach (GameObject bouton in listBoutonEtoile){
+            Destroy(bouton);
+        }
+
+        string donneesBouton = System.IO.File.ReadAllText(cheminPresetBouton);
+
+        DoneesBouton doneesBoutonCharger = JsonUtility.FromJson<DoneesBouton>(donneesBouton);
+        for (int i = 0; i < doneesBoutonCharger.listeDonneesPlanetes.Count; i++){
+            creeBouton(doneesBoutonCharger.listeDonneesPlanetes[i], doneesBoutonCharger.listNoms[i]);
+        }
+    }
+
+    private void ajouterDoneesList(GameObject bouton, DoneesBouton doneesBouton)
+    {
+        doneesBouton.listeDonneesPlanetes.Add(bouton.GetComponent<ButtonPrefab>().settings);
+        doneesBouton.listNoms.Add(bouton.GetComponentInChildren<TMP_Text>().text);
+    }
+
+    public class DoneesBouton {
+        public List<PlanetSettings> listeDonneesPlanetes = new List<PlanetSettings>{};
+        public List<String> listNoms = new List<string>{};
     }
 }
