@@ -21,7 +21,7 @@ public class DragAndDrop : MonoBehaviour
     public GameObject boutonCreationBouton;
     private Vector3 vitesse;
     public GameObject prefabAxeVitesse;
-    private string cheminPresetBouton = Application.persistentDataPath + "/" + "Preset" + ".json";
+    private string cheminPresetBouton;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,6 +29,7 @@ public class DragAndDrop : MonoBehaviour
     }
     void Awake()
     {
+       cheminPresetBouton = Application.persistentDataPath + "/" + "Preset" + ".json";
        boutonCreationBouton.GetComponent<Button>().onClick.AddListener(() => creeBouton(Cible.current.GetComponent<CelestialBody>().planetSettings, nomsNouveauBouton.text ));
     }
     // Update is called once per frame

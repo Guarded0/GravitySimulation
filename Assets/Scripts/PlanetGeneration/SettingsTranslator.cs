@@ -21,7 +21,28 @@ public class SettingsTranslator
             planetGenerator.ridgidNoiseSettings = celestialBody.planetSettings.planetShapeSettings.ridgidNoiseSettings;
             planetGenerator.ridgidMaskNoiseSettings = celestialBody.planetSettings.planetShapeSettings.ridgidMaskNoiseSettings;
         }
-        
+        if (celestialBody.planetSettings.bodyType == BodyType.Star)
+        {
+            celestialBody.gameObject.GetComponent<Light>().enabled = true;
+        }
+        if (celestialBody.planetSettings.isAnchored)
+        {
+            celestialBody.rb.constraints = RigidbodyConstraints.FreezePosition;
+        }
+
+
+        Color trailColor = celestialBody.planetSettings.surfaceColor.mid;
+        if (celestialBody.trailRenderer != null)
+        {
+            celestialBody.trailRenderer.startColor = trailColor;
+            celestialBody.trailRenderer.endColor = trailColor;
+        }
+        if (celestialBody.trajectoryRenderer != null)
+        {
+            celestialBody.trajectoryRenderer.startColor = trailColor;
+            celestialBody.trajectoryRenderer.endColor = trailColor;
+        }
+
         Gradient surfaceColor = new Gradient();
         surfaceColor.SetKeys(
             new GradientColorKey[]
@@ -36,13 +57,15 @@ public class SettingsTranslator
                 new GradientAlphaKey(1f, 0.5f),
                 new GradientAlphaKey(1f, 1f)
             }
-        );//
+        );
         planetGenerator.colorTextureGenerator.colorGradient = surfaceColor;
 
         planetGenerator.oceanSettings = celestialBody.planetSettings.oceanSettings;
 
 
         planetGenerator.needsMeshUpdate = true;
+
+
     }
 
     // takes variables from planet generator -> settings

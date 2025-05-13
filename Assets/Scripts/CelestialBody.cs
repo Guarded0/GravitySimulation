@@ -35,12 +35,6 @@ public class CelestialBody : MonoBehaviour
             trajectoryRenderer = gameObject.AddComponent<LineRenderer>();
         }
 
-        if (planetSettings.isAnchored)
-        {
-            rb.constraints = RigidbodyConstraints.FreezePosition;
-        }
-
-
         // setup trail
         trailRenderer.time = 15f;
         trailRenderer.startWidth = 0.2f;
