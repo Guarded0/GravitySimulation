@@ -38,12 +38,6 @@ public class MenuPlaneteScript : MonoBehaviour
     void Update()
     {
 
-        if(Input.GetKey(KeyCode.H)){
-            sauvegarderBouton();
-        }
-        if(Input.GetKey(KeyCode.J)){
-            chargerBouton();
-        }
         if (activer)
         {
             RaycastHit hit;
@@ -55,6 +49,11 @@ public class MenuPlaneteScript : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 StartCoroutine(creerPlanete());
+            }
+            if (Input.GetMouseButton(1))
+            {
+                activer = false;
+                pointeur.gameObject.SetActive(false);
             }
         }
     }
