@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DragAndDrop : MonoBehaviour
+public class MenuPlaneteScript : MonoBehaviour
 {
     public Transform pointeur;
     private Boolean activer = false;
@@ -147,25 +147,29 @@ public class DragAndDrop : MonoBehaviour
         System.IO.File.WriteAllText(cheminPresetBouton, donneesListBouton);
     
     }
-    public void chargerBouton(){
-        
-        foreach (Transform bouton in listBoutonPlanet){
-            Destroy(bouton.gameObject);
-        }
-       
-        foreach (Transform bouton in listBoutonEtoile){
-            Destroy(bouton.gameObject);
-        }
-       
+    public void chargerBouton()
+    {
+        if (System.IO.File.Exists(cheminPresetBouton)) { 
+            foreach (Transform bouton in listBoutonPlanet)
+            {
+                Destroy(bouton.gameObject);
+            }
 
-        string donneesBouton = System.IO.File.ReadAllText(cheminPresetBouton);
+            foreach (Transform bouton in listBoutonEtoile)
+            {
+                Destroy(bouton.gameObject);
+            }
 
-        DoneesBouton doneesBoutonCharger = JsonUtility.FromJson<DoneesBouton>(donneesBouton);
-        Debug.Log(doneesBoutonCharger.listNoms[0]);
-        for (int i = 0; i < doneesBoutonCharger.listeDonneesPlanetes.Count; i++){
-            creeBouton(doneesBoutonCharger.listeDonneesPlanetes[i], doneesBoutonCharger.listNoms[i]);
+
+            string donneesBouton = System.IO.File.ReadAllText(cheminPresetBouton);
+
+            DoneesBouton doneesBoutonCharger = JsonUtility.FromJson<DoneesBouton>(donneesBouton);
+            Debug.Log(doneesBoutonCharger.listNoms[0]);
+            for (int i = 0; i < doneesBoutonCharger.listeDonneesPlanetes.Count; i++)
+            {
+                creeBouton(doneesBoutonCharger.listeDonneesPlanetes[i], doneesBoutonCharger.listNoms[i]);
+            }
         }
-        
     }
 
     private void ajouterDoneesList(GameObject bouton, DoneesBouton doneesBouton)

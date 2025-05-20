@@ -19,7 +19,7 @@ public class codeQuitter : MonoBehaviour
     }
     public void QuitGame()
 {
-    menuBoutonPlanete.GetComponent<DragAndDrop>().sauvegarderBouton();
+    menuBoutonPlanete.GetComponent<MenuPlaneteScript>().sauvegarderBouton();
     Application.Quit();
 }
 }
