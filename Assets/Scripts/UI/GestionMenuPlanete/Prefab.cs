@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ButtonPrefab : MonoBehaviour
 {
+    //Settings de la planète que se bouton vas crée 
     public PlanetSettings settings;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

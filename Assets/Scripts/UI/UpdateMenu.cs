@@ -5,11 +5,20 @@ using TMPro;
 using UnityEngine.UI;
 public class UpdateMenu : MonoBehaviour
 {
-    private Boolean activer =  true; 
+    //Boolean représentant si le transformToMove est activer ou désactiver
+    private Boolean activer = true; 
+    
     public Vector3 positionOuvert = new Vector3();
     public Vector3 positionFermer = new Vector3();
+    //Symbole a l'interieur du bouton
     private TMP_Text text;
+    //Le transform du game object a bouger 
     RectTransform transformToMove;
+
+    /// <summary>
+    /// Définit le transform du transformToMove 
+    /// Définit le text du bouton 
+    /// </summary>
     private void Awake()
     {
         var button = GetComponent<Button>();
@@ -24,11 +33,16 @@ public class UpdateMenu : MonoBehaviour
             transformToMove = transform.parent.GetComponent<RectTransform>();
         }
     }
-    public void updateEtatMenu(){
+    /// <summary>
+    /// Lorsque le bouton est appuyer la position de transformToMove vas 
+    /// changer entre l'états ouvert et fermer 
+    /// Vas ajuster text en fonction de l'états du tranformToMove 
+    /// </summary>
+    public void updateEtatMenu()
+    {
 
         if (activer)
         {
-
             LeanTween.move(transformToMove, positionFermer, 0.5f).setEase(LeanTweenType.easeOutExpo);
             if (text != null && text.text == "<") text.text = ">";
             activer = false;

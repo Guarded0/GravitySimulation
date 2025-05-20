@@ -12,8 +12,12 @@ public class Supression : MonoBehaviour
     {
         bouton = this.gameObject;   
     }
-   public void autodestruction(){
-    Destroy(bouton);
-   }
+    /// <summary>
+    /// Supprime le bouton qui est associer ou boutton qui appelle cette méthode 
+    /// </summary>
+    public void autodestruction()
+    {
+        Destroy(bouton);
+    }
 
 }

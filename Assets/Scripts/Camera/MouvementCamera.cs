@@ -50,6 +50,9 @@ public class MouvementCamera : MonoBehaviour
 
         MoveToTarget();
     }
+    /// <summary>
+    /// S'assure que la camera rest de la même distance de la cible lorsqu'elle se déplace. 
+    /// </summary>
     void FollowCible()
     {
         var deltaPos = Cible.current.position - dernierePosition;
@@ -66,6 +69,7 @@ public class MouvementCamera : MonoBehaviour
 
         dernierePosition = Cible.current.position;
     }
+
     void CibleChanged(Transform newTransform)
     {
         if (newTransform)
@@ -153,7 +157,7 @@ public class MouvementCamera : MonoBehaviour
         // transform.LeanMove(transform.position + (transform.forward * inputAxis.y + transform.right * inputAxis.x + transform.up * Input.GetAxis("Depth")) * vitesseCamera * Time.deltaTime, 0.1f);
         targetTransform.position += input * vitesseCamera * Time.deltaTime;
     }
-
+    
     void MoveToTarget()
     {
         transform.position = Vector3.Lerp(transform.position, targetTransform.position, positionLerpSpeed * Time.deltaTime);
