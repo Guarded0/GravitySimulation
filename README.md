@@ -4,7 +4,7 @@ Une simulation à N-corps avec génération procédurale de planètes et le rend
 # Caractéristiques :
  - Planètes et étoiles entièrement personnalisables et procédurales créées et rendues presque entièrement par le GPU.
  - Simulation fonctionnelle et personnalisable de N-corps complètement indépendante du moteur physique de unity.
- - Prédiction d'orbite en simulant les mêmes corps à une échelle de temps beaucoup plus rapide.
+ - Prédiction d'orbite calculer en simulant les mêmes corps à vitesse beaucoup plus rapide.
  - La possibilité de changer le cadre de référence pour n'importe quel corps céleste ou aucun.
  - La possibilité d'éditer toutes les propriétés de chaque corps céleste pour que l'utilisateur puisse créer un système solaire à sa convenance.
  - Une fonction de sauvegarde et de chargement permettant à l'utilisateur de stocker et éventuellement de partager ses créations.
