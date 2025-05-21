@@ -19,6 +19,7 @@ public class Cible : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MenuPrincipal.isActive) return;
         // used to prevent clicking through UI elements.
         isOverUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
         // deselect if key is pressed

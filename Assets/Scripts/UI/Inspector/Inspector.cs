@@ -9,6 +9,10 @@ public class Inspector : MonoBehaviour
     private RectTransform rectTransform;
     public Transform inspectorSettingParent;
     public TMP_Dropdown presetDropdown;
+    [SerializeField] private GameObject transformSetting;
+    private TMP_InputField xInputField;
+    private TMP_InputField yInputField;
+    private TMP_InputField zInputField;
     public List<PlanetShapePreset> planetShapePresets;
 
     private List<InspectorSetting> settings;
@@ -93,17 +97,20 @@ public class Inspector : MonoBehaviour
     void Update()
     {
         if (!initialized) return;
+        if (isUIShown && Cible.current != null)
+        {
+            UpdateFromCible(Cible.current);
+        }
     }
     void Init()
     {
         if (initialized) return;
-        var children = gameObject.GetComponentsInChildren<Transform>();
+        var children = gameObject.GetComponentsInChildren<InspectorSettingName>();
         settings = new List<InspectorSetting>();
         for (int i = 0; i < children.Length; i++)
         {
-            if (children[i].parent != inspectorSettingParent) continue;
-            if (children[i].GetComponent<InspectorSettingName>() == null) continue;
-            InspectorSetting setting = new InspectorSetting(children[i]);
+            if (children[i].transform.parent != inspectorSettingParent && children[i].transform.parent.parent != inspectorSettingParent) continue;
+            InspectorSetting setting = new InspectorSetting(children[i].transform);
             switch(setting.settingType)
             {
                 case SettingType.Float:
@@ -125,7 +132,33 @@ public class Inspector : MonoBehaviour
             presetDropdown.AddOptions(planetShapePresets.ConvertAll(p => p.name));
             presetDropdown.onValueChanged.AddListener(OnDropdownNewValue);
         }
-
+        if (transformSetting != null)
+        {
+            xInputField = transformSetting.transform.Find("X").GetComponent<TMP_InputField>();
+            yInputField = transformSetting.transform.Find("Y").GetComponent<TMP_InputField>();
+            zInputField = transformSetting.transform.Find("Z").GetComponent<TMP_InputField>();
+            xInputField.onEndEdit.AddListener((string str) =>
+            {
+                if (Cible.current == null) return;
+                var value = Cible.current.position;
+                value.x = float.Parse(str);
+                Cible.current.position = value;
+            });
+            yInputField.onEndEdit.AddListener((string str) =>
+            {
+                if (Cible.current == null) return;
+                var value = Cible.current.position;
+                value.y = float.Parse(str);
+                Cible.current.position = value;
+            });
+            zInputField.onEndEdit.AddListener((string str) =>
+            {
+                if (Cible.current == null) return;
+                var value = Cible.current.position;
+                value.z = float.Parse(str);
+                Cible.current.position = value;
+            });
+        }
 
         if (Cible.cibleChanged != null)
         {
@@ -153,10 +186,18 @@ public class Inspector : MonoBehaviour
             switch (setting.settingType)
             {
                 case SettingType.Float:
-                    setting.panel.GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(value.ToString());
+                    {
+                        var field = setting.panel.GetComponentInChildren<TMP_InputField>();
+                        if (field.isFocused) break;
+                        field.SetTextWithoutNotify(value.ToString());
+                    }
                     break;
                 case SettingType.Color:
-                    setting.panel.GetComponentInChildren<ColorField>().SetColor((Color)value);
+                    {
+                        var field = setting.panel.GetComponentInChildren<ColorField>();
+                        if (field.isFocused) break;
+                        setting.panel.GetComponentInChildren<ColorField>().SetColor((Color)value);
+                    }
                     break;
                 case SettingType.Bool:
                     setting.panel.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify((bool)value);
@@ -168,6 +209,14 @@ public class Inspector : MonoBehaviour
         {
             presetDropdown.value = planetShapePresets.IndexOf(Cible.current.GetComponent<CelestialBody>().planetSettings.planetShapeSettings);
         }
+        // Transform
+        if (transformSetting != null)
+        {
+            if (!xInputField.isFocused) xInputField.SetTextWithoutNotify(cible.position.x.ToString());
+            if (!yInputField.isFocused) yInputField.SetTextWithoutNotify(cible.position.y.ToString());
+            if (!zInputField.isFocused) zInputField.SetTextWithoutNotify(cible.position.z.ToString());
+        }
+
     }
     void SetObjectValue(Transform cible, InspectorSetting setting, object value)
     {
@@ -233,15 +282,9 @@ public class Inspector : MonoBehaviour
     void OnCibleUpdate(Transform newCible)
     {
         if (newCible == null)
-        {
             HideUI();
-
-        }
         else
-        {
             ShowUI();
-        }
-        
     }
     void ShowUI()
     {

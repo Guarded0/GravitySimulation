@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Events;
 public class UpdateMenu : MonoBehaviour
 {
     //Boolean représentant si le transformToMove est activer ou désactiver
-    private Boolean activer = true; 
+    [SerializeField] private Boolean activer = false; 
     
     public Vector3 positionOuvert = new Vector3();
     public Vector3 positionFermer = new Vector3();
@@ -14,7 +15,7 @@ public class UpdateMenu : MonoBehaviour
     private TMP_Text text;
     //Le transform du game object a bouger 
     RectTransform transformToMove;
-
+    public UnityEvent<bool> stateChanged = new UnityEvent<bool>(); // Événement pour notifier les changements d'état
     /// <summary>
     /// Définit le transform du transformToMove 
     /// Définit le text du bouton 
@@ -53,6 +54,6 @@ public class UpdateMenu : MonoBehaviour
             if (text != null && text.text == ">") text.text = "<";
             activer = true;
         }
-
+        stateChanged.Invoke(activer); // Notifier les abonnés de l'événement
     }
 }

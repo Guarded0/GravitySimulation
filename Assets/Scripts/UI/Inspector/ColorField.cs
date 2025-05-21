@@ -9,7 +9,7 @@ public class ColorField : MonoBehaviour
     private Canvas canvas;
     private Image colorImage;
     private Button button;
-
+    public bool isFocused;
     public UnityEvent<Color> onColorChanged = new UnityEvent<Color>();
     private void Awake()
     {
@@ -24,6 +24,7 @@ public class ColorField : MonoBehaviour
     }
     IEnumerator PickColor()
     {
+        isFocused = true;
         Color oldColor = colorImage.color;
         GameObject colorPicker = Instantiate(colorPickerPrefab, canvas.transform);
         colorPicker.transform.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
@@ -49,6 +50,7 @@ public class ColorField : MonoBehaviour
         {
             onColorChanged.Invoke(colorImage.color);
         }
+        isFocused = false;
     }
 
     public void SetColor(Color color)

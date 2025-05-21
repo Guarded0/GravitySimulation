@@ -28,14 +28,20 @@ public class MouvementCamera : MonoBehaviour
 
     private void Start()
     {
+        MenuParametres.parametresChanged.AddListener(OnSettingsUpdate);
         GameObject target = new GameObject();
         target.transform.position = transform.position;
         targetTransform = target.transform;
         Cible.cibleChanged.AddListener(CibleChanged);
     }
+
     void Update()
     {
-        inputAxis = new float3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetAxis("Mouse ScrollWheel") * 10);
+        if (MenuPrincipal.isActive) 
+            inputAxis = Vector3.zero;
+        else 
+            inputAxis = new float3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetAxis("Mouse ScrollWheel") * 10);
+
         // orbitMode
         if (Cible.current && orbitMode && !softUnlock)
         {
@@ -84,7 +90,7 @@ public class MouvementCamera : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * sensibilite * 2f * Time.deltaTime;
         // ADDITIONNER LA SOURIS AVEC WASD POUR FACILITER LE MOUVEMENT
         Vector3 mixedInput;
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1) && !MenuPrincipal.isActive)
         {
             Cursor.lockState = CursorLockMode.Locked;
             mixedInput = new Vector3(Mathf.Clamp(-inputAxis.x + mouseX,-1,1), Mathf.Clamp(-inputAxis.y + mouseY, -1, 1), inputAxis.z);
@@ -172,6 +178,10 @@ public class MouvementCamera : MonoBehaviour
         if (!Application.isPlaying) return;
         Gizmos.DrawSphere(transform.position, 0.5f);
         Gizmos.DrawSphere(targetTransform.position, 0.5f);
+    }
+    private void OnSettingsUpdate()
+    {
+        sensibilite = MenuParametres.parametres.sensibiliter;
     }
 }
 

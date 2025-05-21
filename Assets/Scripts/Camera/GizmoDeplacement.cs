@@ -28,7 +28,7 @@ public class MoveTool : MonoBehaviour
         {
             DestroyGizmo();
         }
-        if (Input.GetMouseButtonDown(0))
+        if (!MenuPrincipal.isActive && Input.GetMouseButtonDown(0))
         {
             HandleSelection();
         }
