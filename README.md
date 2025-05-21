@@ -49,6 +49,6 @@ Le bouton "Quitter" ferme l'application.
 Dans le coins supérieux droit de votre écrant, il y a un bouton quadrilier qui vous permet d'afficher un grille pour faciliter le positionement des corps céleste. 
 
 #Technologie utiliser: 
-Language utiliser: C# ansi que HLSL (High Level Shader Language) 
-Moteur de jeux : Unity 
-Librairy: Lean Tween 
+ - Motheur de Jeux: Unity
+ - Language: C#
+ - Librairie: Lean Tween 
