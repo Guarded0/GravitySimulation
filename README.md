@@ -1,5 +1,5 @@
 # Projet de SSI
-Une simulation à N-corps avec génération procédurale de planètes et rendu de l'atmosphère et des océans.
+Une simulation à N-corps avec génération procédurale de planètes et le rendu de l'atmosphère et des océans.
 
 # Caractéristiques :
  - Planètes et étoiles entièrement personnalisables et procédurales créées et rendues presque entièrement par le GPU.
