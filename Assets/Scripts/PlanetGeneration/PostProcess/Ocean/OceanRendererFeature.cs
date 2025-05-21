@@ -174,6 +174,13 @@ public class OceanRenderPass : ScriptableRenderPass
         float alphaMultiplier = oceanSettings.alphaMultiplier;
         float oceanRadius = oceanSettings.oceanRadius;
 
+        Transform mainLightsource = PrimaryLightSource.FindMainLightSource(planetTransform.position);
+        Vector3 directionToSun = Vector3.zero;
+        if (mainLightsource != null)
+        {
+            directionToSun = (mainLightsource.position - planetTransform.position).normalized;
+        }
+
         material.SetColor(colorAID, colorA);
         material.SetColor(colorBID, colorB);
         material.SetFloat(depthMultiplierID, depthMultiplier);
@@ -182,7 +189,7 @@ public class OceanRenderPass : ScriptableRenderPass
         material.SetFloat("_planetScale", planetTransform.localScale.x);
         material.SetVector(planetPositionID, planetTransform.position);
         material.SetFloat(smoothnessID, oceanSettings.oceanPreset.smoothness);
-        material.SetVector(directionToSunID, (PrimaryLightSource.FindMainLightSource(planetTransform.position).position - planetTransform.position).normalized);
+        material.SetVector(directionToSunID, directionToSun);
         material.SetColor(specularColorID, volumeComponent.specularColor.value);
         material.SetTexture("_waveNormalA", oceanSettings.oceanPreset.waveNormalA);
         material.SetTexture("_waveNormalB", oceanSettings.oceanPreset.waveNormalB);

@@ -176,6 +176,13 @@ public class AtmosphereRenderPass : ScriptableRenderPass
 
        var volumeComponent = VolumeManager.instance.stack.GetComponent<AtmosphereVolumeComponent>();
 
+        Transform mainLightsource = PrimaryLightSource.FindMainLightSource(planetTransform.position);
+        Vector3 directionToSun = Vector3.zero;
+        if (mainLightsource != null)
+        {
+            directionToSun = (mainLightsource.position - planetTransform.position).normalized;
+        }
+
         material.SetVector(planetCenterID, planetTransform.position);
         material.SetFloat(planetRadiusID, atmosphereSettings.planetRadius * planetTransform.localScale.x);
         material.SetFloat(atmosphereRadiusID, atmosphereSettings.atmosphereRadius * planetTransform.localScale.x);
@@ -183,7 +190,7 @@ public class AtmosphereRenderPass : ScriptableRenderPass
         material.SetInt(opticalDepthPointsID, atmosphereSettings.opticalDepthPoints);
         material.SetFloat(densityFalloffID, atmosphereSettings.densityFalloff);
         material.SetFloat(oceanRadiusID, oceanRadius * planetTransform.localScale.x);
-        material.SetVector(directionToSunID, (PrimaryLightSource.FindMainLightSource(planetTransform.position).position - planetTransform.position).normalized);
+        material.SetVector(directionToSunID, directionToSun);
         material.SetVector("_scatteringCoefficients", atmosphereSettings.GetScatteringCoefficient());
         material.SetVector("_atmosphereTint", atmosphereSettings.atmosphereTint);
         material.SetFloat("_atmosphereTintStrength", atmosphereSettings.atmosphereTint.a);

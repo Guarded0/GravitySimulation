@@ -21,15 +21,10 @@ public class SettingsTranslator
             planetGenerator.ridgidNoiseSettings = celestialBody.planetSettings.planetShapeSettings.ridgidNoiseSettings;
             planetGenerator.ridgidMaskNoiseSettings = celestialBody.planetSettings.planetShapeSettings.ridgidMaskNoiseSettings;
         }
-        if (celestialBody.planetSettings.bodyType == BodyType.Star)
-        {
-            celestialBody.gameObject.GetComponent<Light>().enabled = true;
-        }
-        if (celestialBody.planetSettings.isAnchored)
-        {
-            celestialBody.rb.constraints = RigidbodyConstraints.FreezePosition;
-        }
 
+        celestialBody.gameObject.GetComponent<Light>().enabled = celestialBody.planetSettings.bodyType == BodyType.Star;
+
+        celestialBody.rb.constraints = celestialBody.planetSettings.isAnchored ? RigidbodyConstraints.FreezePosition : RigidbodyConstraints.None;
 
         Color trailColor = celestialBody.planetSettings.surfaceColor.mid;
         if (celestialBody.trailRenderer != null)

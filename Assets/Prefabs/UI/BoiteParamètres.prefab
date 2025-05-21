@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Param\xE8tre"
+  m_text: "Param\xE8tres de simulation"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.3
+  m_fontSize: 26.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -257,7 +257,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 350, y: 35}
+  m_SizeDelta: {x: 360, y: 35}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &4928719448825583128
 CanvasRenderer:
@@ -336,7 +336,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -175, y: 116.5}
-  m_SizeDelta: {x: 350, y: 609}
+  m_SizeDelta: {x: 360, y: 609}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3709262899768784059
 CanvasRenderer:
@@ -366,8 +366,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -936,12 +936,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 4150922642694497936}
     m_Modifications:
     - target: {fileID: 331041030392372104, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 331041030392372104, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
       propertyPath: m_MaxValue
-      value: 2
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 331041030392372104, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
+      propertyPath: m_MinValue
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 1019852046502087646, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
       propertyPath: m_Name
       value: SettingSlider
+      objectReference: {fileID: 0}
+    - target: {fileID: 3151989880801023402, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
+      propertyPath: m_CharacterLimit
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4642343945719236058, guid: eb78ab121b30a6743b7e8ab00eb20cf3, type: 3}
       propertyPath: m_Pivot.x
@@ -1179,5 +1191,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c832eaea31ad344b743773dd0b102d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activer: 0
   positionOuvert: {x: -175, y: 116.5, z: 0}
   positionFermer: {x: 175, y: 116.5, z: 0}
+  stateChanged:
+    m_PersistentCalls:
+      m_Calls: []

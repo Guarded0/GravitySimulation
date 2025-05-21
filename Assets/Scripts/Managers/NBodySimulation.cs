@@ -31,6 +31,7 @@ public class NBodySimulation : MonoBehaviour
 
     private DiagnosticChronometer chronometer = new DiagnosticChronometer();
     public double averageTimeMiliseconds;
+    private BodyPoolingSystem bodyPoolingSystem = new BodyPoolingSystem();
 
     void CreateEvent()
     {
@@ -156,16 +157,45 @@ public class NBodySimulation : MonoBehaviour
 
     public GameObject CreatePlanet(Vector3 position, PlanetSettings planetSettings, string name = "New planet")
     {
-        GameObject newPlanet = Instantiate(planetTemplate, position, Quaternion.identity);
+        GameObject newPlanet;
+        if (!bodyPoolingSystem.isEmpty)
+        {
+            newPlanet = bodyPoolingSystem.GetFromPool();
+            newPlanet.transform.position = position;
+        }
+        else
+        {
+            newPlanet = Instantiate(planetTemplate, position, Quaternion.identity);
+        }
         newPlanet.transform.parent = bodyContainer.transform;
         newPlanet.name = name;
         newPlanet.GetComponent<CelestialBody>().planetSettings = planetSettings;
         newPlanet.GetComponent<CelestialBody>().shouldUpdateSettings = true;
         newPlanet.GetComponent<PlanetGenerator>().CreateUniqueMaterial();
+        planetAdded.Invoke(newPlanet);
         return newPlanet;
     }
     public void DestroyBody(GameObject gameObject)
     {
+        if (gameObject == null) return;
+        CelestialBody celestialBody = gameObject.GetComponent<CelestialBody>();
+
+        if (celestialBody != null)
+        {
+            if (referenceBody == celestialBody)
+            {
+                referenceBody = null;
+            }
+            celestialBodies.Remove(celestialBody);
+            if (celestialBody.planetSettings.bodyType == BodyType.Star)
+            {
+                stars.Remove(celestialBody);
+            }
+
+            gameObject.SetActive(false);
+            bodyPoolingSystem.AddToPool(gameObject);
+        }
+        planetRemoved.Invoke(gameObject);
     }
     void OnPlanetAdded(GameObject gameObject)
     {

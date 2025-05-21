@@ -37,10 +37,11 @@ public class MouvementCamera : MonoBehaviour
 
     void Update()
     {
+        bool isOverUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
         if (MenuPrincipal.isActive) 
             inputAxis = Vector3.zero;
         else 
-            inputAxis = new float3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetAxis("Mouse ScrollWheel") * 10);
+            inputAxis = new float3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), isOverUI ? 0 : Input.GetAxis("Mouse ScrollWheel") * 10);
 
         // orbitMode
         if (Cible.current && orbitMode && !softUnlock)
@@ -85,12 +86,12 @@ public class MouvementCamera : MonoBehaviour
     }
     void UpdateMouvementOrbite(Transform cible)
     {
-        
+        bool isOverUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
         float mouseX = Input.GetAxis("Mouse X") * sensibilite * 2f * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensibilite * 2f * Time.deltaTime;
         // ADDITIONNER LA SOURIS AVEC WASD POUR FACILITER LE MOUVEMENT
         Vector3 mixedInput;
-        if (Input.GetMouseButton(1) && !MenuPrincipal.isActive)
+        if (Input.GetMouseButton(1) && !MenuPrincipal.isActive && !isOverUI)
         {
             Cursor.lockState = CursorLockMode.Locked;
             mixedInput = new Vector3(Mathf.Clamp(-inputAxis.x + mouseX,-1,1), Mathf.Clamp(-inputAxis.y + mouseY, -1, 1), inputAxis.z);

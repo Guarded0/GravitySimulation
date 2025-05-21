@@ -7,14 +7,17 @@ using System;
 public class Inspector : MonoBehaviour
 {
     private RectTransform rectTransform;
+
     public Transform inspectorSettingParent;
     public TMP_Dropdown presetDropdown;
+    public List<PlanetShapePreset> planetShapePresets;
+
+    [SerializeField] private TMP_Text titleText;
+    [SerializeField] private Button deleteButton;
     [SerializeField] private GameObject transformSetting;
     private TMP_InputField xInputField;
     private TMP_InputField yInputField;
     private TMP_InputField zInputField;
-    public List<PlanetShapePreset> planetShapePresets;
-
     private List<InspectorSetting> settings;
     private bool isUIShown = false;
     private bool initialized = false;
@@ -90,7 +93,6 @@ public class Inspector : MonoBehaviour
     void Start()
     {
         Init();
-        
     }
 
     // Update is called once per frame
@@ -164,6 +166,13 @@ public class Inspector : MonoBehaviour
         {
             Cible.cibleChanged.AddListener(OnCibleUpdate);
         }
+
+        if (deleteButton != null)
+        {
+            deleteButton.onClick.AddListener(OnDeleteButtonClick);
+        }
+
+
         initialized = true;
     }
     void OnDropdownNewValue(int index)
@@ -179,6 +188,7 @@ public class Inspector : MonoBehaviour
     }
     void UpdateFromCible(Transform cible)
     {
+        titleText.text = cible.name;
         for (int i = 0; i < settings.Count; i++)
         { 
             InspectorSetting setting = settings[i];
@@ -285,6 +295,12 @@ public class Inspector : MonoBehaviour
             HideUI();
         else
             ShowUI();
+    }
+    void OnDeleteButtonClick()
+    {
+        if (Cible.current == null) return;
+        NBodySimulation.Instance.DestroyBody(Cible.current.gameObject);
+        HideUI();
     }
     void ShowUI()
     {

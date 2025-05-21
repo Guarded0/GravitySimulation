@@ -4,10 +4,8 @@ using TMPro;
 using System.Reflection;
 using System;
 using UnityEngine.UI;
-using static SimulationSettingUI;
 public class SimulationSettingUI : MonoBehaviour
 {
-    private RectTransform rectTransform;
     public Transform simulationSettingParent;
 
     private List<SimulationSetting> settings;
@@ -28,7 +26,7 @@ public class SimulationSettingUI : MonoBehaviour
             this.settingName = panel.GetComponentInChildren<InspectorSettingName>();
             this.inputField = panel.GetComponentInChildren<TMP_InputField>();
             this.slider = panel.GetComponentInChildren<Slider>();
-            this.isToggle = false;//
+            this.isToggle = false;
             if (this.inputField == null)
             {
                 this.isToggle = true;
@@ -43,15 +41,10 @@ public class SimulationSettingUI : MonoBehaviour
 
         }
     }
-    private void Awake()
-    {
-        rectTransform = gameObject.GetComponent<RectTransform>();
-    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Init();
-
     }
 
     // Update is called once per frame
@@ -72,9 +65,7 @@ public class SimulationSettingUI : MonoBehaviour
                 setting.slider.onValueChanged.AddListener((float value) => SetObjectValue(setting, value));
                 setting.inputField.onEndEdit.AddListener((string str) => SetObjectValue(setting, float.Parse(str)));
             }
-                
             settings.Add(setting);
-
         }
         initialized = true;
     }
@@ -83,7 +74,7 @@ public class SimulationSettingUI : MonoBehaviour
         setting.fieldInfo.SetValue(NBodySimulation.Instance, value);
         if (setting.isToggle == false)
         {
-            setting.inputField.SetTextWithoutNotify(value.ToString());
+            setting.inputField.SetTextWithoutNotify(((float)value).ToString("F2"));
             setting.slider.SetValueWithoutNotify((float)value);
         }
         else

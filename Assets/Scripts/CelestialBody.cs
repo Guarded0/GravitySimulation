@@ -44,11 +44,6 @@ public class CelestialBody : MonoBehaviour
 
         shouldUpdateSettings = true;
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        NBodySimulation.planetAdded.Invoke(gameObject);
-    }
 
     private void OnDestroy()
     {

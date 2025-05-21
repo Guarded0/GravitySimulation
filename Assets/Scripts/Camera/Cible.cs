@@ -16,12 +16,18 @@ public class Cible : MonoBehaviour
         if (cibleChanged == null)
             cibleChanged = new UnityEvent<Transform?>();
     }
+    private void Start()
+    {
+        // Subscribe to the event when a body is destroyed
+        NBodySimulation.planetRemoved.AddListener(OnBodyRemoved);
+    }
     // Update is called once per frame
     void Update()
     {
         if (MenuPrincipal.isActive) return;
         // used to prevent clicking through UI elements.
         isOverUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+
         // deselect if key is pressed
         if (Input.GetKey(deselectKey))
         {
@@ -73,5 +79,13 @@ public class Cible : MonoBehaviour
         if (outlineTransform == null || currentOutlineTransform == outlineTransform) return;
         outlineTransform.gameObject.AddComponent<Outline>();
         currentOutlineTransform = outlineTransform;
+    }
+    void OnBodyRemoved(GameObject gameObject)
+    {
+        if (current != null && current.gameObject == gameObject)
+        {
+            current = null;
+            cibleChanged.Invoke(null);
+        }
     }
 }
