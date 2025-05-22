@@ -1,6 +1,6 @@
 # Projet de SSI
 Une simulation à N-corps avec génération procédurale de planètes et le rendu de l'atmosphère et des océans.
-
+![image](https://github.com/Guarded0/GravitySimulation/blob/main/Images/mainImage.png)
 # Caractéristiques :
  - Planètes et étoiles entièrement personnalisables et procédurales créées et rendues presque entièrement par le GPU.
  - Simulation fonctionnelle et personnalisable de N-corps complètement indépendante du moteur physique de unity.
