@@ -9,7 +9,7 @@ public class PlanetGenerator : MonoBehaviour
     public int seed;
     public int initialSphereResolution = 10;
     public float planetRadius = 4f;
-    public int temperature = 1000;
+    public float temperature = 1000f;
     public BodyType bodyType = BodyType.Planet;
     public Shader planetShader
     {
@@ -151,7 +151,7 @@ public class PlanetGenerator : MonoBehaviour
                 CreateUniqueMaterial();
                 return;
             }
-            material.SetInt("_Temperature", temperature);
+            material.SetInt("_Temperature", (int)temperature);
         }
         else
         {

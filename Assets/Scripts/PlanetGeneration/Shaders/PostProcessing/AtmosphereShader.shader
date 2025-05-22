@@ -57,6 +57,7 @@ Shader "Hidden/AtmosphereShader"
             float _densityFalloff;
             float _oceanRadius;
             float3 _directionToSun;
+            float _sunIntensity;
             
             float3 _scatteringCoefficients;
             float3 _atmosphereTint;
@@ -122,10 +123,15 @@ Shader "Hidden/AtmosphereShader"
             //
             half4 MainFrag(v2f input) : SV_Target
             {
+
                 float intensity = 1;
                 
                 float2 uv = input.texcoord;
                 float4 sceneColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
+                if (_sunIntensity <= 0)
+                {
+                    return sceneColor;
+                }
                 float depth = SampleSceneDepth(uv);
                 float viewLength = length(input.viewVector);
                 float sceneDepth = LinearEyeDepth(depth, _ZBufferParams) * viewLength;
@@ -143,6 +149,10 @@ Shader "Hidden/AtmosphereShader"
 
                 if (distanceThroughAtmosphere > 0)
                 {
+                    
+                    float3 normDirectionToSun = normalize(_directionToSun);
+                    float distanceToSun = length(_directionToSun);
+
                     const float epsilon = 0.0001;
                     float3 pointInAtmosphere = rayPos + rayDir * (distanceToAtmosphere + epsilon);
                     // calculate Lighting
@@ -153,8 +163,8 @@ Shader "Hidden/AtmosphereShader"
                     float viewRayOpticalDepth = 0;
                     for (int i = 0; i < _inScatteringPoints; i++)
                     {
-                        float sunRayLength = raySphere(_planetCenter, _atmosphereRadius, inScatterPoint, _directionToSun).y;
-                        float sunRayOpticalDepth = opticalDepth(inScatterPoint, _directionToSun, sunRayLength);
+                        float sunRayLength = raySphere(_planetCenter, _atmosphereRadius, inScatterPoint, normDirectionToSun).y;
+                        float sunRayOpticalDepth = opticalDepth(inScatterPoint, normDirectionToSun, sunRayLength);
                         viewRayOpticalDepth = opticalDepth(inScatterPoint, -rayDir, stepSize * i);
                         
                         float3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth) * _scatteringCoefficients);
@@ -163,10 +173,13 @@ Shader "Hidden/AtmosphereShader"
                         inScatterPoint += rayDir * stepSize;
                         
                     }
+
+                    float attenuation = 1.0 / (distanceToSun * distanceToSun + 1e-4); // inverse-square
+
                     inScatteredLight /= _planetRadius;
                     inScatteredLight *= lerp(float3(1,1,1), _atmosphereTint, _atmosphereTintStrength);
                     float sceneColorTransmittance = exp(-viewRayOpticalDepth);
-                    float3 finalColor = sceneColor * sceneColorTransmittance + inScatteredLight;
+                    float3 finalColor = sceneColor * sceneColorTransmittance + inScatteredLight * attenuation * _sunIntensity;
                     
                     
 

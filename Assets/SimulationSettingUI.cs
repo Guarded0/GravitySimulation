@@ -69,12 +69,15 @@ public class SimulationSettingUI : MonoBehaviour
         }
         initialized = true;
     }
+
     void SetObjectValue(SimulationSetting setting, object value)
     {
         setting.fieldInfo.SetValue(NBodySimulation.Instance, value);
         if (setting.isToggle == false)
         {
-            setting.inputField.SetTextWithoutNotify(((float)value).ToString("F2"));
+            if (setting.slider.wholeNumbers) setting.inputField.SetTextWithoutNotify(((float)value).ToString());
+            else setting.inputField.SetTextWithoutNotify(((float)value).ToString("F2"));
+
             setting.slider.SetValueWithoutNotify((float)value);
         }
         else

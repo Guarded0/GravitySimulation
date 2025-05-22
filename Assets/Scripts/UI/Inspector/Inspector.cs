@@ -14,6 +14,7 @@ public class Inspector : MonoBehaviour
 
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private Button deleteButton;
+    [SerializeField] private Button centerButton;
     [SerializeField] private GameObject transformSetting;
     private TMP_InputField xInputField;
     private TMP_InputField yInputField;
@@ -172,6 +173,10 @@ public class Inspector : MonoBehaviour
             deleteButton.onClick.AddListener(OnDeleteButtonClick);
         }
 
+        if(centerButton != null)
+        {
+            centerButton.onClick.AddListener(OnCenterButtonClick);
+        }
 
         initialized = true;
     }
@@ -301,6 +306,11 @@ public class Inspector : MonoBehaviour
         if (Cible.current == null) return;
         NBodySimulation.Instance.DestroyBody(Cible.current.gameObject);
         HideUI();
+    }
+    void OnCenterButtonClick()
+    {
+        if (Cible.current == null) return;
+        NBodySimulation.Instance.referenceBody = Cible.current.GetComponent<CelestialBody>();
     }
     void ShowUI()
     {

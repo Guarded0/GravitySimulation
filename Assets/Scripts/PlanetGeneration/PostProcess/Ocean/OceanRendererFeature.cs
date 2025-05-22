@@ -81,6 +81,12 @@ public class OceanRenderPass : ScriptableRenderPass
     }
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
+        var volumeComponent = VolumeManager.instance.stack.GetComponent<OceanVolumeComponent>();
+        if (volumeComponent == null || !volumeComponent.IsActive())
+        {
+            // If the volume component is not active, skip rendering
+            return;
+        }
         // where color texture and depth texture is...
         UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
 
@@ -175,10 +181,12 @@ public class OceanRenderPass : ScriptableRenderPass
         float oceanRadius = oceanSettings.oceanRadius;
 
         Transform mainLightsource = PrimaryLightSource.FindMainLightSource(planetTransform.position);
+        float sunIntensity = 0.0f;
         Vector3 directionToSun = Vector3.zero;
         if (mainLightsource != null)
         {
-            directionToSun = (mainLightsource.position - planetTransform.position).normalized;
+            directionToSun = (mainLightsource.position - planetTransform.position);
+            sunIntensity = mainLightsource.GetComponent<Light>().intensity / 2;
         }
 
         material.SetColor(colorAID, colorA);
@@ -190,6 +198,7 @@ public class OceanRenderPass : ScriptableRenderPass
         material.SetVector(planetPositionID, planetTransform.position);
         material.SetFloat(smoothnessID, oceanSettings.oceanPreset.smoothness);
         material.SetVector(directionToSunID, directionToSun);
+        material.SetFloat("_sunIntensity", sunIntensity);
         material.SetColor(specularColorID, volumeComponent.specularColor.value);
         material.SetTexture("_waveNormalA", oceanSettings.oceanPreset.waveNormalA);
         material.SetTexture("_waveNormalB", oceanSettings.oceanPreset.waveNormalB);

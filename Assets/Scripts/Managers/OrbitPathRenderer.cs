@@ -21,8 +21,6 @@ using UnityEngine.UIElements;
 
 public class OrbitPathRenderer : MonoBehaviour
 {
-    // amount of steps itll run the sim for
-    public int numSteps = 1000;
     // time in between each step
     public float timeStep = 0.1f;
     // if it should simply use the physics step (recommended)
@@ -50,6 +48,8 @@ public class OrbitPathRenderer : MonoBehaviour
     NativeArray<Vector3> velocities;
     NativeArray<Vector3> positions;
 
+    // amount of steps itll run the sim for
+    int numSteps = 1000;
     float gravConstant = 1.0f;
     int referenceIndex = -1;
     Vector3 referenceBodyOffset = Vector3.zero;
@@ -62,7 +62,7 @@ public class OrbitPathRenderer : MonoBehaviour
     [SerializeField] bool simulationComplete = false;
 
     const bool CANCEL_THREAD = false;
-    const int TIMEOUT_MILISECONDS = 10000;
+    const int TIMEOUT_MILISECONDS = 60000;
     int lastCount = 0;
     private void Awake()
     {
@@ -89,7 +89,10 @@ public class OrbitPathRenderer : MonoBehaviour
 
     void DrawOrbits()
     {
+        // get data from NBodySimulation
         currentReferenceBody = NBodySimulation.Instance.referenceBody;
+        numSteps = (int)NBodySimulation.Instance.orbitPredictionSteps;
+        gravConstant = NBodySimulation.Instance.gravConstant;
 
         // creates virtual body array
         virtualBodies = CreateVirtualBodies();
@@ -111,7 +114,6 @@ public class OrbitPathRenderer : MonoBehaviour
             positions = new NativeArray<Vector3>(virtualBodies.Count, Allocator.Persistent);
             lastCount = virtualBodies.Count;
         }
-        gravConstant = NBodySimulation.Instance.gravConstant;
 
         // populate native arrays
         for (int i = 0; i < virtualBodies.Count; i++)

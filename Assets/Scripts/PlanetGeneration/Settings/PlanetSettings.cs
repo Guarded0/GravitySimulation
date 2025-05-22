@@ -13,7 +13,7 @@ public class PlanetSettings
     public bool isAnchored;
     public bool hasGravity;
     public float radius;
-    public int temperature;
+    public float temperature;
 
     public SurfaceColor surfaceColor = new SurfaceColor();
     public AtmosphereComposition atmosphereComposition = new AtmosphereComposition();
@@ -27,7 +27,7 @@ public class PlanetSettings
         this.mass = 10f;
         this.velocity = Vector3.zero;
         this.radius = 5f;
-        this.temperature = 5;
+        this.temperature = 5f;
         this.isAnchored = false;
         this.hasGravity = true;
     }

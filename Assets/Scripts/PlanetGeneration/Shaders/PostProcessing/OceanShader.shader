@@ -58,6 +58,8 @@ Shader "Hidden/OceanShader"
             float3 _planetPosition;
             float _planetScale;
             float3 _directionToSun;
+            float _sunIntensity;
+
             float _smoothness;
             float4 _specularColor;
 
@@ -114,13 +116,18 @@ Shader "Hidden/OceanShader"
                 float distanceToOcean = result.x;
                 float distanceThroughOcean = result.y;
                 float3 rayOceanIntersectPos = rayPos + rayDir * distanceToOcean  - sphereCenter;
-
-
                 // dst that view ray travels through ocean (before hitting terrain / exiting ocean)
 				float oceanViewDepth = min(distanceThroughOcean, sceneDepth - distanceToOcean);
                 //return float4(sceneDepth/100,0,0,1);
                 if (oceanViewDepth > 0)
                 {
+                    if (_sunIntensity <= 0)
+                    {
+                        return float4(0,0,0,1);
+                    }
+                    float3 sunDir = normalize(_directionToSun);
+                    float distanceToSun = length(_directionToSun);
+
                     float3 clipPlanePos = rayPos + input.viewVector * _ProjectionParams.y;
 
 					float dstAboveWater = length(clipPlanePos - sphereCenter) - _oceanRadius;
@@ -137,10 +144,13 @@ Shader "Hidden/OceanShader"
 					waveNormal = triplanarNormal(rayOceanIntersectPos, waveNormal, _waveNormalScale / _planetScale, waveOffsetB, _waveNormalB);
 					waveNormal = normalize(lerp(oceanNormal, waveNormal, _waveStrength));
 
-                    float diffuseLighting = saturate(dot(oceanNormal, _directionToSun ));
-					float specularAngle = acos(dot(normalize(_directionToSun - rayDir), waveNormal));
+                    float attenuation = 1.0 / (distanceToSun * distanceToSun + 1e-4);
+
+
+                    float diffuseLighting = saturate(dot(oceanNormal, sunDir)) * attenuation * _sunIntensity;
+					float specularAngle = acos(dot(normalize(sunDir - rayDir), waveNormal));
 					float specularExponent = specularAngle / (1 - _smoothness);
-					float specularHighlight = exp(-specularExponent * specularExponent);
+					float specularHighlight = exp(-specularExponent * specularExponent) * attenuation * _sunIntensity;
                     
                     float4 oceanColor = lerp(_colorA, _colorB, opticalDepth) * diffuseLighting + specularHighlight * (dstAboveWater > 0) * _specularColor;
                     float4 trueColor = lerp(sceneColor, oceanColor, alpha);

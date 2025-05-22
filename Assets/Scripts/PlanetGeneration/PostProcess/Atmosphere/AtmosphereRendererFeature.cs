@@ -81,6 +81,12 @@ public class AtmosphereRenderPass : ScriptableRenderPass
     }
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
+        var volumeComponent = VolumeManager.instance.stack.GetComponent<AtmosphereVolumeComponent>();
+        if (volumeComponent == null || !volumeComponent.IsActive())
+        {
+            // If the volume component is not active, skip rendering
+            return;
+        }
         // where color texture and depth texture is...
         UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
 
@@ -177,10 +183,12 @@ public class AtmosphereRenderPass : ScriptableRenderPass
        var volumeComponent = VolumeManager.instance.stack.GetComponent<AtmosphereVolumeComponent>();
 
         Transform mainLightsource = PrimaryLightSource.FindMainLightSource(planetTransform.position);
+        float sunIntensity = 0.0f;
         Vector3 directionToSun = Vector3.zero;
         if (mainLightsource != null)
         {
-            directionToSun = (mainLightsource.position - planetTransform.position).normalized;
+            directionToSun = (mainLightsource.position - planetTransform.position);
+            sunIntensity = mainLightsource.GetComponent<Light>().intensity / 2;
         }
 
         material.SetVector(planetCenterID, planetTransform.position);
@@ -191,6 +199,7 @@ public class AtmosphereRenderPass : ScriptableRenderPass
         material.SetFloat(densityFalloffID, atmosphereSettings.densityFalloff);
         material.SetFloat(oceanRadiusID, oceanRadius * planetTransform.localScale.x);
         material.SetVector(directionToSunID, directionToSun);
+        material.SetFloat("_sunIntensity", sunIntensity);
         material.SetVector("_scatteringCoefficients", atmosphereSettings.GetScatteringCoefficient());
         material.SetVector("_atmosphereTint", atmosphereSettings.atmosphereTint);
         material.SetFloat("_atmosphereTintStrength", atmosphereSettings.atmosphereTint.a);

@@ -25,12 +25,14 @@ public class NBodySimulation : MonoBehaviour
     public bool simulate = true;
     public GameObject planetTemplate;
     public bool drawOrbits = false;
+    public float orbitPredictionSteps = 1000f;
     public static NBodySimulation Instance { get; private set; }
     private GameObject bodyContainer = null;
     public static float simulationDeltaTime { get; private set;} = 1.0f;
 
     private DiagnosticChronometer chronometer = new DiagnosticChronometer();
     public double averageTimeMiliseconds;
+
     private BodyPoolingSystem bodyPoolingSystem = new BodyPoolingSystem();
 
     void CreateEvent()
