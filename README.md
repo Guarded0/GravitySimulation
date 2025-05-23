@@ -20,7 +20,7 @@ Le menu "Paramètre" à droite de l'écran permets d'ajuster les paramètre de s
 - Le slider "Vitesse de simulation" permet d'ajuster la vitesse à laquelle la simulation effectue ces update. 
 - Le slider "Constant gravitationnelle" permet d'ajuster la valeur de cette constante dans la lois de la gravitation de Newton
 - la case à cocher "Montrer orbit" permets d'afficher l'orbite de chaque corps celeste de votre systême.
-- 
+
 Par la suite vous pouvez utiliser le click gauche de votre souris pour sélection un cible.
 Lorsque vous visez une cible, vos déplacement horizontale devient un rotation atour du courps célesete tandis que vos déplacement vertical vous permette maintenant de vous éloigner et de vous approcher du corps céleste.
 Des flèche vont appaitre sur votre cible en cliquer avec le click gauche de votre souris sur ces flêche vous pourrez déplacer  le corps céleste dans la direction de la flêche.
