@@ -11,7 +11,7 @@ Une simulation à N-corps avec génération procédurale de planètes et le rend
  - La possibilité de sauvegarder et d'utiliser des préréglages de planètes que l'utilisateur souhaite conserver.
  - Une interface utilisateur claire et intuitive pour faciliter au maximum l'expérience de l'utilisateur dans la création de son système.
 
-#Guide d'utilisation : 
+# Guide d'utilisation : 
 Lors du lancement de l'application, vous pourrez voir un system composer d'un soleil et de deux planète.
 Vous pouvez vous déplacer entre les corps céleste horizontalement grace à w,a,s,d et verticalement grace à q et e. 
 Le click droit de la souris vous permets de modifier l'angle de la caméra. 
@@ -48,7 +48,7 @@ Le bouton "Quitter" ferme l'application.
 
 Dans le coins supérieux droit de votre écrant, il y a un bouton quadrilier qui vous permet d'afficher un grille pour faciliter le positionement des corps céleste. 
 
-#Technologie utiliser: 
+# Technologie utiliser : 
  - Motheur de Jeux: Unity
  - Language: C#
  - Librairie: Lean Tween 
