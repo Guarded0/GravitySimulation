@@ -50,5 +50,5 @@ Dans le coins supérieux droit de votre écrant, il y a un bouton quadrilier qui
 
 # Technologie utiliser : 
  - Motheur de Jeux: Unity
- - Language: C#
+ - Language: C# et HLSL
  - Librairie: Lean Tween 
